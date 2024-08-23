@@ -2,7 +2,10 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { useRouter } from 'next/router';
 
-export default function Home({ params }) {
+interface Params {
+  id: string;
+}
+export default function Home({ params }: { params: Params }) {
   const { id } = params;
   return (
     <main className={styles.main}>
