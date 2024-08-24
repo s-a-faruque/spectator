@@ -1,12 +1,76 @@
+"use client";
 import Image from "next/image";
 import styles from "./page.module.css";
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+
+interface FetchBody {
+  collection: string;
+  database: string;
+  dataSource: string;
+  projection: Record<string, number>;
+}
+
+interface ApiResponse {
+  document: {
+    _id: string;
+    score: number;
+  };
+}
 
 interface Params {
   id: string;
 }
+
 export default function Home({ params }: { params: Params }) {
+
   const { id } = params;
+  const [data, setData] = useState<ApiResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      console.log('use Effect');
+      const body: FetchBody = {
+        collection: "scores",
+        database: "scoreboard",
+        dataSource: "Cluster0",
+        projection: { "_id": 1, "score": 1 }
+      };
+
+      try {
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Headers': '*',
+            'api-key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const result: ApiResponse = await response.json();
+        setData(result);
+      } catch (err: any) {
+        console.error('Error fetching data:', err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+
+  if (error) return <div>Failed to load data 44 `{error}`</div>;
+  if (!data) return <div>Loading...</div>;
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -35,6 +99,10 @@ export default function Home({ params }: { params: Params }) {
 
       <div className={styles.center}>
         <div>Product ID: {id}</div>
+        <div>
+          <h1>Data from MongoDB</h1>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
         <Image
           className={styles.logo}
           src="/next.svg"
