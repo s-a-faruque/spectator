@@ -7,7 +7,7 @@ interface FetchBody {
   collection: string;
   database: string;
   dataSource: string;
-  projection: Record<string, number>;
+  filter: any;
 }
 
 interface ApiResponse {
@@ -36,16 +36,19 @@ export default function Home({ params }: { params: Params }) {
         collection: "scores",
         database: "scoreboard",
         dataSource: "Cluster0",
-        projection: { "_id": 1, "score": 1 }
+        filter: {
+          matchId: id
+        }
       };
 
       try {
-        const response = await fetch('https://cors-anywhere.herokuapp.com/https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
+        const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Request-Headers': '*',
-            'api-key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
+            'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJiYWFzX2RldmljZV9pZCI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsImJhYXNfZG9tYWluX2lkIjoiNjZjOGUzMjIzODE5YTQ2YTczNGRhOTI0IiwiZXhwIjoxNzI0NjEzMDgzLCJpYXQiOjE3MjQ2MTEyODMsImlzcyI6IjY2Y2I3YWQzZTAwY2YxM2Q0MDViZmE3NSIsImp0aSI6IjY2Y2I3YWQzZTAwY2YxM2Q0MDViZmE3OCIsInN0aXRjaF9kZXZJZCI6IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsInN0aXRjaF9kb21haW5JZCI6IjY2YzhlMzIyMzgxOWE0NmE3MzRkYTkyNCIsInN1YiI6IjY2YzhlMzQ2YTg5ZjFlZmNiYmJmMThhNSIsInR5cCI6ImFjY2VzcyJ9.W8-8Cvbd6PLaTxxMSgU8Y_0uBr3yd-pYTgrZZ6qkj_Y',
+            // 'api-key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
           },
           body: JSON.stringify(body),
         });
