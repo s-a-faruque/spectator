@@ -9,11 +9,21 @@ interface FetchBody {
   dataSource: string;
   filter: any;
 }
-
+interface Innings {
+  run: string;
+  team: Team;
+  wicket: string;
+};
+type Team = {
+  fullname: string
+};
 interface ApiResponse {
   document: {
     _id: string;
     score: number;
+    FirstInnings: Innings;
+    SecondInnings: Innings;
+    status: string;
   };
 }
 
@@ -28,6 +38,8 @@ export default function Home({ params }: { params: Params }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string | null>();
+  const [run, setRun] = useState<number>(0);
+  const [wicket, setWicket] = useState<number>(0);
 
   useEffect(() => {
     
@@ -93,11 +105,28 @@ export default function Home({ params }: { params: Params }) {
           // get accessToken with refresh token
           // call API with this new accessToken
           if (!response.ok) {
+            const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Request-Headers': '*',
+              },
+              body: JSON.stringify({
+                'key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
+              }),
+            });
+            const authentication = await response.json();
+            console.log(authentication);
+            localStorage.setItem('accessToken', authentication.access_token ?? null);
+            setAccessToken(authentication.access_token);
+            
             throw new Error('Failed to fetch data');
           }
   
           const result: ApiResponse = await response.json();
           setData(result);
+          setRun(parseInt(result.document.FirstInnings.run));
+          setWicket(parseInt(result.document.FirstInnings.wicket));
         } catch (err: any) {
           console.error('Error fetching data:', err.message);
           setError(err.message);
@@ -120,95 +149,21 @@ export default function Home({ params }: { params: Params }) {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
+          {data.document.FirstInnings.team.fullname} vs {data.document.SecondInnings.team.fullname}
         </p>
+      </div>
+      <div className={styles.center}>
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <pre>{run} / {wicket}</pre>
         </div>
       </div>
-
-      <div className={styles.center}>
+      {/* <div className={styles.center}>
         <div>Product ID: {id}</div>
         <div>
           <h1>Data from MongoDB</h1>
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      </div> */}
     </main>
   );
 }
