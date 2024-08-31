@@ -101,11 +101,11 @@ export default function Home({ params }: { params: Params }) {
             body: JSON.stringify(body),
           });
   
-          // if response is about expired token
+          // if response is about to be expired token
           // get accessToken with refresh token
           // call API with this new accessToken
           if (!response.ok) {
-            const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
+            const responseAccessToken = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ export default function Home({ params }: { params: Params }) {
                 'key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
               }),
             });
-            const authentication = await response.json();
+            const authentication = await responseAccessToken.json();
             console.log(authentication);
             localStorage.setItem('accessToken', authentication.access_token ?? null);
             setAccessToken(authentication.access_token);
