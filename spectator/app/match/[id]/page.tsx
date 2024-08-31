@@ -141,6 +141,13 @@ export default function Home({ params }: { params: Params }) {
     fetchData();
   }, [accessToken]);
   
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      window.location.reload();
+    }, 20000); // Refresh every 20 seconds
+
+    return () => clearInterval(intervalId); // Cleanup the interval on component unmount
+  }, []);
 
   if (error) return <div>Failed to load data 44 `{error}`</div>;
   if (!data) return <div>Loading...</div>;
