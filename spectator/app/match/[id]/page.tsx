@@ -156,14 +156,14 @@ export default function Home({ params }: { params: Params }) {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          {data.document.FirstInnings.team.fullname} vs {data.document.SecondInnings.team.fullname}
+          <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span> <span className={styles.versus}>VS</span> <span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span>
         </p>
       </div>
-      <div className={styles.center}>
-        <div className={styles.card}>
-          <pre>{run} / {wicket}</pre>
-        </div>
+      
+      <div className={styles.card}>
+        <pre>{run} / {wicket}</pre>
       </div>
+      
       {/* <div className={styles.center}>
         <div>Product ID: {id}</div>
         <div>
