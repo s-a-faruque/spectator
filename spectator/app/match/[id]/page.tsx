@@ -11,6 +11,7 @@ interface FetchBody {
 }
 interface Innings {
   run: string;
+  over: string;
   team: Team;
   wicket: string;
 };
@@ -40,6 +41,7 @@ export default function Home({ params }: { params: Params }) {
   const [accessToken, setAccessToken] = useState<string | null>();
   const [run, setRun] = useState<number>(0);
   const [wicket, setWicket] = useState<number>(0);
+  const [over, setOver] = useState<number>(0);
 
   useEffect(() => {
     
@@ -127,6 +129,7 @@ export default function Home({ params }: { params: Params }) {
           setData(result);
           setRun(parseInt(result.document.FirstInnings.run));
           setWicket(parseInt(result.document.FirstInnings.wicket));
+          setOver(parseFloat(result.document.FirstInnings.over))
         } catch (err: any) {
           console.error('Error fetching data:', err.message);
           setError(err.message);
@@ -161,7 +164,9 @@ export default function Home({ params }: { params: Params }) {
       </div>
       
       <div className={styles.card}>
-        <pre>{run} / {wicket}</pre>
+        <div>Batting: <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span></div>
+        <div className={styles.score}><strong>{run} / {wicket}</strong></div>
+        <div>Over: {over}</div>
       </div>
       
       {/* <div className={styles.center}>

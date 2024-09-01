@@ -18,19 +18,24 @@
   padding: 2rem 1rem 1.4rem;
   border: none;
   background: #FDDE00;
-  border-radius: 1rem;
+  border-radius: 8px;
   width: 100%;
   text-align: center;
 }
 
 .card {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  text-align: center;
   width: 100%;
-  background: #FFFFFF;
-  padding: 4rem 0;
+  background: #FAF9F6;
+  padding: 8rem 0;
   margin-top: 2rem;
-  border-radius: 1rem;
+  border-radius: 8px;
+}
+.score{
+  font-size: 20px;
+  margin: 1rem;
 }
 
 .uppercase{
