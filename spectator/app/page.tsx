@@ -12,10 +12,15 @@ export default function CardsPage() {
   
   return (
     <div className={styles.container}>
+      <div className={styles.description}>
+        <p>
+          Tournament
+        </p>
+      </div>
       {cards.map((card) => (
         <Link href={card.link} key={card.id} className={styles.card}>
           <div>
-            <h2>{card.title}</h2>
+            {card.title}
           </div>
         </Link>
       ))}
