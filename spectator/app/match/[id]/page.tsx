@@ -154,7 +154,7 @@ export default function Home({ params }: { params: Params }) {
     };
 
     fetchData();
-  }, [accessToken]);
+  }, [accessToken, id]);
   
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
