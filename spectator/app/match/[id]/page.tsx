@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import styles from "./page.module.css";
 import React, { useEffect, useState } from 'react';
 
@@ -46,7 +45,6 @@ export default function Home({ params }: { params: Params }) {
   useEffect(() => {
     
     const fetchData = async () => {
-      console.log('use Effect');
       const body: FetchBody = {
         collection: "scores",
         database: "scoreboard",
@@ -57,7 +55,6 @@ export default function Home({ params }: { params: Params }) {
       };
       const accessTokenFromLocalStorage = localStorage.getItem('accessToken')
       if (accessTokenFromLocalStorage){
-        console.log(accessTokenFromLocalStorage);
         setAccessToken(accessTokenFromLocalStorage);
       } else {
         const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
@@ -71,7 +68,6 @@ export default function Home({ params }: { params: Params }) {
           }),
         });
         const authentication = await response.json();
-        console.log(authentication);
         localStorage.setItem('accessToken', authentication.access_token ?? null);
         setAccessToken(authentication.access_token);
       }
@@ -131,7 +127,7 @@ export default function Home({ params }: { params: Params }) {
           setWicket(parseInt(result.document.FirstInnings.wicket));
           setOver(parseFloat(result.document.FirstInnings.over))
         } catch (err: any) {
-          console.error('Error fetching data:', err.message);
+          console.error('Error fetching data:', err.message );
           setError(err.message);
         } finally {
           setLoading(false);
@@ -152,7 +148,7 @@ export default function Home({ params }: { params: Params }) {
   //   return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   // }, []);
 
-  if (error) return <div>Failed to load data 44 `{error}`</div>;
+  if (error) return <div>Please refresh. Failed to load data - `{error}`</div>;
   if (!data) return <div>Loading...</div>;
 
   return (
