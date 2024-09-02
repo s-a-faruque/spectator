@@ -154,7 +154,7 @@ export default function CardsPage() {
     <main className={styles.main}>
         <div className={styles.description}>
           <p>
-            <strong>HALIFAX</strong> <span> AMETEUR CRICKET TOURNAMENT '24</span>
+            <strong>HALIFAX</strong> <span> AMETEUR CRICKET TOURNAMENT &apos;24</span>
           </p>
           <button className={styles.refresh} onClick={handleRefresh}>
             <Image
