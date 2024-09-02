@@ -26,6 +26,7 @@ interface ApiResponse {
     FirstInnings: Innings;
     SecondInnings: Innings;
     status: string;
+    result: string;
   };
 }
 
@@ -43,6 +44,9 @@ export default function Home({ params }: { params: Params }) {
   const [run, setRun] = useState<number>(0);
   const [wicket, setWicket] = useState<number>(0);
   const [over, setOver] = useState<number>(0);
+  const [target, setTarget] = useState<number>(0);
+  const [status, setStatus] = useState<string | null>();
+  const [result, setResult] = useState<string | null>();
 
   useEffect(() => {
     
@@ -125,9 +129,19 @@ export default function Home({ params }: { params: Params }) {
   
           const result: ApiResponse = await response.json();
           setData(result);
-          setRun(parseInt(result.document.FirstInnings.run));
-          setWicket(parseInt(result.document.FirstInnings.wicket));
-          setOver(parseFloat(result.document.FirstInnings.over))
+
+          if(result.document.status === 'FirstInnings'){
+            setRun(parseInt(result.document.FirstInnings.run));
+            setWicket(parseInt(result.document.FirstInnings.wicket));
+            setOver(parseFloat(result.document.FirstInnings.over));
+          } else {
+            setRun(parseInt(result.document.SecondInnings.run));
+            setWicket(parseInt(result.document.SecondInnings.wicket));
+            setOver(parseFloat(result.document.SecondInnings.over));
+            setTarget(parseInt(result.document.FirstInnings.run + 1))
+          }
+          setResult(result.document.result);
+          setStatus(result.document.status);
         } catch (err: any) {
           console.error('Error fetching data:', err.message );
           setError(err.message);
@@ -153,8 +167,62 @@ export default function Home({ params }: { params: Params }) {
   const handleRefresh = () => {
     window.location.reload();
   };
-  if (error) return <div>Please refresh. Failed to load data - `{error}`</div>;
+  if (error) return (
+    <>
+      <div>Please refresh. Failed to load data - `{error}`</div>
+      <button className={styles.refresh} onClick={handleRefresh} >
+        <Image
+            src="/refresh-square.png" // Path to the icon image
+            alt="Refresh Icon"
+            width={20} // Adjust the width according to your needs
+            height={20} // Adjust the height according to your needs
+          />  
+        </button>
+    </>
+    
+  );
   if (!data) return <div>Loading...</div>;
+
+  const renderContentBasedOnStatus = () => {
+    switch (status) {
+      case 'FirstInnings':
+        return (
+          <>
+            <div>Batting: <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span></div>
+            <div className={styles.score}><strong>{run} / {wicket}</strong></div>
+            <div>Over: {over}</div>
+          </>
+        );
+      case 'SecondInnings':
+        return (
+          <>
+            <div>Batting: <span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span></div>
+            <div className={styles.score}><strong>{run} / {wicket}</strong></div>
+            <div>Over: {over}</div>
+            <div>Target: {target}</div>
+          </>
+        );
+      case 'NotStarted':
+        return (
+          <>
+            <div>Match has not started yet</div>
+          </>
+        );
+      case 'Complete':
+        return (
+          <>
+            <div><span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span></div>
+            <div className={styles.score}><strong>{data.document.FirstInnings.run} / {data.document.FirstInnings.wicket}</strong></div>
+            <hr className={styles.divider}/>
+            <div><span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span></div>
+            <div className={styles.score}><strong>{data.document.SecondInnings.run} / {data.document.SecondInnings.wicket}</strong></div>
+            <div className={styles.result}><strong>{data.document.result} </strong></div>
+          </>
+        );
+      default:
+        return <div>Status not available.</div>;
+    }
+  };
 
   return (
     <main className={styles.main}>
@@ -165,9 +233,7 @@ export default function Home({ params }: { params: Params }) {
       </div>
       
       <div className={styles.card}>
-        <div>Batting: <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span></div>
-        <div className={styles.score}><strong>{run} / {wicket}</strong></div>
-        <div>Over: {over}</div>
+        {renderContentBasedOnStatus()}
       </div>
       
       <div className={styles.footer}>
