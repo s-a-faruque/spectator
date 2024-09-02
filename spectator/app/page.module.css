@@ -47,6 +47,12 @@
   margin-right: 16px;
 }
 
+.refresh {
+  padding: 1rem;
+  border: none;
+  background: #fdde01;
+}
+
 /* Mobile */
 @media (max-width: 700px) {
   .description p{

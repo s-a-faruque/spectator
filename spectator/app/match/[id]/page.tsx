@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 import React, { useEffect, useState } from 'react';
 
@@ -148,6 +150,9 @@ export default function Home({ params }: { params: Params }) {
   //   return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   // }, []);
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
   if (error) return <div>Please refresh. Failed to load data - `{error}`</div>;
   if (!data) return <div>Loading...</div>;
 
@@ -165,6 +170,26 @@ export default function Home({ params }: { params: Params }) {
         <div>Over: {over}</div>
       </div>
       
+      <div className={styles.footer}>
+        <Link href="../../">
+          <Image
+            src="/homepage.png" // Path to the icon image
+            alt="Home Icon"
+            width={20} // Adjust the width according to your needs
+            height={20} // Adjust the height according to your needs
+          />
+        </Link>
+        <button className={styles.refresh} onClick={handleRefresh} >
+        <Image
+            src="/refresh-square.png" // Path to the icon image
+            alt="Refresh Icon"
+            width={20} // Adjust the width according to your needs
+            height={20} // Adjust the height according to your needs
+          />  
+        </button>
+        
+      </div>
+
       {/* <div className={styles.center}>
         <div>Product ID: {id}</div>
         <div>

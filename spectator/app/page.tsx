@@ -138,16 +138,17 @@ export default function CardsPage() {
     };
 
     fetchData();
+    
   }, [accessToken]);
 
-  if (error) return <div>Please refresh. Failed to load data - `{error}`</div>;
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+  if (error) 
+    return (
+      <div>Please refresh. Failed to load data - `{error}`</div>
+    );
   if (!data) return <div>Loading...</div>;
-
-  const cards = Array.from({ length: 15 }, (_, index) => ({
-    id: index + 1,
-    title: `Match ${index + 1}`,
-    link: `/match/${index + 1}`,
-  }));
 
   return (
     <main className={styles.main}>
@@ -155,6 +156,14 @@ export default function CardsPage() {
           <p>
             <strong>HALIFAX</strong> &nbsp;AMETEUR CRICKET TOURNAMENT '24
           </p>
+          <button className={styles.refresh} onClick={handleRefresh}>
+            <Image
+            src="/refresh.png" // Path to the icon image
+            alt="Refresh Icon"
+            width={20} // Adjust the width according to your needs
+            height={20} // Adjust the height according to your needs
+          />
+          </button>
         </div>
         {data?.documents.map((match:any, index:any) => (
         <div className={styles.card} key={match._id}>
