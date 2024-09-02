@@ -21,14 +21,16 @@ type Team = {
   fullname: string
 };
 interface ApiResponse {
-  document: {
-    _id: string;
-    score: number;
-    FirstInnings: Innings;
-    SecondInnings: Innings;
-    status: string;
-  }[];
+  documents: document[]; 
 }
+
+interface document {
+  _id: string;
+  score: number;
+  FirstInnings: Innings;
+  SecondInnings: Innings;
+  status: string;
+};
 
 interface Params {
   id: string;
@@ -38,7 +40,7 @@ interface Params {
 
 export default function CardsPage() {
   const id = 1;
-  const [data, setData] = useState<ApiResponse[] | null>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string | null>();
@@ -124,7 +126,7 @@ export default function CardsPage() {
             throw new Error('Failed to fetch data');
           }
   
-          const result: ApiResponse[] = await response.json();
+          const result: ApiResponse = await response.json();
           console.log(result);
           setData(result);
         } catch (err: any) {
