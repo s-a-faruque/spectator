@@ -61,7 +61,29 @@ export default function Home({ params }: { params: Params }) {
       };
       const accessTokenFromLocalStorage = localStorage.getItem('accessToken')
       if (accessTokenFromLocalStorage){
-        setAccessToken(accessTokenFromLocalStorage);
+        const accessTokenExpiry = Number(localStorage.getItem('accessToken'));
+        if (Date.now() > accessTokenExpiry){
+          const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Request-Headers': '*',
+            },
+            body: JSON.stringify({
+              'key': 'szh5JljBccYCUJHBEUCrwDscVhwLsfv0pHUTw4iGtuhFrKiDkD9KFepQLhCVoSxW',
+            }),
+          });
+          const authentication = await response.json();
+          localStorage.setItem('accessToken', authentication.access_token ?? null);
+          const currentTime = Date.now();
+          const futureTime = currentTime + 10000; 
+          localStorage.setItem('accessTokenExpiry', futureTime.toString());
+          setAccessToken(authentication.access_token);
+        } else {
+          setAccessToken(accessTokenFromLocalStorage);
+        }
+
+        
       } else {
         const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
           method: 'POST',
@@ -75,6 +97,9 @@ export default function Home({ params }: { params: Params }) {
         });
         const authentication = await response.json();
         localStorage.setItem('accessToken', authentication.access_token ?? null);
+        const currentTime = Date.now();
+        const futureTime = currentTime + 10000; 
+        localStorage.setItem('accessTokenExpiry', futureTime.toString());
         setAccessToken(authentication.access_token);
       }
       /*
@@ -90,6 +115,7 @@ export default function Home({ params }: { params: Params }) {
       if(typeof accessToken !== 'undefined'){
         
         console.log(accessTokenFromLocalStorage);
+
 
         try {
           const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
