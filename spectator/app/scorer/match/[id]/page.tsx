@@ -287,6 +287,31 @@ export default function Home({ params }: { params: Params }) {
     });
     setUnSavedWicket(false);
   }
+
+  const updateStatus = async (status:string) =>{
+    const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/updateOne', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Request-Headers': '*',
+        'Authorization': 'Bearer ' + accessToken
+      },
+      body: JSON.stringify({
+          collection: "scores",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: {
+            matchId: id
+          },
+          update: {
+            $set : {
+              status: status
+            }
+          }
+      }),
+    });
+    setUnSavedWicket(false);
+  }
   const addRun = (runToAdd:number) => {
     setRun(run + runToAdd); // Update state when the input changes
     setUnSavedRun(true);
@@ -310,15 +335,7 @@ export default function Home({ params }: { params: Params }) {
     setOver(totalOvers + ballsInOver / 10); // Update state when the input changes
     setUnSavedOver(true);
   };
-  const handleRunChange = (event:any) => {
-    setRun(event.target.value); // Update state when the input changes
-  };
-  const handleWicketChange = (event:any) => {
-    setWicket(event.target.value); // Update state when the input changes
-  };
-  const handleOverChange = (event:any) => {
-    setOver(event.target.value); // Update state when the input changes
-  };
+  
   const renderContentBasedOnStatus = () => {
     switch (status) {
       case 'FirstInnings':
@@ -570,6 +587,10 @@ export default function Home({ params }: { params: Params }) {
     }
   };
 
+  const handleStatusChange = (e: any) => {
+    setStatus(e.target.value || 'Not started');
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -579,6 +600,24 @@ export default function Home({ params }: { params: Params }) {
       </div>
       
       <div className={styles.card}>
+        <div>
+          Current Status: 
+          <select className={styles.refresh} value={status ?? undefined} onChange={handleStatusChange}>
+            <option value="NotStarted">Not Started</option>
+            <option value="FirstInnings">First Innings</option>
+            <option value="SecondInnings">Second Innings</option>
+            <option value="Complete">Complete</option>
+          </select>
+
+          <button className={styles.refresh} onClick={() => updateStatus(status)}>
+            <Image
+              src="/upload.png" // Path to the icon image
+              alt="Upload Icon"
+              width={20} // Adjust the width according to your needs
+              height={20} // Adjust the height according to your needs
+            />
+          </button>
+        </div>
         {renderContentBasedOnStatus()}
       </div>
       
