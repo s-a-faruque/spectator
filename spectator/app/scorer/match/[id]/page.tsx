@@ -47,6 +47,10 @@ export default function Home({ params }: { params: Params }) {
   const [target, setTarget] = useState<number>(0);
   const [status, setStatus] = useState<string | null>();
   const [result, setResult] = useState<string | null>();
+  const [unSavedRun, setUnSavedRun] = useState<boolean>(false);
+  const [unSavedWicket, setUnSavedWicket] = useState<boolean>(false);
+  const [unSavedOver, setUnSavedOver] = useState<boolean>(false);
+
 
   useEffect(() => {
     
@@ -202,8 +206,8 @@ export default function Home({ params }: { params: Params }) {
             alt="Refresh Icon"
             width={20} // Adjust the width according to your needs
             height={20} // Adjust the height according to your needs
-          />  
-        </button>
+        />  
+      </button>
     </>
     
   );
@@ -231,6 +235,7 @@ export default function Home({ params }: { params: Params }) {
           }
       }),
     });
+    setUnSavedOver(false);
   }
 
   const updateRun = async (innings:string) =>{
@@ -255,6 +260,7 @@ export default function Home({ params }: { params: Params }) {
           }
       }),
     });
+    setUnSavedRun(false);
   }
 
   const updateWicket = async (innings:string) =>{
@@ -279,8 +285,31 @@ export default function Home({ params }: { params: Params }) {
           }
       }),
     });
+    setUnSavedWicket(false);
   }
-
+  const addRun = (runToAdd:number) => {
+    setRun(run + runToAdd); // Update state when the input changes
+    setUnSavedRun(true);
+  };
+  const addWicket = (wicketToAdd:number) => {
+    setWicket(wicket + wicketToAdd); // Update state when the input changes
+    setUnSavedWicket(true);
+  };
+  const addOver = (ballToAdd:number) => {
+    let totalOvers = Math.floor(over); // Get the integer part (completed overs)
+    let ballsInOver = Math.round((over - totalOvers) * 10);
+    if(ballsInOver + ballToAdd > 5){
+      ballsInOver = 0;
+      totalOvers += 1;
+    } else if (ballsInOver + ballToAdd < 0) {
+      ballsInOver = 5;
+      totalOvers -= 1;
+    } else {
+      ballsInOver += ballToAdd;
+    }
+    setOver(totalOvers + ballsInOver / 10); // Update state when the input changes
+    setUnSavedOver(true);
+  };
   const handleRunChange = (event:any) => {
     setRun(event.target.value); // Update state when the input changes
   };
@@ -296,35 +325,103 @@ export default function Home({ params }: { params: Params }) {
         return (
           <>
             <div>Batting: <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span></div>
+            <div> Run : 
+              <button className={styles.refresh} onClick={()=>addRun(-1)} >-</button>
+              {run}
+              <button className={styles.refresh} onClick={()=>addRun(1)} >+</button>
+              {
+                unSavedRun ?
+                (<button className={styles.refresh} onClick={() => updateRun('FirstInnings')}>
+                <Image
+                  src="/upload.png" // Path to the icon image
+                  alt="Upload Icon"
+                  width={20} // Adjust the width according to your needs
+                  height={20} // Adjust the height according to your needs
+                />
+              </button>)
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
+            <div> Wicket : 
+              <button className={styles.refresh} onClick={()=>addWicket(-1)} >-</button>
+              {wicket}
+              <button className={styles.refresh} onClick={()=>addWicket(1)} >+</button>
+              
+              {
+                unSavedWicket ?
+                (
+                  <button className={styles.refresh} onClick={() => updateWicket('FirstInnings')}>
+                    <Image
+                      src="/upload.png" // Path to the icon image
+                      alt="Upload Icon"
+                      width={20} // Adjust the width according to your needs
+                      height={20} // Adjust the height according to your needs
+                    />
+                  </button>
+                )
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
+            <div> Over : 
+              <button className={styles.refresh} onClick={()=>addOver(-1)} >-</button>
+              {over}
+              <button className={styles.refresh} onClick={()=>addOver(1)} >+</button>
+              {
+                unSavedOver ?
+                (
+                  <button className={styles.refresh} onClick={() => updateOver('FirstInnings')}>
+                    <Image
+                      src="/upload.png" // Path to the icon image
+                      alt="Upload Icon"
+                      width={20} // Adjust the width according to your needs
+                      height={20} // Adjust the height according to your needs
+                    />
+                  </button>
+                )
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
+
+
             <div className={styles.score}>
+              
               <strong>
                 {run} 
-                <input
-                  type="number"
-                  placeholder="Enter new run"
-                  value={run}
-                  onChange={handleRunChange}
-                />
-                <button onClick={() => updateRun('SecondInnings')}>√</button>
                 / 
                 {wicket}
-                <input
-                  type="number"
-                  placeholder="Enter new wicket"
-                  value={wicket}
-                  onChange={handleWicketChange}
-                />
-                <button onClick={() => updateWicket('SecondInnings')}>√</button>
               </strong>
             </div>
-            <div>Over: {over} 
-              <input
-                type="number"
-                placeholder="Enter new over"
-                value={over}
-                onChange={handleOverChange}
-              />
-              <button onClick={() => updateOver('FirstInnings')}>Update Score</button>
+            <div>Over: {over}
             </div>
           </>
         );
@@ -332,35 +429,121 @@ export default function Home({ params }: { params: Params }) {
         return (
           <>
             <div>Batting: <span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span></div>
+            <div> Run : 
+              <button className={styles.refresh} onClick={()=>addRun(-1)} >-</button>
+              {run}
+              <button className={styles.refresh} onClick={()=>addRun(1)} >+</button>
+              {
+                unSavedRun ?
+                (<button className={styles.refresh} onClick={() => updateRun('SecondInnings')}>
+                <Image
+                  src="/upload.png" // Path to the icon image
+                  alt="Upload Icon"
+                  width={20} // Adjust the width according to your needs
+                  height={20} // Adjust the height according to your needs
+                />
+              </button>)
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
+            <div> Wicket : 
+              <button className={styles.refresh} onClick={()=>addWicket(-1)} >-</button>
+              {wicket}
+              <button className={styles.refresh} onClick={()=>addWicket(1)} >+</button>
+              
+              {
+                unSavedWicket ?
+                (
+                  <button className={styles.refresh} onClick={() => updateWicket('SecondInnings')}>
+                    <Image
+                      src="/upload.png" // Path to the icon image
+                      alt="Upload Icon"
+                      width={20} // Adjust the width according to your needs
+                      height={20} // Adjust the height according to your needs
+                    />
+                  </button>
+                )
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
+            <div> Over : 
+              <button className={styles.refresh} onClick={()=>addOver(-1)} >-</button>
+              {over}
+              <button className={styles.refresh} onClick={()=>addOver(1)} >+</button>
+              {
+                unSavedOver ?
+                (
+                  <button className={styles.refresh} onClick={() => updateOver('SecondInnings')}>
+                    <Image
+                      src="/upload.png" // Path to the icon image
+                      alt="Upload Icon"
+                      width={20} // Adjust the width according to your needs
+                      height={20} // Adjust the height according to your needs
+                    />
+                  </button>
+                )
+                :
+                (
+                  <button className={styles.refresh}>
+                    <Image
+                    src="/checkmark.png" // Path to the icon image
+                    alt="Upload Icon"
+                    width={20} // Adjust the width according to your needs
+                    height={20} // Adjust the height according to your needs
+                  />
+                  </button>
+                )
+              }
+            </div>
             <div className={styles.score}>
               <strong>
                 {run} 
-                <input
+                {/* <input
                   type="number"
                   placeholder="Enter new run"
                   value={run}
                   onChange={handleRunChange}
                 />
-                <button onClick={() => updateRun('SecondInnings')}>√</button>
+                <button className={styles.refresh} onClick={() => updateRun('SecondInnings')}>√</button> */}
                 / 
                 {wicket}
-                <input
+                {/* <input
                   type="number"
                   placeholder="Enter new wicket"
                   value={wicket}
                   onChange={handleWicketChange}
                 />
-                <button onClick={() => updateWicket('SecondInnings')}>√</button>
+                <button onClick={() => updateWicket('SecondInnings')}>√</button> */}
               </strong>
             </div>
             <div>Over: {over} 
-              <input
+              {/* <input
                 type="number"
                 placeholder="Enter new over"
                 value={over}
                 onChange={handleOverChange}
               />
-              <button onClick={() => updateOver('SecondInnings')}>√</button>
+              <button onClick={() => updateOver('SecondInnings')}>√</button> */}
             </div>
             <div>Target: {target}</div>
           </>
