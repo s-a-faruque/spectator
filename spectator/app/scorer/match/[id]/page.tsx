@@ -45,7 +45,7 @@ export default function Home({ params }: { params: Params }) {
   const [wicket, setWicket] = useState<number>(0);
   const [over, setOver] = useState<number>(0);
   const [target, setTarget] = useState<number>(0);
-  const [status, setStatus] = useState<string | null>();
+  const [status, setStatus] = useState<string>('NotStarted');
   const [result, setResult] = useState<string | null>();
   const [unSavedRun, setUnSavedRun] = useState<boolean>(false);
   const [unSavedWicket, setUnSavedWicket] = useState<boolean>(false);
