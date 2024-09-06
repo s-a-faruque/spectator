@@ -50,6 +50,8 @@ export default function Home({ params }: { params: Params }) {
   const [unSavedRun, setUnSavedRun] = useState<boolean>(false);
   const [unSavedWicket, setUnSavedWicket] = useState<boolean>(false);
   const [unSavedOver, setUnSavedOver] = useState<boolean>(false);
+  const [firstInningsTeamName, setFirstInningsTeamName] = useState<string>('');
+  const [secondInningsTeamName, setSecondInningsTeamName] = useState<string>('');
 
 
   useEffect(() => {
@@ -172,6 +174,8 @@ export default function Home({ params }: { params: Params }) {
           }
           setResult(result.document.result);
           setStatus(result.document.status);
+          setFirstInningsTeamName(result.document.FirstInnings.team.fullname);
+          setSecondInningsTeamName(result.document.SecondInnings.team.fullname);
         } catch (err: any) {
           console.error('Error fetching data:', err.message );
           setError(err.message);
@@ -311,6 +315,31 @@ export default function Home({ params }: { params: Params }) {
       }),
     });
     setUnSavedWicket(false);
+  }
+  const updateTeam = async () =>{
+    const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/updateOne', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Request-Headers': '*',
+        'Authorization': 'Bearer ' + accessToken
+      },
+      body: JSON.stringify({
+          collection: "scores",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: {
+            matchId: id
+          },
+          update: {
+            $set : {
+              'FirstInnings.team.fullname' : firstInningsTeamName,
+              'SecondInnings.team.fullname' : secondInningsTeamName,
+            }
+          }
+      }),
+    });
+    setUnSavedRun(false);
   }
   const addRun = (runToAdd:number) => {
     setRun(run + runToAdd); // Update state when the input changes
@@ -569,6 +598,24 @@ export default function Home({ params }: { params: Params }) {
         return (
           <>
             <div>Match has not started yet</div>
+            <div>
+              First Innings:
+              <select className={styles.refresh} value={firstInningsTeamName} onChange={handleFirstInningsTeamNameChange}>
+                <option value={data.document.FirstInnings.team.fullname}>{data.document.FirstInnings.team.fullname}</option>
+                <option value={data.document.SecondInnings.team.fullname}>{data.document.SecondInnings.team.fullname}</option>
+              </select>
+              <button className={styles.refresh} onClick={() => updateTeam()}>
+                <Image
+                  src="/upload.png" // Path to the icon image
+                  alt="Upload Icon"
+                  width={20} // Adjust the width according to your needs
+                  height={20} // Adjust the height according to your needs
+                />
+              </button>
+            </div>
+            <div>
+              Second Innings : {secondInningsTeamName}
+            </div>
           </>
         );
       case 'Complete':
@@ -589,6 +636,17 @@ export default function Home({ params }: { params: Params }) {
 
   const handleStatusChange = (e: any) => {
     setStatus(e.target.value || 'Not started');
+  }
+
+  const handleFirstInningsTeamNameChange = (e: any) => {
+    if(e.target.value != data.document.FirstInnings.team.fullname){
+      setFirstInningsTeamName(e.target.value || '');
+      setSecondInningsTeamName(data.document.FirstInnings.team.fullname);
+    }
+  }
+  
+  const handleSecondInningsTeamNameChange = (e: any) => {
+    setSecondInningsTeamName(e.target.value || '');
   }
 
   return (
