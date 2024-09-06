@@ -52,6 +52,7 @@ export default function Home({ params }: { params: Params }) {
   const [unSavedOver, setUnSavedOver] = useState<boolean>(false);
   const [firstInningsTeamName, setFirstInningsTeamName] = useState<string>('');
   const [secondInningsTeamName, setSecondInningsTeamName] = useState<string>('');
+  const [matchResult, setMatchResult] = useState<string>('');
 
 
   useEffect(() => {
@@ -172,10 +173,11 @@ export default function Home({ params }: { params: Params }) {
             setOver(parseFloat(result.document.SecondInnings.over));
             setTarget(parseInt(result.document.FirstInnings.run + 1))
           }
-          setResult(result.document.result);
+          setMatchResult(result.document.result);
           setStatus(result.document.status);
           setFirstInningsTeamName(result.document.FirstInnings.team.fullname);
           setSecondInningsTeamName(result.document.SecondInnings.team.fullname);
+          
         } catch (err: any) {
           console.error('Error fetching data:', err.message );
           setError(err.message);
@@ -340,7 +342,29 @@ export default function Home({ params }: { params: Params }) {
           }
       }),
     });
-    setUnSavedRun(false);
+  }
+  const updateMatchResult = async () =>{
+    const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/updateOne', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Request-Headers': '*',
+        'Authorization': 'Bearer ' + accessToken
+      },
+      body: JSON.stringify({
+          collection: "scores",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: {
+            matchId: id
+          },
+          update: {
+            $set : {
+              result : matchResult,
+            }
+          }
+      }),
+    });
   }
   const addRun = (runToAdd:number) => {
     setRun(run + runToAdd); // Update state when the input changes
@@ -627,7 +651,18 @@ export default function Home({ params }: { params: Params }) {
             <hr className={styles.divider}/>
             <div><span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span></div>
             <div className={styles.score}><strong>{data.document.SecondInnings.run} / {data.document.SecondInnings.wicket}</strong></div>
-            <div className={styles.result}><strong>{data.document.result} </strong></div>
+            <div className={styles.result}><strong>{matchResult} </strong></div>
+            <div>
+              <input type="string" value={matchResult} onChange={handleMatchResultChange}></input>
+              <button className={styles.refresh} onClick={() => updateMatchResult()}>
+                <Image
+                  src="/upload.png" // Path to the icon image
+                  alt="Upload Icon"
+                  width={20} // Adjust the width according to your needs
+                  height={20} // Adjust the height according to your needs
+                />
+              </button>
+            </div>
           </>
         );
       default:
@@ -646,8 +681,8 @@ export default function Home({ params }: { params: Params }) {
     }
   }
   
-  const handleSecondInningsTeamNameChange = (e: any) => {
-    setSecondInningsTeamName(e.target.value || '');
+  const handleMatchResultChange = (e: any) => {
+    setMatchResult(e.target.value || '');
   }
 
   return (
