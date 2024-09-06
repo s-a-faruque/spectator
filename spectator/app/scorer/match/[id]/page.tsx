@@ -203,15 +203,16 @@ export default function Home({ params }: { params: Params }) {
   };
   if (error) return (
     <>
-      <div>Please refresh. Failed to load data - `{error}`</div>
-      <button className={styles.refresh} onClick={handleRefresh} >
-        <Image
-            src="/refresh-square.png" // Path to the icon image
-            alt="Refresh Icon"
-            width={20} // Adjust the width according to your needs
-            height={20} // Adjust the height according to your needs
-        />  
-      </button>
+      <div>Please refresh. Failed to load data - `{error}`
+        <button className={styles.refresh} onClick={handleRefresh} >
+          <Image
+              src="/refresh-square.png" // Path to the icon image
+              alt="Refresh Icon"
+              width={20} // Adjust the width according to your needs
+              height={20} // Adjust the height according to your needs
+          />  
+        </button>
+      </div>
     </>
     
   );
