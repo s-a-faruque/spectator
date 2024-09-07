@@ -301,6 +301,7 @@ export default function Home({ params }: { params: Params }) {
   };
   
   const renderContentBasedOnStatus = () => {
+    if(!data) return 'No data';
     switch (status) {
       case 'FirstInnings':
         return (
@@ -599,7 +600,7 @@ export default function Home({ params }: { params: Params }) {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          <span className={styles.uppercase}>{data.document.FirstInnings.team.fullname}</span> <span className={styles.versus}>VS</span> <span className={styles.uppercase}>{data.document.SecondInnings.team.fullname}</span>
+        <span className={styles.uppercase}>{data?.document.FirstInnings.team.fullname}</span> <span className={styles.versus}>VS</span> <span className={styles.uppercase}>{data?.document.SecondInnings.team.fullname}</span>
         </p>
       </div>
       
