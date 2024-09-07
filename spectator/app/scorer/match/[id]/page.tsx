@@ -586,7 +586,7 @@ export default function Home({ params }: { params: Params }) {
   }
 
   const handleFirstInningsTeamNameChange = (e: any) => {
-    if(e.target.value != data?.document.FirstInnings.team.fullname){
+    if(data && e.target.value != data?.document.FirstInnings.team.fullname){
       setFirstInningsTeamName(e.target.value || '');
       setSecondInningsTeamName(data ? data.document.FirstInnings.team.fullname : '');
     }
@@ -645,14 +645,6 @@ export default function Home({ params }: { params: Params }) {
         </button>
         
       </div>
-
-      {/* <div className={styles.center}>
-        <div>Product ID: {id}</div>
-        <div>
-          <h1>Data from MongoDB</h1>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      </div> */}
     </main>
   );
 }
