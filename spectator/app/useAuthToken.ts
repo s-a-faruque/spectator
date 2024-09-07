@@ -46,30 +46,42 @@ export const useAuthToken = () => {
 
   useEffect(() => {
     const loadToken = async () => {
-      let token = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      if(token) {
-        const decodedToken = jwtDecode(token);
-        const willExpiredAt = decodedToken.exp ?? 0;
-        const currentTime = Math.floor(Date.now() / 1000);
-        if(willExpiredAt > currentTime){
-          token = await fetchAccessTokenWithApiKey();
-          setAccessToken(token);
-        }
-      }
-
-      try {
-        if (!token && refreshToken) {
-          token = await refreshAccessToken(refreshToken);
-        } else if (!token) {
-          token = await fetchAccessTokenWithApiKey();
-        }
+      setLoading(true);
+      try{
+        let token = await fetchAccessTokenWithApiKey();
         setAccessToken(token);
       } catch (error: any) {
         setError(error.message);
       } finally {
         setLoading(false);
       }
+      
+
+      // let token = localStorage.getItem('accessToken');
+      // if(token) {
+      //   const decodedToken = jwtDecode(token);
+      //   const willExpiredAt = decodedToken.exp ?? 0;
+      //   const currentTime = Math.floor(Date.now() / 1000);
+      //   if(willExpiredAt > currentTime){
+      //     token = await fetchAccessTokenWithApiKey();
+      //     setAccessToken(token);
+      //   } else {
+
+      //   }
+      // }
+
+      // try {
+      //   if (!token && refreshToken) {
+      //     token = await refreshAccessToken(refreshToken);
+      //   } else if (!token) {
+      //     token = await fetchAccessTokenWithApiKey();
+      //   }
+      //   setAccessToken(token);
+      // } catch (error: any) {
+      //   setError(error.message);
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     loadToken();
