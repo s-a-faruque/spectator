@@ -102,7 +102,7 @@ export default function CardsPage() {
       </div>
       {data.documents.map((match: any, index: any) => (
         <div className={styles.card} key={match._id}>
-          <Link href={`/match/${match._id}`}>
+          <Link href={`/match/${match.matchId}`}>
             <span className={styles.matchNo}>{index + 1}</span>
             <span className={styles.uppercase}>{match.FirstInnings.team.fullname}</span>
             <span className={styles.versus}>VS</span>
