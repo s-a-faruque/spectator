@@ -50,11 +50,11 @@ export const useAuthToken = () => {
       const refreshToken = localStorage.getItem('refreshToken');
       if(token) {
         const decodedToken = jwtDecode(token);
-        const expiry = decodedToken.exp ?? 0;
+        const willExpiredAt = decodedToken.exp ?? 0;
         const currentTime = Math.floor(Date.now() / 1000);
-        const expired = (expiry > currentTime) ? true : false;
-        if(expired){
+        if(willExpiredAt > currentTime){
           token = await fetchAccessTokenWithApiKey();
+          setAccessToken(token);
         }
       }
 
