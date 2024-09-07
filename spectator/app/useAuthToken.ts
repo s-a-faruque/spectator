@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const fetchAccessTokenWithApiKey = async () => {
   const response = await fetch('https://realm.mongodb.com/api/client/v2.0/app/data-gdwsjkb/auth/providers/api-key/login', {
@@ -18,13 +19,14 @@ const fetchAccessTokenWithApiKey = async () => {
 };
 
 const refreshAccessToken = async (refreshToken: string) => {
-  const response = await fetch('https://realm.mongodb.com/api/client/v2.0/auth/session', {
+  const response = await fetch('https://services.cloud.mongodb.com/api/client/v2.0/auth/session', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       refresh_token: refreshToken,
+      grant_type: 'refresh_token',
     }),
   });
 
@@ -46,6 +48,15 @@ export const useAuthToken = () => {
     const loadToken = async () => {
       let token = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
+      if(token) {
+        const decodedToken = jwtDecode(token);
+        const expiry = decodedToken.exp ?? 0;
+        const currentTime = Math.floor(Date.now() / 1000);
+        const expired = (expiry > currentTime) ? true : false;
+        if(expired){
+          token = await fetchAccessTokenWithApiKey();
+        }
+      }
 
       try {
         if (!token && refreshToken) {
