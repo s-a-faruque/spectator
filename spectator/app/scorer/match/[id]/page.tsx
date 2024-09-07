@@ -586,9 +586,9 @@ export default function Home({ params }: { params: Params }) {
   }
 
   const handleFirstInningsTeamNameChange = (e: any) => {
-    if(e.target.value != data.document.FirstInnings.team.fullname){
+    if(e.target.value != data?.document.FirstInnings.team.fullname){
       setFirstInningsTeamName(e.target.value || '');
-      setSecondInningsTeamName(data.document.FirstInnings.team.fullname);
+      setSecondInningsTeamName(data ? data.document.FirstInnings.team.fullname : '');
     }
   }
   
