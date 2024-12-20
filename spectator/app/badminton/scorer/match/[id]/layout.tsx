@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
 
-const nunito = Nunito({
+const openSans = Open_Sans({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['400', '700'],
 });
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito.className}`}>{children}</body>
+      <body className={openSans.className}>{children}</body>
     </html>
   );
 }
