@@ -132,7 +132,6 @@
 
 .footer {
   width: 100%;
-  padding: 16px;
   text-align: center;
   position: sticky;
   bottom: 0;
@@ -141,7 +140,7 @@
 .congratulations {
   font-size: 24px;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4C7BA9;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -153,10 +152,10 @@
   color: rgb(66, 61, 61);
   border: none;
   padding: 16px;
-  margin: 8px 0;
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
+  font-size: 1rem;
 }
 .finishMatchButton {
   background-color: #073460;
