@@ -85,6 +85,20 @@
   width: 100%;
 }
 
+.flexHeight {
+  display: inherit;
+  flex: 1;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .homeControlButton {
   background-color: #4C7BA9;
   color: #BBDBDA;
@@ -93,7 +107,6 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
-  min-height: 270px;
   font-size: 64px;
 }
 .awayControlButton {
@@ -104,7 +117,6 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
-  min-height: 270px;
   font-size: 64px;
 }
 .undoControlButton {

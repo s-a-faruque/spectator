@@ -146,11 +146,11 @@ export default function Match() {
             
           </div>
         ) : (
-          <div className={styles.fullWidth}>
-            <div className={styles.stack}>
+          <div className={`${styles.controls} ${styles.fullWidth}`}>
+            <div className={`${styles.stack} ${styles.fullWidth} ${styles.flexHeight}`}>
               <button className={`${styles.homeControlButton} ${nunito.className}`} onClick={incrementHomePlayerScore}>{homePlayerScore}</button>
             </div>
-            <div className={styles.stack}>
+            <div className={`${styles.stack} ${styles.fullWidth}`}>
               <button className={`${styles.undoControlButton} ${nunito.className}`} onClick={undoScore}>
                 <Image
                   src="/refresh.png"
@@ -160,7 +160,7 @@ export default function Match() {
                 />
               </button>
             </div>
-            <div className={styles.stack}>
+            <div className={`${styles.stack} ${styles.fullWidth} ${styles.flexHeight}`}>
               <button className={`${styles.awayControlButton} ${nunito.className}`} onClick={incrementAwayPlayerScore}>{awayPlayerScore}</button>
             </div>
           </div>
