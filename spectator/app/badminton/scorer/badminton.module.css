@@ -57,6 +57,7 @@
 /* todo: move this part to match css */
 
 .scoreboard {
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -92,7 +93,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
-  min-height: 225px;
+  min-height: 270px;
   font-size: 64px;
 }
 .awayControlButton {
@@ -103,7 +104,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
-  min-height: 225px;
+  min-height: 270px;
   font-size: 64px;
 }
 .undoControlButton {
@@ -114,7 +115,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
-  min-height: 80px;
+  min-height: 60px;
 }
 
 .footer {
@@ -128,8 +129,11 @@
 .congratulations {
   font-size: 24px;
   font-weight: bold;
-  color: #4CAF50; /* Green */
-  height: 80%;
+  color: #4CAF50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
 }
 
 .clearScoreButton {
@@ -151,4 +155,5 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 100%;
+  display: none;
 }
