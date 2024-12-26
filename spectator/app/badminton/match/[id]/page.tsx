@@ -4,39 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import { Nunito } from "next/font/google";
 
-import * as Ably from 'ably';
+import Ably from 'ably';
 import { AblyProvider, ChannelProvider, useChannel, useConnectionStateListener } from 'ably/react';
 
 // Connect to Ably using the AblyProvider component and your API key
 const client = new Ably.Realtime({ key: 'S3Ti0w.1ZoiQQ:JLsNMYxOaR_hLUFLKy1UpD1Gvgrbe0S4H_qKwEPmG98' });
 const ABLY_API_KEY = 'S3Ti0w.1ZoiQQ:JLsNMYxOaR_hLUFLKy1UpD1Gvgrbe0S4H_qKwEPmG98';
-
-const AblyPubSub = () => {
-  const [messages, setMessages] = useState<Ably.Types.Message[]>([]);
-
-  useConnectionStateListener('connected', () => {
-    console.log('Connected to Ably!');
-  });
-
-  // Create a channel called 'get-started' and subscribe to all messages with the name 'first' using the useChannel hook
-  const { channel } = useChannel('get-started', 'first', (message) => {
-    setMessages(previousMessages => [...previousMessages, message]);
-  });
-
-  return (
-    // Publish a message with the name 'first' and the contents 'Here is my first message!' when the 'Publish' button is clicked
-    <div>
-      <button onClick={() => { channel.publish('first', 'Here is my first message!') }}> 
-        Publish
-      </button>
-      {
-        messages.map(message => {
-          return <p key={message.id}>{message.data}</p>
-        })
-      }
-    </div>
-  );
-}
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -96,7 +69,7 @@ export default function Match({ params }: { params: Params }) {
   const [ably, setAbly] = useState<Ably.Realtime | null>(null);
   const [channel, setChannel] = useState<Ably.RealtimeChannel | null>(null);
   
-  const [messages, setMessages] = useState<Types.Message[]>([]);
+  const [messages, setMessages] = useState<Ably.InboundMessage[]>([]);
 
   useEffect(() => {
       // Initialize the Ably Realtime instance
