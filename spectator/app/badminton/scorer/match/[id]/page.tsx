@@ -2,7 +2,7 @@
 import styles from "../../badminton.module.css";
 import React, { useState, useEffect } from 'react';
 import Image from "next/image";
-import Ably, { Types } from 'ably';
+import Ably from 'ably';
 
 import { Nunito } from "next/font/google";
 const nunito = Nunito({
@@ -72,7 +72,7 @@ export default function Match({ params }: { params: Params }) {
   const [ably, setAbly] = useState<Ably.Realtime | null>(null);
   const [channel, setChannel] = useState<Ably.RealtimeChannel | null>(null);
   
-  const [messages, setMessages] = useState<Types.Message[]>([]);
+  const [messages, setMessages] = useState<Ably.InboundMessage[]>([]);
 
 
 
