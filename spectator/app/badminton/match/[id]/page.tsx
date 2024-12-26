@@ -87,6 +87,8 @@ export default function Match({ params }: { params: Params }) {
         setMessages((prevMessages) => [...prevMessages, message]);
         setHomePlayerScore(message.data.homePlayerScore);
         setAwayPlayerScore(message.data.awayPlayerScore);
+        setHomePlayerName(message.data.homePlayerName);
+        setAwayPlayerName(message.data.awayPlayerName);
       });
     }, []);
 

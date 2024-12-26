@@ -168,3 +168,19 @@
   width: 100%;
   display: none;
 }
+
+.copyLinkButton {
+  background-color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 16px;
+}
+
+.shareButton {
+  background-color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0;
+}

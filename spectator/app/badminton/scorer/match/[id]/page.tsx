@@ -130,7 +130,7 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(homePlayerScore + 1);
     utterNumber(awayPlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore + 1, awayPlayerScore: awayPlayerScore});
+    publishScore({homePlayerScore: homePlayerScore + 1, awayPlayerScore: awayPlayerScore, homePlayerName, awayPlayerName});
 
     if(!canIncrement(homePlayerScore + 1, awayPlayerScore)){
       setMatchFinished(true);
@@ -148,7 +148,7 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(awayPlayerScore + 1);
     utterNumber(homePlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore, awayPlayerScore: awayPlayerScore + 1});
+    publishScore({homePlayerScore: homePlayerScore, awayPlayerScore: awayPlayerScore + 1, homePlayerName, awayPlayerName});
 
     if(!canIncrement(homePlayerScore, awayPlayerScore + 1)){
       setMatchFinished(true);
@@ -161,7 +161,7 @@ export default function Match({ params }: { params: Params }) {
     setScoreHistory([]);
     setMatchFinished(false);
 
-    publishScore({homePlayerScore: 0, awayPlayerScore: 0});
+    publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName});
   }
 
   const undoScore = () => {
@@ -171,14 +171,14 @@ export default function Match({ params }: { params: Params }) {
         setAwayPlayerScore(0);
         setScoreHistory([]);
 
-        publishScore({homePlayerScore: 0, awayPlayerScore: 0});
+        publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName});
       } else {
         setScoreHistory(scoreHistory.slice(0, -1));
         const lastScore = scoreHistory[scoreHistory.length - 2];
         setHomePlayerScore(lastScore.home);
         setAwayPlayerScore(lastScore.away);
 
-        publishScore({homePlayerScore: lastScore.home, awayPlayerScore: lastScore.away});
+        publishScore({homePlayerScore: lastScore.home, awayPlayerScore: lastScore.away, homePlayerName, awayPlayerName});
       }
       
     } 
@@ -204,6 +204,8 @@ export default function Match({ params }: { params: Params }) {
   interface Score {
     homePlayerScore: number;
     awayPlayerScore: number;
+    homePlayerName: string;
+    awayPlayerName: string;
   }
 
   const publishScore = (score: Score) => {
@@ -211,41 +213,72 @@ export default function Match({ params }: { params: Params }) {
     channel?.publish('score', score);
   }
 
+  const handleHomePlayerNameChange = (newName: string) => {
+    setHomePlayerName(newName);
+    publishScore({homePlayerScore, awayPlayerScore, homePlayerName: newName, awayPlayerName});
+  }
+
+  const handleAwayPlayerNameChange = (newName: string) => {
+    setAwayPlayerName(newName);
+    publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName});
+  }
+
   return (
     // <AblyProvider client={ably}>
       <main className={styles.main}>
         <header className={styles.header}>
-          <h1>Match#  {id}</h1>
-          
-            {/* <div className={styles.stack}>
-              <button className={`${styles.undoControlButton} ${nunito.className}`} onClick={handlePublish}>
-                <Image
-                  src="/upload.png"
-                  alt="Refresh Icon"
-                  width={20}
-                  height={20}
-                />
-              </button>
-            </div>
-            <div>
-              { 
-                messages.map(message => { 
-                  return <p key={message.id}>{message.data.homePlayerScore} - {message.data.awayPlayerScore}</p> 
-                })
-              }
-             
-            </div> */}
+          <h1>Match#  {id}
+          <button
+              onClick={() => {
+                const url = window.location.href.replace('/scorer', '');
+                navigator.clipboard.writeText(url);
+                alert("Link copied to clipboard!");
+              }}
+              className={styles.copyLinkButton}
+            >
+              <Image
+                src="/copy.png"
+                alt="Copy Icon"
+                width={16}
+                height={16}
+              />
+            </button>
+            <button
+              onClick={() => {
+                const url = window.location.href.replace('/scorer', '');
+                if (navigator.share) {
+                  navigator.share({
+                    title: 'Match Link',
+                    url: url,
+                  }).then(() => {
+                    console.log('Thanks for sharing!');
+                  }).catch(console.error);
+                } else {
+                  navigator.clipboard.writeText(url);
+                  alert("Link copied to clipboard!");
+                }
+              }}
+              className={styles.shareButton}
+            >
+              <Image
+                src="/share.png"
+                alt="Share Icon"
+                width={16}
+                height={16}
+              />
+            </button>
+          </h1>
             
         </header>
         <div className={styles.primaryContent}>
           <div className={styles.scoreboard}>
             <div className={styles.player}>
               <div className={styles.playerName}>
-                <EditableLabel value={homePlayerName} onChange={setHomePlayerName} /></div>
+                <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>
             <div className={styles.player}>
-              <div className={styles.playerName}><EditableLabel value={awayPlayerName} onChange={setAwayPlayerName} /></div>
+              <div className={styles.playerName}><EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
               <div className={styles.playerScore}>{awayPlayerScore}</div>
             </div>
           </div>
