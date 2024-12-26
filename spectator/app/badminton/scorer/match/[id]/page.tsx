@@ -110,10 +110,12 @@ export default function Match({ params }: { params: Params }) {
   const canIncrement = (homeScore: number, awayScore: number) => {
     if(homeScore >= 21 && homeScore - awayScore >= 2) {
       setWinner(homePlayerName);
+      publishMatchFinished(homePlayerName);
       return false;
     }
     if(awayScore >= 21 && awayScore - homeScore >= 2) {
       setWinner(awayPlayerName);
+      publishMatchFinished(awayPlayerName);
       return false;
     }
     return true;
@@ -196,11 +198,6 @@ export default function Match({ params }: { params: Params }) {
     }
   }
 
-  const handlePublish = () => {
-    const channel = ably?.channels.get('match-' + id);
-    channel?.publish('score', {homePlayerScore, awayPlayerScore});
-  }
-
   interface Score {
     homePlayerScore: number;
     awayPlayerScore: number;
@@ -211,6 +208,11 @@ export default function Match({ params }: { params: Params }) {
   const publishScore = (score: Score) => {
     const channel = ably?.channels.get('match-' + id);
     channel?.publish('score', score);
+  }
+
+  const publishMatchFinished = (winner: string) => {
+    const channel = ably?.channels.get('match-' + id);
+    channel?.publish('matchFinished', {winner: winner});
   }
 
   const handleHomePlayerNameChange = (newName: string) => {

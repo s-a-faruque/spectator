@@ -85,10 +85,16 @@ export default function Match({ params }: { params: Params }) {
         console.log("Received message:", message);
         console.log("Received data:", message.data);
         setMessages((prevMessages) => [...prevMessages, message]);
-        setHomePlayerScore(message.data.homePlayerScore);
-        setAwayPlayerScore(message.data.awayPlayerScore);
-        setHomePlayerName(message.data.homePlayerName);
-        setAwayPlayerName(message.data.awayPlayerName);
+        if (message.name === 'score') {
+          setHomePlayerScore(message.data.homePlayerScore);
+          setAwayPlayerScore(message.data.awayPlayerScore);
+          setHomePlayerName(message.data.homePlayerName);
+          setAwayPlayerName(message.data.awayPlayerName);
+        } else if (message.name === 'matchFinished') {
+          setMatchFinished(true);
+          setWinner(message.data.winner);
+        }
+        
       });
     }, []);
 
