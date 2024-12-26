@@ -47,7 +47,7 @@ const EditableLabel: React.FC<EditableLabelProps> = ({ value, onChange }) => {
           autoFocus
         />
       ) : (
-        <span onClick={handleLabelClick}>{value}</span>
+        <span>{value}</span>
       )}
     </div>
   );
