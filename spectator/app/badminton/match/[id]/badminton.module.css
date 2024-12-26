@@ -99,6 +99,12 @@
   height: 100%;
 }
 
+.controlButtonPlayerName{
+  font-size: 16px;
+  margin: 16px;
+  vertical-align: middle;
+}
+
 .homeControlButton {
   background-color: #4C7BA9;
   color: #BBDBDA;

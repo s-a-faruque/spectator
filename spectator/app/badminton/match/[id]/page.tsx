@@ -221,13 +221,19 @@ export default function Match({ params }: { params: Params }) {
         ) : (
           <div className={`${styles.controls} ${styles.fullWidth}`}>
             <div className={`${styles.stack} ${styles.fullWidth} ${styles.flexHeight} ${styles.homeControlButton}`}>
+              <span className={styles.controlButtonPlayerName}>
+                {homePlayerName.length > 12 ? homePlayerName.substring(0, 12) + '...' : homePlayerName}
+              </span>
               {homePlayerScore}
             </div>
             <div className={`${styles.stack} ${styles.fullWidth} ${styles.undoControlButton}`}> 
-              vs
+              :
             </div>
             <div className={`${styles.stack} ${styles.fullWidth} ${styles.flexHeight} ${styles.awayControlButton}`}>
-              {awayPlayerScore}
+              {awayPlayerScore} 
+              <span className={styles.controlButtonPlayerName}>
+                {awayPlayerName.length > 12 ? awayPlayerName.substring(0, 12) + '...' : awayPlayerName}
+              </span>
             </div>
           </div>
         )}
