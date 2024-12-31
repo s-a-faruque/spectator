@@ -88,7 +88,7 @@ export default function CardsPage() {
   return (
     <main className={styles.main}>
       <div className={styles.description}>
-        <p>
+        {/* <p>
           <strong>HALIFAX</strong> <span> AMATEUR CRICKET TOURNAMENT 24</span>
         </p>
         <button className={styles.refresh} onClick={handleRefresh}>
@@ -98,9 +98,26 @@ export default function CardsPage() {
             width={20}
             height={20}
           />
+        </button> */}
+        {/* <button className={styles.refresh} onClick={handleRefresh}>
+          <Image
+            src="/refresh.png"
+            alt="Refresh Icon"
+            width={20}
+            height={20}
+          />
+        </button> */}
+        <button
+          className={styles.refresh}
+          onClick={() => {
+            const uniqueId = Math.floor(100000 + Math.random() * 900000).toString();
+            window.location.href = `/badminton/scorer/match/${uniqueId}`;
+          }}
+        >
+          + Create a new match
         </button>
       </div>
-      {data.documents.map((match: any, index: any) => (
+      {/* {data.documents.map((match: any, index: any) => (
         <div className={styles.card} key={match._id}>
           <Link href={`/match/${match.matchId}`}>
             <span className={styles.matchNo}>{index + 1}</span>
@@ -109,7 +126,8 @@ export default function CardsPage() {
             <span className={styles.uppercase}>{match.SecondInnings.team.fullname}</span>
           </Link>
         </div>
-      ))}
+      ))} */}
+      
     </main>
   );
 }
