@@ -87,6 +87,7 @@ export default function CardsPage() {
                 <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Matches
               </button>
             </div>
+          )}
             
           {matches.map((match, index) => (
             <div key={index} className={styles.matchItem}>
