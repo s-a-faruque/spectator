@@ -64,7 +64,7 @@ export default function CardsPage() {
                 height={16}
               />
           </Link>
-          Home page of a scorer
+          Scorer Home
         </h1>
         
       </header>
@@ -79,6 +79,9 @@ export default function CardsPage() {
           +
         </button>
         <div className={styles.matchesList}>
+          {matches.length === 0 ? (
+            <p>You have not started any matches yet</p>
+          ) : (
             <div style={{ float: "right", justifyContent: "space-between" }}>
               <button className={styles.clearMatchesButton} style={{ float: "right" }} onClick={clearMatches}>
                 <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Matches
