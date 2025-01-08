@@ -9,10 +9,24 @@ export default function CardsPage() {
   const router = useRouter();
   const [matches, setMatches] = useState<any[]>([]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth"); // Clear authentication flag
-    router.push("/login"); // Redirect to login
+  const clearMatches = () => {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("match-")) {
+        const item = localStorage.getItem(key);
+        if (item) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+    setMatches([]);
   };
+  interface Match {
+    homePlayerName: string;
+    homePlayerScore: number;
+    awayPlayerName: string;
+    awayPlayerScore: number;
+  }
 
   useEffect(() => {
     //const isAuthenticated = localStorage.getItem("auth");
@@ -53,7 +67,7 @@ export default function CardsPage() {
         </button>
         <div className={styles.matchesList}>
             <div style={{ float: "right", justifyContent: "space-between" }}>
-              <button className={styles.clearMatchesButton} style={{ float: "right" }}>
+              <button className={styles.clearMatchesButton} style={{ float: "right" }} onClick={clearMatches}>
                 <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Matches
               </button>
             </div>
@@ -61,9 +75,9 @@ export default function CardsPage() {
           {matches.map((match, index) => (
             <div key={index} className={styles.matchItem}>
               <div>{match.homePlayerName} </div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
-              <button className={styles.clearMatchesButton}>
+              {/* <button className={styles.clearMatchesButton} onClick={(index) => {clearMatches()}} style={{ float: "right" }}>
                 <Image src="/bin.png" alt="Logout" width={16} height={16} />
-              </button>
+              </button> */}
             </div>
           ))}
         </div>
