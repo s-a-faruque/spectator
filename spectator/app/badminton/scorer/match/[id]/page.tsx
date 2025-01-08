@@ -83,6 +83,14 @@ export default function Match({ params }: { params: Params }) {
     if (id) {
       // Use the id for any necessary logic
       console.log("Match ID:", id);
+      const matchScore = localStorage.getItem('match-' + id);
+      if (matchScore) {
+        const score = JSON.parse(matchScore);
+        setHomePlayerScore(score.homePlayerScore);
+        setAwayPlayerScore(score.awayPlayerScore);
+        setHomePlayerName(score.homePlayerName);
+        setAwayPlayerName(score.awayPlayerName);
+      }
     }
   }, [id]);
   

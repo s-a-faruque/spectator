@@ -1,6 +1,7 @@
 "use client";
 import styles from "./badminton.module.css";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -41,7 +42,9 @@ export default function CardsPage() {
         if (key && key.startsWith("match-")) {
           const item = localStorage.getItem(key);
           if (item) {
-            loadedMatches.push(JSON.parse(item));
+            const match = JSON.parse(item);
+            match.id = key.replace("match-", ""); // Parse ID from key
+            loadedMatches.push(match);
           }
         }
       }
@@ -74,7 +77,9 @@ export default function CardsPage() {
             
           {matches.map((match, index) => (
             <div key={index} className={styles.matchItem}>
-              <div>{match.homePlayerName} </div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
+                
+                  <div>{match.homePlayerName}</div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
+                  <div><Link href="/badminton/scorer/match/[id]" as={`/badminton/scorer/match/${match.id}`}><Image src="/arrow-right.png" alt="Logout" width={16} height={16} /></Link></div>
               {/* <button className={styles.clearMatchesButton} onClick={(index) => {clearMatches()}} style={{ float: "right" }}>
                 <Image src="/bin.png" alt="Logout" width={16} height={16} />
               </button> */}
