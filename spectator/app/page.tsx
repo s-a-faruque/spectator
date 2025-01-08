@@ -88,35 +88,24 @@ export default function CardsPage() {
   return (
     <main className={styles.main}>
       <div className={styles.description}>
-        {/* <p>
-          <strong>HALIFAX</strong> <span> AMATEUR CRICKET TOURNAMENT 24</span>
-        </p>
-        <button className={styles.refresh} onClick={handleRefresh}>
-          <Image
-            src="/refresh.png"
-            alt="Refresh Icon"
-            width={20}
-            height={20}
-          />
-        </button> */}
-        {/* <button className={styles.refresh} onClick={handleRefresh}>
-          <Image
-            src="/refresh.png"
-            alt="Refresh Icon"
-            width={20}
-            height={20}
-          />
-        </button> */}
-        <button
-          className={styles.refresh}
-          onClick={() => {
-            const uniqueId = Math.floor(100000 + Math.random() * 900000).toString();
-            window.location.href = `/badminton/scorer/match/${uniqueId}`;
-          }}
-        >
-          + Create a new match
-        </button>
+        <p><strong> What's The Score! </strong></p>
+        <p><span> Keep Scores. Stay Updated. </span></p>
       </div>
+      <section className="hero">
+        <div className={styles.card}>
+          <a href="/badminton/scorer">Start Scoring Now 
+            <Image src="/flag.png" alt="flag" width={16} height={16} />
+          </a>
+        </div>
+      </section>
+
+      <section className={styles.features}>
+        <ul>
+          <li><strong>Live Updates:</strong> Scores update in real time.</li>
+          <li><strong>Mobile Friendly</strong>: Perfect for any device.</li>
+          <li><strong>No Sign-Up Needed</strong>: Start immediately.</li>
+        </ul>
+      </section>
       {/* {data.documents.map((match: any, index: any) => (
         <div className={styles.card} key={match._id}>
           <Link href={`/match/${match.matchId}`}>
@@ -127,7 +116,9 @@ export default function CardsPage() {
           </Link>
         </div>
       ))} */}
-      
+      <footer>
+        -
+      </footer>
     </main>
   );
 }

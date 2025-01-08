@@ -55,7 +55,17 @@ export default function CardsPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <h1>Home page of a scorer</h1>
+        <h1>
+          <Link className={styles.home} href="/">
+              <Image
+                src="/homepage.png"
+                alt="Home Icon"
+                width={16}
+                height={16}
+              />
+          </Link>
+          Home page of a scorer
+        </h1>
         
       </header>
       <div className={styles.primaryContent}>
