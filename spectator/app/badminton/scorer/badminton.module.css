@@ -18,6 +18,16 @@
   z-index: 1000; /* Ensure it stays above other content */
 }
 
+.logOut {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: #4C7BA9;
+  cursor: pointer;
+  background:none;
+  border: none;
+}
+
 .primaryContent {
   display: flex;
   flex-direction: column;

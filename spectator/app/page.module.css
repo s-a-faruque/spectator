@@ -12,6 +12,45 @@
   width: 100%;
 }
 
+.loginForm {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+  padding: 1rem
+}
+
+.loginBtn {
+  width: 100%;
+  background: #6a11cb;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.formGroup {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.formGroup input{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 .description p {
   align-items: center;
   padding: 2rem 1rem 1.4rem;

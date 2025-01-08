@@ -3,6 +3,7 @@ import styles from "../../badminton.module.css";
 import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import Ably from 'ably';
+import { useRouter } from "next/navigation";
 
 import { Nunito } from "next/font/google";
 const nunito = Nunito({
@@ -61,6 +62,21 @@ export default function Match({ params }: { params: Params }) {
   const [winner, setWinner] = React.useState('');
   const [homePlayerName, setHomePlayerName] = useState('Player 1');
   const [awayPlayerName, setAwayPlayerName] = useState('Player 2');
+
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth"); // Clear authentication flag
+    router.push("/login"); // Redirect to login
+  };
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("auth");
+
+    if (!isAuthenticated) {
+      router.push("/login"); // Redirect to login if not authenticated
+    }
+  }, [router]);
 
   useEffect(() => {
     if (id) {
@@ -270,7 +286,12 @@ export default function Match({ params }: { params: Params }) {
               />
             </button>
           </h1>
-            
+          <button className={styles.logOut} onClick={handleLogout}><Image
+                src="/logout.png"
+                alt="Logout Icon"
+                width={16}
+                height={16}
+              /></button>
         </header>
         <div className={styles.primaryContent}>
           <div className={styles.scoreboard}>
