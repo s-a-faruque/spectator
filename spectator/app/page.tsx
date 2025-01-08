@@ -88,7 +88,7 @@ export default function CardsPage() {
   return (
     <main className={styles.main}>
       <div className={styles.description}>
-        <p><strong> What's The Score! </strong></p>
+        <p><strong> What&apos;s The Score! </strong></p>
         <p><span> Keep Scores. Stay Updated. </span></p>
       </div>
       <section className="hero">
