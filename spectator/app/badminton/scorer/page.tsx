@@ -15,11 +15,11 @@ export default function CardsPage() {
   };
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("auth");
+    //const isAuthenticated = localStorage.getItem("auth");
 
-    if (!isAuthenticated) {
-      router.push("/login"); // Redirect to login if not authenticated
-    } else {
+    // if (!isAuthenticated) {
+    //   router.push("/login"); // Redirect to login if not authenticated
+    // } else {
       // Load matches from localStorage
       const loadedMatches = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -32,23 +32,14 @@ export default function CardsPage() {
         }
       }
       setMatches(loadedMatches);
-    }
+    //}
   }, [router]);
 
-  
-  
   return (
     <main className={styles.main}>
       <header className={styles.header}>
         <h1>Home page of a scorer</h1>
-        <button className={styles.logOut} onClick={handleLogout}>
-          <Image
-            src="/logout.png"
-            alt="Logout Icon"
-            width={16}
-            height={16}
-          />
-        </button>
+        
       </header>
       <div className={styles.primaryContent}>
         <button

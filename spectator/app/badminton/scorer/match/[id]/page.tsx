@@ -66,18 +66,18 @@ export default function Match({ params }: { params: Params }) {
 
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth"); // Clear authentication flag
-    router.push("/login"); // Redirect to login
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("auth"); // Clear authentication flag
+  //   router.push("/login"); // Redirect to login
+  // };
 
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("auth");
+  // useEffect(() => {
+  //   const isAuthenticated = localStorage.getItem("auth");
 
-    if (!isAuthenticated) {
-      router.push("/login"); // Redirect to login if not authenticated
-    }
-  }, [router]);
+  //   if (!isAuthenticated) {
+  //     router.push("/login"); // Redirect to login if not authenticated
+  //   }
+  // }, [router]);
 
   useEffect(() => {
     if (id) {
@@ -299,12 +299,7 @@ export default function Match({ params }: { params: Params }) {
               />
             </button>
           </h1>
-          <button className={styles.logOut} onClick={handleLogout}><Image
-                src="/logout.png"
-                alt="Logout Icon"
-                width={16}
-                height={16}
-              /></button>
+          
         </header>
         <div className={styles.primaryContent}>
           <div className={styles.scoreboard}>
