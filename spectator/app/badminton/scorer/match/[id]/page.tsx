@@ -6,6 +6,7 @@ import Ably from 'ably';
 import { useRouter } from "next/navigation";
 
 import { Nunito } from "next/font/google";
+import Link from "next/link";
 const nunito = Nunito({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
@@ -224,6 +225,9 @@ export default function Match({ params }: { params: Params }) {
   const publishScore = (score: Score) => {
     const channel = ably?.channels.get('match-' + id);
     channel?.publish('score', score);
+
+    // make it in different method
+    localStorage.setItem('match-' + id, JSON.stringify(score));
   }
 
   const publishMatchFinished = (winner: string) => {
@@ -245,7 +249,16 @@ export default function Match({ params }: { params: Params }) {
     // <AblyProvider client={ably}>
       <main className={styles.main}>
         <header className={styles.header}>
-          <h1>Match#  {id}
+          <h1>
+            <Link className={styles.home} href="/badminton/scorer">
+                <Image
+                  src="/homepage.png"
+                  alt="Home Icon"
+                  width={16}
+                  height={16}
+                />
+            </Link>
+            Match#  {id}
           <button
               onClick={() => {
                 const url = window.location.href.replace('/scorer', '');

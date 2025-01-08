@@ -1,11 +1,13 @@
 "use client";
 import styles from "./badminton.module.css";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+
 
 export default function CardsPage() {
   const router = useRouter();
+  const [matches, setMatches] = useState<any[]>([]);
 
   const handleLogout = () => {
     localStorage.removeItem("auth"); // Clear authentication flag
@@ -17,8 +19,23 @@ export default function CardsPage() {
 
     if (!isAuthenticated) {
       router.push("/login"); // Redirect to login if not authenticated
+    } else {
+      // Load matches from localStorage
+      const loadedMatches = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("match-")) {
+          const item = localStorage.getItem(key);
+          if (item) {
+            loadedMatches.push(JSON.parse(item));
+          }
+        }
+      }
+      setMatches(loadedMatches);
     }
   }, [router]);
+
+  
   
   return (
     <main className={styles.main}>
@@ -43,6 +60,13 @@ export default function CardsPage() {
         >
           +
         </button>
+        <div className={styles.matchesList}>
+          {matches.map((match, index) => (
+            <div key={index} className={styles.matchItem}>
+              <div>{match.homePlayerName} </div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
