@@ -52,9 +52,18 @@ export default function CardsPage() {
           +
         </button>
         <div className={styles.matchesList}>
+            <div style={{ float: "right", justifyContent: "space-between" }}>
+              <button className={styles.clearMatchesButton} style={{ float: "right" }}>
+                <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Matches
+              </button>
+            </div>
+            
           {matches.map((match, index) => (
             <div key={index} className={styles.matchItem}>
               <div>{match.homePlayerName} </div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
+              <button className={styles.clearMatchesButton}>
+                <Image src="/bin.png" alt="Logout" width={16} height={16} />
+              </button>
             </div>
           ))}
         </div>
