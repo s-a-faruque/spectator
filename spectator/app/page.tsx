@@ -17,7 +17,7 @@ export default function CardsPage() {
       </section>
       <section><Link className={styles.cta} href={scorerHomePath}>START NOW</Link></section>
       <footer className={styles.footer}>
-        <strong>WTS / </strong> What's The Score
+        <strong>WTS / </strong> What&apos;s The Score
       </footer>
     </main>
   );
