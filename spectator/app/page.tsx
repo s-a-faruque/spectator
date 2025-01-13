@@ -12,7 +12,7 @@ export default function CardsPage() {
       <section className={styles.hero}>
         <div>
           <span className={styles.firstHeadLine}>Share Live Scores Instantly with Your Audience. </span>
-          <span><strong>No Login, Always Free!</strong></span>
+          <span>No Login, Always Free!</span>
         </div>
       </section>
       <section><Link className={styles.cta} href={scorerHomePath}>START NOW</Link></section>

@@ -14,10 +14,7 @@
   font-weight: 300;
 }
 .cta {
-  width: 100%;
-  border: none;
-  font-size: 1rem;
-  text-align: center;
+  letter-spacing: 2px;
   font-weight: bold;
 }
 .footer {
