@@ -1,13 +1,15 @@
 "use client";
-import { Nunito } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import Clarity from "@microsoft/clarity";
 import { useEffect } from "react";
 
-const nunito = Nunito({
+const openSans = Open_Sans({
+  weight: ['300', '400', '700'],
+  style: ['normal', 'italic'],
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-});
+  display: 'swap',
+})
 
 export default function RootLayout({
   children,
@@ -21,7 +23,7 @@ export default function RootLayout({
   , []);
   return (
     <html lang="en">
-      <body className={`${nunito.className}`}>{children}</body>
+      <body className={`${openSans.className}`}>{children}</body>
     </html>
   );
 }
