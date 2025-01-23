@@ -133,12 +133,12 @@ export default function Match({ params }: { params: Params }) {
   };
 
   const canIncrement = (homeScore: number, awayScore: number) => {
-    if(homeScore >= 21 && homeScore - awayScore >= 2) {
+    if(homeScore >= 25 && homeScore - awayScore >= 2) {
       setWinner(homePlayerName);
       publishMatchFinished(homePlayerName);
       return false;
     }
-    if(awayScore >= 21 && awayScore - homeScore >= 2) {
+    if(awayScore >= 25 && awayScore - homeScore >= 2) {
       setWinner(awayPlayerName);
       publishMatchFinished(awayPlayerName);
       return false;
