@@ -204,6 +204,16 @@
   transition: background-color 0.3s ease;
   margin: 0;
 }
+.winningPoint {
+  padding-left: 16px;
+}
+.winningPointInput {
+  font-weight: bold;
+  color: #4C7BA9;
+  align-items: right;
+  width: 40px;
+  margin: 16px;
+}
 
 .matchesList {
   display: flex;

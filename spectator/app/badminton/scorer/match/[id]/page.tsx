@@ -63,6 +63,7 @@ export default function Match({ params }: { params: Params }) {
   const [winner, setWinner] = React.useState('');
   const [homePlayerName, setHomePlayerName] = useState('Player 1');
   const [awayPlayerName, setAwayPlayerName] = useState('Player 2');
+  const [winningPoint, setWinningPoint] = useState(21);
 
   const router = useRouter();
 
@@ -267,7 +268,7 @@ export default function Match({ params }: { params: Params }) {
                 />
             </Link>
             Match#  {id}
-          <button
+            <button
               onClick={() => {
                 const url = window.location.href.replace('/scorer', '');
                 navigator.clipboard.writeText(url);
@@ -306,6 +307,23 @@ export default function Match({ params }: { params: Params }) {
                 height={16}
               />
             </button>
+            <div className={styles.winningPoint}>
+            Winning Point:
+            <input
+              type="text"
+              className={styles.winningPointInput}
+              value={winningPoint}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                if (!isNaN(value)) {
+                  setWinningPoint(value);
+                } else {
+                  setWinningPoint(0);
+                }
+              }}
+              autoFocus
+            />
+            </div>
           </h1>
           
         </header>
