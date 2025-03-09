@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function CardsPage() {
   const scorerHomePath = "/badminton/scorer";
+  const scorerHomePathVolleyBall = "/volleyball/scorer";
   return (
     <main className={styles.main}>
       <header>
@@ -15,7 +16,8 @@ export default function CardsPage() {
           <span>No Login, Always Free!</span>
         </div>
       </section>
-      <section><Link className={styles.cta} href={scorerHomePath}>START NOW</Link></section>
+      <section><Link className={styles.cta} href={scorerHomePath}>START SCORING BADMINTON</Link></section>
+      <section><Link className={styles.cta} href={scorerHomePathVolleyBall}>START SCORING VOLLEYBALL</Link></section>
       <footer className={styles.footer}>
         <strong>WTS / </strong> What&apos;s The Score
       </footer>
