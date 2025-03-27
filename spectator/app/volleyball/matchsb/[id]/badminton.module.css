@@ -113,7 +113,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 100%;
-    font-size: 64px;
+    font-size: 126px;
     text-align: right;
   }
   .awayControlButton {
@@ -124,7 +124,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 100%;
-    font-size: 64px;
+    font-size: 126px;
     text-align: left;
   }
   .undoControlButton {
