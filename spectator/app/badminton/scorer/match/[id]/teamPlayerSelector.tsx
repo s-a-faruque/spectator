@@ -5,91 +5,91 @@ const teamsData = [
     {
       "name": "Dhaka",
       "players": [
-        { "id": 1, "name": "Alice Johnson" },
-        { "id": 2, "name": "Brian Smith" },
-        { "id": 3, "name": "Cindy Ray" },
-        { "id": 4, "name": "Derek Miles" }
+        { "id": 1, "name": "Labib" },
+        { "id": 2, "name": "Kallol" },
+        { "id": 3, "name": "Rabbi" },
+        { "id": 4, "name": "Biplob" }
       ]
     },
     {
       "name": "Sylhet",
       "players": [
-        { "id": 5, "name": "Ethan Page" },
-        { "id": 6, "name": "Farah Bloom" },
-        { "id": 7, "name": "George Tan" },
-        { "id": 8, "name": "Hana Liu" }
+        { "id": 5, "name": "Jamil" },
+        { "id": 6, "name": "Afsar" },
+        { "id": 7, "name": "Aktar" },
+        { "id": 8, "name": "Wahed" }
       ]
     },
     {
       "name": "Rajshahi",
       "players": [
-        { "id": 9, "name": "Isaac Noor" },
-        { "id": 10, "name": "Jasmine Khan" },
-        { "id": 11, "name": "Kunal Sethi" },
-        { "id": 12, "name": "Laura Singh" }
+        { "id": 9, "name": "Rasel" },
+        { "id": 10, "name": "Ahnaf" },
+        { "id": 11, "name": "Anwer" },
+        { "id": 12, "name": "Masroor" }
       ]
     },
     {
       "name": "Cumilla",
       "players": [
-        { "id": 13, "name": "Mike Dee" },
-        { "id": 14, "name": "Nina Roy" },
-        { "id": 15, "name": "Oscar Grant" },
-        { "id": 16, "name": "Priya Das" }
+        { "id": 13, "name": "Zilani" },
+        { "id": 14, "name": "Bappi" },
+        { "id": 15, "name": "Fahim" },
+        { "id": 16, "name": "Rubayet" }
       ]
     },
     {
       "name": "Cox's Bazar",
       "players": [
-        { "id": 17, "name": "Quinn Fraser" },
-        { "id": 18, "name": "Riya Hassan" },
-        { "id": 19, "name": "Steve Patel" },
-        { "id": 20, "name": "Tina Chow" }
+        { "id": 17, "name": "Faruqi" },
+        { "id": 18, "name": "Rajesh" },
+        { "id": 19, "name": "Hasan" },
+        { "id": 20, "name": "Nayeem" }
       ]
     },
     {
       "name": "Barishal",
       "players": [
-        { "id": 21, "name": "Umair Reza" },
-        { "id": 22, "name": "Vera Gomes" },
-        { "id": 23, "name": "Will Chen" },
-        { "id": 24, "name": "Xena Zhang" }
+        { "id": 21, "name": "Babu" },
+        { "id": 22, "name": "Nuzair" },
+        { "id": 23, "name": "Adnan" },
+        { "id": 24, "name": "Nageeb" }
       ]
     },
     {
       "name": "Chattogram",
       "players": [
-        { "id": 25, "name": "Yusuf Malik" },
-        { "id": 26, "name": "Zara Pritchard" },
-        { "id": 27, "name": "Alan Grey" },
-        { "id": 28, "name": "Becky Liew" }
+        { "id": 25, "name": "Tomal" },
+        { "id": 26, "name": "Rabbani" },
+        { "id": 27, "name": "Sazidy" },
+        { "id": 28, "name": "Sifat" }
       ]
     },
     {
       "name": "Mymensingh",
       "players": [
-        { "id": 29, "name": "Charlie Ray" },
-        { "id": 30, "name": "Dana Wells" },
-        { "id": 31, "name": "Eliot Moore" },
-        { "id": 32, "name": "Faith Young" }
+        { "id": 29, "name": "Farhad" },
+        { "id": 30, "name": "Shakil" },
+        { "id": 31, "name": "Sakib" },
+        { "id": 32, "name": "Kamal" }
       ]
     },
     {
       "name": "Rangpur",
       "players": [
-        { "id": 33, "name": "Gabe O'Neil" },
-        { "id": 34, "name": "Hailey Noor" },
-        { "id": 35, "name": "Ishaan Kapoor" },
-        { "id": 36, "name": "Jada Lee" }
+        { "id": 33, "name": "Khalid" },
+        { "id": 34, "name": "Redwan" },
+        { "id": 35, "name": "Monirul" },
+        { "id": 36, "name": "Shoaib" }
       ]
     },
     {
       "name": "Khulna",
       "players": [
-        { "id": 37, "name": "Kevin Shah" },
-        { "id": 38, "name": "Lily Morgan" },
-        { "id": 39, "name": "Mohsin Ali" },
-        { "id": 40, "name": "Nora Wood" }
+        { "id": 37, "name": "Nohel" },
+        { "id": 38, "name": "Mansif" },
+        { "id": 39, "name": "Sanin" },
+        { "id": 40, "name": "Tauhid" }
       ]
     }
   ];
