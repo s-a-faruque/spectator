@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import Ably from 'ably';
 import { useRouter } from "next/navigation";
+import TeamPlayerSelector from "./teamPlayerSelector";
 
 import { Nunito } from "next/font/google";
 import Link from "next/link";
@@ -254,6 +255,21 @@ export default function Match({ params }: { params: Params }) {
     publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName});
   }
 
+  interface PlayerPair {
+    player1: string;
+    player2: string;
+  }
+
+  const handleHomePlayerPairSelect = (player1: string, player2: string): void => {
+    if (player1 && player2 && player1 !== player2) {
+      setHomePlayerName(`${player1} & ${player2}`);
+    }
+  };
+  const handleAwayPlayerPairSelect = (player1: string, player2: string): void => {
+    if (player1 && player2 && player1 !== player2) {
+      setAwayPlayerName(`${player1} & ${player2}`);
+    }
+  };
   return (
     // <AblyProvider client={ably}>
       <main className={styles.main}>
@@ -331,11 +347,14 @@ export default function Match({ params }: { params: Params }) {
           <div className={styles.scoreboard}>
             <div className={styles.player}>
               <div className={styles.playerName}>
+                <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
                 <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>
             <div className={styles.player}>
-              <div className={styles.playerName}><EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
+              <div className={styles.playerName}>
+                <TeamPlayerSelector onPairSelect={handleAwayPlayerPairSelect}/>
+                <EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
               <div className={styles.playerScore}>{awayPlayerScore}</div>
             </div>
           </div>
