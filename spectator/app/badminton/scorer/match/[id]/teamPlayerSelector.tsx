@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 const teamsData = [
     {
-      "name": "Thunder Strikers",
+      "name": "Dhaka",
       "players": [
         { "id": 1, "name": "Alice Johnson" },
         { "id": 2, "name": "Brian Smith" },
@@ -12,7 +12,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Ocean Blazers",
+      "name": "Sylhet",
       "players": [
         { "id": 5, "name": "Ethan Page" },
         { "id": 6, "name": "Farah Bloom" },
@@ -21,7 +21,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Maple Warriors",
+      "name": "Rajshahi",
       "players": [
         { "id": 9, "name": "Isaac Noor" },
         { "id": 10, "name": "Jasmine Khan" },
@@ -30,7 +30,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Prairie Kings",
+      "name": "Cumilla",
       "players": [
         { "id": 13, "name": "Mike Dee" },
         { "id": 14, "name": "Nina Roy" },
@@ -39,7 +39,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Northern Eagles",
+      "name": "Cox's Bazar",
       "players": [
         { "id": 17, "name": "Quinn Fraser" },
         { "id": 18, "name": "Riya Hassan" },
