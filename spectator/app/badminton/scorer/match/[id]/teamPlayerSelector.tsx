@@ -48,7 +48,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Capital Chargers",
+      "name": "Barishal",
       "players": [
         { "id": 21, "name": "Umair Reza" },
         { "id": 22, "name": "Vera Gomes" },
@@ -57,7 +57,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Bay City Bulls",
+      "name": "Chattogram",
       "players": [
         { "id": 25, "name": "Yusuf Malik" },
         { "id": 26, "name": "Zara Pritchard" },
@@ -66,7 +66,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Arctic Wolves",
+      "name": "Mymensingh",
       "players": [
         { "id": 29, "name": "Charlie Ray" },
         { "id": 30, "name": "Dana Wells" },
@@ -75,7 +75,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Rocky Mountain Riders",
+      "name": "Rangpur",
       "players": [
         { "id": 33, "name": "Gabe O'Neil" },
         { "id": 34, "name": "Hailey Noor" },
@@ -84,7 +84,7 @@ const teamsData = [
       ]
     },
     {
-      "name": "Golden Leafs",
+      "name": "Khulna",
       "players": [
         { "id": 37, "name": "Kevin Shah" },
         { "id": 38, "name": "Lily Morgan" },
