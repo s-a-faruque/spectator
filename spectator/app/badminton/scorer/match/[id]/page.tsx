@@ -323,23 +323,7 @@ export default function Match({ params }: { params: Params }) {
                 height={16}
               />
             </button>
-            <div className={styles.winningPoint}>
-            Winning Point:
-            <input
-              type="text"
-              className={styles.winningPointInput}
-              value={winningPoint}
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                if (!isNaN(value)) {
-                  setWinningPoint(value);
-                } else {
-                  setWinningPoint(0);
-                }
-              }}
-              autoFocus
-            />
-            </div>
+           
           </h1>
           
         </header>
