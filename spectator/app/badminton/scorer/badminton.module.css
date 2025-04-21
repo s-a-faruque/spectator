@@ -230,10 +230,18 @@
 .matchItem {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   padding: 10px;
   background-color: #ffffff;
   border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  text-decoration: none; /* remove underline */
+  color: inherit; /* keep text color natural */
+}
+
+.matchItemLink {
+  width: 100%;
 }
 
 .clearMatchesButton {
