@@ -90,18 +90,13 @@ export default function CardsPage() {
           )}
             
           {matches.map((match, index) => (
-            <Link href={`/badminton/scorer/match/${match.id}`} className={styles.matchItemLink} passHref>
-                <div key={index} className={styles.matchItem} style={{ cursor: 'pointer' }}>
+            <Link key={index} href={`/badminton/scorer/match/${match.id}`} className={styles.matchItemLink} passHref>
+                <div className={styles.matchItem} style={{ cursor: 'pointer' }}>
                   <div>{match.homePlayerName}</div>
                   <div><strong>{match.homePlayerScore}</strong> : <strong>{match.awayPlayerScore}</strong></div>
                   <div>{match.awayPlayerName}</div>
                 </div>
             </Link>
-
-            // <div key={index} className={styles.matchItem}>
-            //   <div>{match.homePlayerName}</div> <div>{match.homePlayerScore} : {match.awayPlayerScore} </div> <div>{match.awayPlayerName}</div>
-            //   <div><Link href="/badminton/scorer/match/[id]" as={`/badminton/scorer/match/${match.id}`}><Image src="/arrow-right.png" alt="Logout" width={16} height={16} /></Link></div>
-            // </div>
           ))}
         </div>
       </div>
