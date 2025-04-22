@@ -95,7 +95,7 @@ const teamsData = [
   ];
 
 interface TeamPlayerSelectorProps {
-  onPairSelect?: (player1: string, player2: string) => void;
+  onPairSelect?: (teamName: string, player1: string, player2: string) => void;
 }
 
 const TeamPlayerSelector: React.FC<TeamPlayerSelectorProps> = ({ onPairSelect }) => {
@@ -106,7 +106,7 @@ const TeamPlayerSelector: React.FC<TeamPlayerSelectorProps> = ({ onPairSelect })
 
   useEffect(() => {
     if (player1 && player2 && player1 !== player2) {
-      onPairSelect?.(player1, player2);
+      onPairSelect?.(selectedTeam?.name || "", player1, player2);
       setShowSelectors(false); // Collapse dropdowns
     }
   }, [player1, player2, onPairSelect]);

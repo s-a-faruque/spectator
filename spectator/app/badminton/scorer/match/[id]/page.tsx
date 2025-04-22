@@ -64,6 +64,8 @@ export default function Match({ params }: { params: Params }) {
   const [winner, setWinner] = React.useState('');
   const [homePlayerName, setHomePlayerName] = useState('Player 1');
   const [awayPlayerName, setAwayPlayerName] = useState('Player 2');
+  const [homeTeamName, setHomeTeamName] = useState('');
+  const [awayTeamName, setAwayTeamName] = useState('');
   const [winningPoint, setWinningPoint] = useState(21);
 
   const router = useRouter();
@@ -92,6 +94,8 @@ export default function Match({ params }: { params: Params }) {
         setAwayPlayerScore(score.awayPlayerScore);
         setHomePlayerName(score.homePlayerName);
         setAwayPlayerName(score.awayPlayerName);
+        setHomeTeamName(score.homeTeamName);
+        setAwayTeamName(score.awayTeamName);
       }
     }
   }, [id]);
@@ -159,7 +163,7 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(homePlayerScore + 1);
     utterNumber(awayPlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore + 1, awayPlayerScore: awayPlayerScore, homePlayerName, awayPlayerName});
+    publishScore({homePlayerScore: homePlayerScore + 1, awayPlayerScore: awayPlayerScore, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
 
     if(!canIncrement(homePlayerScore + 1, awayPlayerScore)){
       setMatchFinished(true);
@@ -177,7 +181,7 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(awayPlayerScore + 1);
     utterNumber(homePlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore, awayPlayerScore: awayPlayerScore + 1, homePlayerName, awayPlayerName});
+    publishScore({homePlayerScore: homePlayerScore, awayPlayerScore: awayPlayerScore + 1, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
 
     if(!canIncrement(homePlayerScore, awayPlayerScore + 1)){
       setMatchFinished(true);
@@ -190,7 +194,7 @@ export default function Match({ params }: { params: Params }) {
     setScoreHistory([]);
     setMatchFinished(false);
 
-    publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName});
+    publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
   }
 
   const undoScore = () => {
@@ -200,14 +204,14 @@ export default function Match({ params }: { params: Params }) {
         setAwayPlayerScore(0);
         setScoreHistory([]);
 
-        publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName});
+        publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
       } else {
         setScoreHistory(scoreHistory.slice(0, -1));
         const lastScore = scoreHistory[scoreHistory.length - 2];
         setHomePlayerScore(lastScore.home);
         setAwayPlayerScore(lastScore.away);
 
-        publishScore({homePlayerScore: lastScore.home, awayPlayerScore: lastScore.away, homePlayerName, awayPlayerName});
+        publishScore({homePlayerScore: lastScore.home, awayPlayerScore: lastScore.away, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
       }
       
     } 
@@ -230,6 +234,8 @@ export default function Match({ params }: { params: Params }) {
     awayPlayerScore: number;
     homePlayerName: string;
     awayPlayerName: string;
+    homeTeamName?: string;
+    awayTeamName?: string;
   }
 
   const publishScore = (score: Score) => {
@@ -247,12 +253,12 @@ export default function Match({ params }: { params: Params }) {
 
   const handleHomePlayerNameChange = (newName: string) => {
     setHomePlayerName(newName);
-    publishScore({homePlayerScore, awayPlayerScore, homePlayerName: newName, awayPlayerName});
+    publishScore({homePlayerScore, awayPlayerScore, homePlayerName: newName, awayPlayerName, homeTeamName, awayTeamName});
   }
 
   const handleAwayPlayerNameChange = (newName: string) => {
     setAwayPlayerName(newName);
-    publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName});
+    publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName, homeTeamName, awayTeamName});
   }
 
   interface PlayerPair {
@@ -260,14 +266,16 @@ export default function Match({ params }: { params: Params }) {
     player2: string;
   }
 
-  const handleHomePlayerPairSelect = (player1: string, player2: string): void => {
+  const handleHomePlayerPairSelect = (teamName: string, player1: string, player2: string): void => {
     if (player1 && player2 && player1 !== player2) {
       setHomePlayerName(`${player1} & ${player2}`);
+      setHomeTeamName(teamName);
     }
   };
-  const handleAwayPlayerPairSelect = (player1: string, player2: string): void => {
+  const handleAwayPlayerPairSelect = (teamName: string, player1: string, player2: string): void => {
     if (player1 && player2 && player1 !== player2) {
       setAwayPlayerName(`${player1} & ${player2}`);
+      setAwayTeamName(teamName);
     }
   };
   return (
@@ -332,12 +340,14 @@ export default function Match({ params }: { params: Params }) {
             <div className={styles.player}>
               <div className={styles.playerName}>
                 <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
+                {homeTeamName && <span className={styles.teamName}>{homeTeamName}</span>}
                 <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>
             <div className={styles.player}>
               <div className={styles.playerName}>
                 <TeamPlayerSelector onPairSelect={handleAwayPlayerPairSelect}/>
+                {awayTeamName && <span className={styles.teamName}>{awayTeamName}</span>}
                 <EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
               <div className={styles.playerScore}>{awayPlayerScore}</div>
             </div>
