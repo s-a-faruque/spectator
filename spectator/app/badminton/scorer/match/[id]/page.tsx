@@ -340,14 +340,14 @@ export default function Match({ params }: { params: Params }) {
             <div className={styles.player}>
               <div className={styles.playerName}>
                 <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
-                {homeTeamName && <span className={styles.teamName}>{homeTeamName}</span>}
+                {homeTeamName && <span className={styles.teamName}><strong>{homeTeamName}</strong></span>}
                 <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>
             <div className={styles.player}>
               <div className={styles.playerName}>
                 <TeamPlayerSelector onPairSelect={handleAwayPlayerPairSelect}/>
-                {awayTeamName && <span className={styles.teamName}>{awayTeamName}</span>}
+                {awayTeamName && <span className={styles.teamName}><strong>{awayTeamName}</strong></span>}
                 <EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
               <div className={styles.playerScore}>{awayPlayerScore}</div>
             </div>
