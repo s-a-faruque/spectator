@@ -5,11 +5,9 @@ import Clarity from "@microsoft/clarity";
 import { useEffect } from "react";
 
 const openSans = Open_Sans({
-  weight: ['300', '400', '700'],
-  style: ['normal', 'italic'],
   subsets: ['latin'],
-  display: 'swap',
-})
+  weight: ['400', '700'],
+});
 
 export default function RootLayout({
   children,
@@ -22,8 +20,8 @@ export default function RootLayout({
   }
   , []);
   return (
-    <html lang="en">
-      <body className={`${openSans.className}`}>{children}</body>
+    <html lang="en" className={openSans.className}>
+      <body>{children}</body>
     </html>
   );
 }
