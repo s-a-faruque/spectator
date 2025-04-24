@@ -13,7 +13,6 @@ const nunito = Nunito({
   weight: ['400', '600', '700'],
 });
 
-// const client = new Ably.Realtime({ key: 'S3Ti0w.1ZoiQQ:JLsNMYxOaR_hLUFLKy1UpD1Gvgrbe0S4H_qKwEPmG98' });
 const ABLY_API_KEY = 'S3Ti0w.1ZoiQQ:JLsNMYxOaR_hLUFLKy1UpD1Gvgrbe0S4H_qKwEPmG98';
 
 interface EditableLabelProps {
@@ -66,22 +65,6 @@ export default function Match({ params }: { params: Params }) {
   const [awayPlayerName, setAwayPlayerName] = useState('Player 2');
   const [homeTeamName, setHomeTeamName] = useState('');
   const [awayTeamName, setAwayTeamName] = useState('');
-  const [winningPoint, setWinningPoint] = useState(21);
-
-  const router = useRouter();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("auth"); // Clear authentication flag
-  //   router.push("/login"); // Redirect to login
-  // };
-
-  // useEffect(() => {
-  //   const isAuthenticated = localStorage.getItem("auth");
-
-  //   if (!isAuthenticated) {
-  //     router.push("/login"); // Redirect to login if not authenticated
-  //   }
-  // }, [router]);
 
   useEffect(() => {
     if (id) {
@@ -104,12 +87,6 @@ export default function Match({ params }: { params: Params }) {
   const [channel, setChannel] = useState<Ably.RealtimeChannel | null>(null);
   
   const [messages, setMessages] = useState<Ably.InboundMessage[]>([]);
-
-
-
-  // const [channel] = useChannel('match', (message) => {
-  //   setMessages(previousMessages => [...previousMessages, message]);
-  // });
   
   useEffect(() => {
     // Initialize the Ably Realtime instance
@@ -127,11 +104,6 @@ export default function Match({ params }: { params: Params }) {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
     
-    // // Cleanup: Unsubscribe when the component unmounts
-    // return () => {
-    //   ablyChannel.unsubscribe();
-    //   ablyInstance.close();
-    // };
   }, []);
 
   const handleFinishMatch = () => {
@@ -261,11 +233,6 @@ export default function Match({ params }: { params: Params }) {
     publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName, homeTeamName, awayTeamName});
   }
 
-  interface PlayerPair {
-    player1: string;
-    player2: string;
-  }
-
   const handleHomePlayerPairSelect = (teamName: string, player1: string, player2: string): void => {
     if (player1 && player2 && player1 !== player2) {
       setHomePlayerName(`${player1} & ${player2}`);
@@ -279,7 +246,6 @@ export default function Match({ params }: { params: Params }) {
     }
   };
   return (
-    // <AblyProvider client={ably}>
       <main className={styles.main}>
         <header className={styles.header}>
           <h1>
@@ -395,7 +361,5 @@ export default function Match({ params }: { params: Params }) {
           </div>        
         </footer>
       </main>
-    // </AblyProvider>
-    
   );
 }

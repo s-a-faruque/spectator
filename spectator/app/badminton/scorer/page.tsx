@@ -22,19 +22,8 @@ export default function CardsPage() {
     }
     setMatches([]);
   };
-  interface Match {
-    homePlayerName: string;
-    homePlayerScore: number;
-    awayPlayerName: string;
-    awayPlayerScore: number;
-  }
 
   useEffect(() => {
-    //const isAuthenticated = localStorage.getItem("auth");
-
-    // if (!isAuthenticated) {
-    //   router.push("/login"); // Redirect to login if not authenticated
-    // } else {
       // Load matches from localStorage
       const loadedMatches = [];
       for (let i = 0; i < localStorage.length; i++) {
