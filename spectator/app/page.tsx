@@ -16,7 +16,6 @@ export default function CardsPage() {
         </div>
       </section>
       <section>
-        <Link className={styles.cta} href={scorerHomePath}>+ NEW MATCH</Link>
         <button
           className={styles.cta}
           onClick={() => {
