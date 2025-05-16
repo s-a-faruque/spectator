@@ -15,7 +15,18 @@ export default function CardsPage() {
           <span>No Login, Always Free!</span>
         </div>
       </section>
-      <section><Link className={styles.cta} href={scorerHomePath}>START SCORING BADMINTON</Link></section>
+      <section>
+        <Link className={styles.cta} href={scorerHomePath}>+ NEW MATCH</Link>
+        <button
+          className={styles.cta}
+          onClick={() => {
+            const uniqueId = Math.floor(100000 + Math.random() * 900000).toString();
+            window.location.href = `/badminton/scorer/match/${uniqueId}`;
+          }}
+        >
+          + NEW MATCH
+        </button>
+      </section>
       <footer className={styles.footer}>
         <strong>WTS / </strong> What&apos;s The Score
       </footer>
