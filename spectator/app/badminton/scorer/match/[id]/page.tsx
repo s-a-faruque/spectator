@@ -251,8 +251,8 @@ export default function Match({ params }: { params: Params }) {
           <h1>
             <Link className={styles.home} href="/badminton/scorer">
                 <Image
-                  src="/homepage.png"
-                  alt="Home Icon"
+                  src="/bar-chart.png"
+                  alt="List Icon"
                   width={16}
                   height={16}
                 />

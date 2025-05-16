@@ -1,10 +1,9 @@
 "use client";
 import styles from "./home.module.css";
 import React from 'react';
-import Link from "next/link";
+
 
 export default function CardsPage() {
-  const scorerHomePath = "/badminton/scorer";
   return (
     <main className={styles.main}>
       <header>
