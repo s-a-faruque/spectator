@@ -1,8 +1,7 @@
-"use client";
+// app/layout.tsx (Server Component)
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-import Clarity from "@microsoft/clarity";
-import { useEffect } from "react";
+import ClientClarity from "./ClientClarity";
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -11,17 +10,58 @@ const openSans = Open_Sans({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  
-  useEffect(() => {
-    Clarity.init("pk1vamr87a");
-  }
-  , []);
+}) {
   return (
     <html lang="en" className={openSans.className}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ClientClarity />
+      </body>
     </html>
   );
 }
+
+export const metadata = {
+  title: "Badminton Scoring System",
+  keywords: [
+    "Badminton",
+    "Scoring System",
+    "Live Score",
+    "Badminton App",
+    "Scoreboard",
+    "Tournament",
+    "Match Tracking",
+    "Sports",
+    "Real-time",
+  ],
+  description:
+    "Track live badminton scores, manage tournaments, and keep up with real-time match updates using the Badminton Scoring System.",
+  openGraph: {
+    title: "Badminton Scoring System",
+    description:
+      "Track live badminton scores, manage tournaments, and keep up with real-time match updates using the Badminton Scoring System.",
+    url: "https://wtscore.com",
+    siteName: "Badminton Scoring System",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        // url: "https://wtscore.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Badminton Scoring System",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Badminton Scoring System",
+    description:
+      "Track live badminton scores, manage tournaments, and keep up with real-time match updates.",
+    // images: ["https://wtscore.com/twitter-image.jpg"],
+    site: "@wtscore",
+    creator: "@wtscore",
+  },
+};
