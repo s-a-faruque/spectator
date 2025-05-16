@@ -61,8 +61,8 @@ export default function Match({ params }: { params: Params }) {
   const [awayPlayerScore, setAwayPlayerScore] = React.useState(0);
   const [scoreHistory, setScoreHistory] = React.useState<{ home: number; away: number }[]>([]);
   const [winner, setWinner] = React.useState('');
-  const [homePlayerName, setHomePlayerName] = useState('Player 1');
-  const [awayPlayerName, setAwayPlayerName] = useState('Player 2');
+  const [homePlayerName, setHomePlayerName] = useState('Home');
+  const [awayPlayerName, setAwayPlayerName] = useState('Away');
   const [homeTeamName, setHomeTeamName] = useState('');
   const [awayTeamName, setAwayTeamName] = useState('');
 
@@ -305,15 +305,15 @@ export default function Match({ params }: { params: Params }) {
           <div className={styles.scoreboard}>
             <div className={styles.player}>
               <div className={styles.playerName}>
-                <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
-                {homeTeamName && <span className={styles.teamName}><strong>{homeTeamName}</strong></span>}
+                {/* <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
+                {homeTeamName && <span className={styles.teamName}><strong>{homeTeamName}</strong></span>} */}
                 <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>
             <div className={styles.player}>
               <div className={styles.playerName}>
-                <TeamPlayerSelector onPairSelect={handleAwayPlayerPairSelect}/>
-                {awayTeamName && <span className={styles.teamName}><strong>{awayTeamName}</strong></span>}
+                {/* <TeamPlayerSelector onPairSelect={handleAwayPlayerPairSelect}/>
+                {awayTeamName && <span className={styles.teamName}><strong>{awayTeamName}</strong></span>} */}
                 <EditableLabel value={awayPlayerName} onChange={handleAwayPlayerNameChange} /></div>
               <div className={styles.playerScore}>{awayPlayerScore}</div>
             </div>
