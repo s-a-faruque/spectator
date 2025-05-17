@@ -65,7 +65,7 @@ export default function CardsPage() {
             window.location.href = `/badminton/scorer/match/${uniqueId}`;
           }}
         >
-          +
+          + 
         </button>
         <div className={styles.matchesList}>
           {matches.length === 0 ? (
@@ -73,7 +73,7 @@ export default function CardsPage() {
           ) : (
             <div style={{ float: "right", justifyContent: "space-between" }}>
               <button className={styles.clearMatchesButton} style={{ float: "right" }} onClick={clearMatches}>
-                <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Matches
+                <Image src="/bin.png" alt="Logout" width={16} height={16} /> Clear All Match History
               </button>
             </div>
           )}

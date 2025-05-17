@@ -30,9 +30,9 @@
 .startButton {
   width: 60px; /* Set width */
   height: 60px; /* Set height */
-  font-size: 18px;
+  font-size: 36px;
   color: #060606; 
-  background-color: #ffffff; /* Deep orange background */
+  background-color: #033551; 
   border: none;
   border-radius: 50%; /* Make it circular */
   cursor: pointer;
@@ -40,7 +40,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: larger;
 }
 
 .header h1 {
