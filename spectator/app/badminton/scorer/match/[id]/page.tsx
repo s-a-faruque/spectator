@@ -63,8 +63,8 @@ export default function Match({ params }: { params: Params }) {
   const [winner, setWinner] = React.useState('');
   const [homePlayerName, setHomePlayerName] = useState('Home');
   const [awayPlayerName, setAwayPlayerName] = useState('Away');
-  const [homeTeamName, setHomeTeamName] = useState('');
-  const [awayTeamName, setAwayTeamName] = useState('');
+  const [matchType, setMatchType] = useState('best-of-1');
+  const [matchScore, setMatchScore] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -73,12 +73,11 @@ export default function Match({ params }: { params: Params }) {
       const matchScore = localStorage.getItem('match-' + id);
       if (matchScore) {
         const score = JSON.parse(matchScore);
-        setHomePlayerScore(score.homePlayerScore);
-        setAwayPlayerScore(score.awayPlayerScore);
+        setMatchScore(score);
+        setHomePlayerScore(score.matchSets[0].homePlayerScore);
+        setAwayPlayerScore(score.matchSets[0].awayPlayerScore);
         setHomePlayerName(score.homePlayerName);
         setAwayPlayerName(score.awayPlayerName);
-        setHomeTeamName(score.homeTeamName);
-        setAwayTeamName(score.awayTeamName);
       }
     }
   }, [id]);
@@ -135,7 +134,21 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(homePlayerScore + 1);
     utterNumber(awayPlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore + 1, awayPlayerScore: awayPlayerScore, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
+    publishScore({
+      matchId: id,
+      homePlayerName,
+      awayPlayerName,
+      matchStatus: 'in-progress',
+      matchType: matchType as MatchType,
+      matchSets: [
+        {
+          setNo: 1,
+          homePlayerScore: homePlayerScore + 1,
+          awayPlayerScore: awayPlayerScore,
+          status: 'in-progress'
+        }
+      ]
+    });
 
     if(!canIncrement(homePlayerScore + 1, awayPlayerScore)){
       setMatchFinished(true);
@@ -153,7 +166,21 @@ export default function Match({ params }: { params: Params }) {
     utterNumber(awayPlayerScore + 1);
     utterNumber(homePlayerScore);
 
-    publishScore({homePlayerScore: homePlayerScore, awayPlayerScore: awayPlayerScore + 1, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
+    publishScore({
+      matchId: id,
+      homePlayerName,
+      awayPlayerName,
+      matchStatus: 'in-progress',
+      matchType: matchType as MatchType,
+      matchSets: [
+        {
+          setNo: 1,
+          homePlayerScore: homePlayerScore,
+          awayPlayerScore: awayPlayerScore + 1,
+          status: 'in-progress'
+        }
+      ]
+    });
 
     if(!canIncrement(homePlayerScore, awayPlayerScore + 1)){
       setMatchFinished(true);
@@ -166,7 +193,21 @@ export default function Match({ params }: { params: Params }) {
     setScoreHistory([]);
     setMatchFinished(false);
 
-    publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
+    publishScore({
+      matchId: id,
+      homePlayerName,
+      awayPlayerName,
+      matchStatus: 'in-progress',
+      matchType: matchType as MatchType,
+      matchSets: [
+        {
+          setNo: 1,
+          homePlayerScore: 0,
+          awayPlayerScore: 0,
+          status: 'in-progress'
+        }
+      ]
+    });
   }
 
   const undoScore = () => {
@@ -176,14 +217,42 @@ export default function Match({ params }: { params: Params }) {
         setAwayPlayerScore(0);
         setScoreHistory([]);
 
-        publishScore({homePlayerScore: 0, awayPlayerScore: 0, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
+        publishScore({
+          matchId: id,
+          homePlayerName,
+          awayPlayerName,
+          matchStatus: 'in-progress',
+          matchType: matchType as MatchType,
+          matchSets: [
+            {
+              setNo: 1,
+              homePlayerScore: 0,
+              awayPlayerScore: 0,
+              status: 'in-progress'
+            }
+          ]
+        });
       } else {
         setScoreHistory(scoreHistory.slice(0, -1));
         const lastScore = scoreHistory[scoreHistory.length - 2];
         setHomePlayerScore(lastScore.home);
         setAwayPlayerScore(lastScore.away);
 
-        publishScore({homePlayerScore: lastScore.home, awayPlayerScore: lastScore.away, homePlayerName, awayPlayerName, homeTeamName, awayTeamName});
+        publishScore({
+          matchId: id,
+          homePlayerName,
+          awayPlayerName,
+          matchStatus: 'in-progress',
+          matchType: matchType as MatchType,
+          matchSets: [
+            {
+              setNo: 1,
+              homePlayerScore: lastScore.home,
+              awayPlayerScore: lastScore.away,
+              status: 'in-progress'
+            }
+          ]
+        });
       }
       
     } 
@@ -201,14 +270,34 @@ export default function Match({ params }: { params: Params }) {
     }
   }
 
-  interface Score {
-    homePlayerScore: number;
-    awayPlayerScore: number;
-    homePlayerName: string;
-    awayPlayerName: string;
-    homeTeamName?: string;
-    awayTeamName?: string;
-  }
+type SetStatus = 'completed' | 'in-progress' | 'not-started';
+type MatchStatus = 'scheduled' | 'in-progress' | 'completed';
+type MatchType = 'best-of-1' | 'best-of-3' | 'best-of-5';
+
+interface Score {
+  matchId: string;
+  homePlayerName: string;
+  awayPlayerName: string;
+  matchStatus: MatchStatus;
+  matchType: MatchType;
+  matchSets: MatchSet[];
+}
+
+interface MatchSet {
+  setNo: number;
+  homePlayerScore: number;
+  awayPlayerScore: number;
+  status: SetStatus;
+}
+
+interface Score {
+  matchId: string;
+  homePlayerName: string;
+  awayPlayerName: string;
+  matchStatus: MatchStatus;
+  matchType: MatchType;
+  matchSets: MatchSet[];
+}
 
   const publishScore = (score: Score) => {
     const channel = ably?.channels.get('match-' + id);
@@ -225,26 +314,44 @@ export default function Match({ params }: { params: Params }) {
 
   const handleHomePlayerNameChange = (newName: string) => {
     setHomePlayerName(newName);
-    publishScore({homePlayerScore, awayPlayerScore, homePlayerName: newName, awayPlayerName, homeTeamName, awayTeamName});
+    // Update this to match the Score interface structure
+    publishScore({
+      matchId: id,
+      homePlayerName: newName,
+      awayPlayerName,
+      matchStatus: 'in-progress',
+      matchType: matchType as MatchType,
+      matchSets: [
+        {
+          setNo: 1,
+          homePlayerScore,
+          awayPlayerScore,
+          status: 'in-progress'
+        }
+      ]
+    });
   }
 
   const handleAwayPlayerNameChange = (newName: string) => {
     setAwayPlayerName(newName);
-    publishScore({homePlayerScore, awayPlayerScore, homePlayerName, awayPlayerName: newName, homeTeamName, awayTeamName});
+    // Update this to match the Score interface structure
+    publishScore({
+      matchId: id,
+      homePlayerName,
+      awayPlayerName: newName,
+      matchStatus: 'in-progress',
+      matchType: matchType as MatchType,
+      matchSets: [
+        {
+          setNo: 1,
+          homePlayerScore,
+          awayPlayerScore,
+          status: 'in-progress'
+        }
+      ]
+    });
   }
 
-  const handleHomePlayerPairSelect = (teamName: string, player1: string, player2: string): void => {
-    if (player1 && player2 && player1 !== player2) {
-      setHomePlayerName(`${player1} & ${player2}`);
-      setHomeTeamName(teamName);
-    }
-  };
-  const handleAwayPlayerPairSelect = (teamName: string, player1: string, player2: string): void => {
-    if (player1 && player2 && player1 !== player2) {
-      setAwayPlayerName(`${player1} & ${player2}`);
-      setAwayTeamName(teamName);
-    }
-  };
   return (
       <main className={styles.main}>
         <header className={styles.header}>
@@ -305,8 +412,6 @@ export default function Match({ params }: { params: Params }) {
           <div className={styles.scoreboard}>
             <div className={styles.player}>
               <div className={styles.playerName}>
-                {/* <TeamPlayerSelector onPairSelect={handleHomePlayerPairSelect}/>
-                {homeTeamName && <span className={styles.teamName}><strong>{homeTeamName}</strong></span>} */}
                 <EditableLabel value={homePlayerName} onChange={handleHomePlayerNameChange} /></div>
               <div className={styles.playerScore}>{homePlayerScore}</div>
             </div>

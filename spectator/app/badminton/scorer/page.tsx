@@ -82,7 +82,7 @@ export default function CardsPage() {
             <Link key={index} href={`/badminton/scorer/match/${match.id}`} className={styles.matchItemLink} passHref>
                 <div className={styles.matchItem} style={{ cursor: 'pointer' }}>
                   <div>{match.homePlayerName}</div>
-                  <div><strong>{match.homePlayerScore}</strong> : <strong>{match.awayPlayerScore}</strong></div>
+                  <div><strong>{match.matchSets[0].homePlayerScore}</strong> : <strong>{match.matchSets[0].awayPlayerScore}</strong></div>
                   <div>{match.awayPlayerName}</div>
                 </div>
             </Link>
