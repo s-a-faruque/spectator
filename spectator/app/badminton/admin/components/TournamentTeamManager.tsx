@@ -55,7 +55,7 @@ export default function TournamentTeamManager() {
   const handleSaveEditTeam = () => {
     if (!editingTeamId) return;
     const updatedTeam: Team = { id: editingTeamId, name: editedTeamName, tournamentId: selectedTournamentId! };
-    localStorageService.update<Team>('teams', editingTeamId, updatedTeam);
+    localStorageService.update<Team>('teams', updatedTeam);
     setTeams(prev => prev.map(team => (team.id === editingTeamId ? updatedTeam : team)));
     setEditingTeamId(null);
     setEditedTeamName('');
