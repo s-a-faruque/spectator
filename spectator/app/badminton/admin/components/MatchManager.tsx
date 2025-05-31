@@ -58,7 +58,8 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
 
     if (playersRaw) {
       const allPlayers = JSON.parse(playersRaw);
-      setPlayers(allPlayers.players || []);
+      console.log('allPlayers', allPlayers);
+      setPlayers(allPlayers);
     }
 
     const matchRaw = localStorage.getItem(`matches_${tournamentId}`);
@@ -88,6 +89,8 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
   };
 
   const getPlayersForTeam = (teamId: string) => {
+    console.log('teamId - ', teamId);
+    console.log('players - ', players);
     return players.filter((p) => p.teamId === teamId);
   };
 
@@ -125,7 +128,7 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
               >
                 {getPlayersForTeam(newMatch.teamAId).map((player) => (
                   <option key={player.id} value={player.id}>
-                    {player.name}
+                    {player.name} - {player.name}
                   </option>
                 ))}
               </select>
