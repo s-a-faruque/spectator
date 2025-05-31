@@ -3,12 +3,11 @@
 import { useEffect, useState } from 'react';
 import { localStorageService } from '@/util/localStorageService';
 import { v4 as uuidv4 } from 'uuid';
+import TeamPlayerManager from './TeamPlayerManager';
 
 type Tournament = {
   id: string;
   name: string;
-  location: string;
-  teamIds: string[];
 };
 
 type Team = {
@@ -20,103 +19,91 @@ type Team = {
 export default function TournamentTeamManager() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [newTournamentName, setNewTournamentName] = useState('');
   const [selectedTournamentId, setSelectedTournamentId] = useState<string | null>(null);
 
+  const [newTeamName, setNewTeamName] = useState('');
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
-  const [editTeamName, setEditTeamName] = useState('');
+  const [editedTeamName, setEditedTeamName] = useState('');
 
   useEffect(() => {
     setTournaments(localStorageService.getAll<Tournament>('tournaments'));
     setTeams(localStorageService.getAll<Team>('teams'));
   }, []);
 
-  const handleAddTeam = () => {
-    if (!selectedTournamentId) return;
-
-    const newTeam: Team = {
-      id: uuidv4(),
-      name: `Team ${teams.length + 1}`,
-      tournamentId: selectedTournamentId
-    };
-
-    localStorageService.create<Team>('teams', newTeam);
-    setTeams(prev => [...prev, newTeam]);
-
-    const tournament = tournaments.find(t => t.id === selectedTournamentId);
-    if (tournament) {
-      const updatedTournament: Tournament = {
-        ...tournament,
-        teamIds: [...(tournament.teamIds || []), newTeam.id]
-      };
-      localStorageService.update<Tournament>('tournaments', updatedTournament);
-      setTournaments(prev =>
-        prev.map(t => (t.id === updatedTournament.id ? updatedTournament : t))
-      );
-    }
+  const handleCreateTournament = () => {
+    if (!newTournamentName.trim()) return;
+    const newTournament = { id: uuidv4(), name: newTournamentName };
+    localStorageService.create<Tournament>('tournaments', newTournament);
+    setTournaments(prev => [...prev, newTournament]);
+    setNewTournamentName('');
   };
 
-  const handleDeleteTeam = (teamId: string) => {
-    const updatedTeams = teams.filter(t => t.id !== teamId);
-    setTeams(updatedTeams);
-    localStorageService.delete('teams', teamId);
-
-    if (selectedTournamentId) {
-      const tournament = tournaments.find(t => t.id === selectedTournamentId);
-      if (tournament) {
-        const updatedTournament: Tournament = {
-          ...tournament,
-          teamIds: tournament.teamIds.filter(id => id !== teamId)
-        };
-        localStorageService.update('tournaments', updatedTournament);
-        setTournaments(prev =>
-          prev.map(t => (t.id === updatedTournament.id ? updatedTournament : t))
-        );
-      }
-    }
+  const handleAddTeam = () => {
+    if (!newTeamName.trim() || !selectedTournamentId) return;
+    const newTeam: Team = { id: uuidv4(), name: newTeamName, tournamentId: selectedTournamentId };
+    localStorageService.create<Team>('teams', newTeam);
+    setTeams(prev => [...prev, newTeam]);
+    setNewTeamName('');
   };
 
   const handleEditTeam = (team: Team) => {
     setEditingTeamId(team.id);
-    setEditTeamName(team.name);
+    setEditedTeamName(team.name);
   };
 
-  const handleSaveTeamName = () => {
-    const team = teams.find(t => t.id === editingTeamId);
-    if (!team) return;
-
-    const updatedTeam: Team = { ...team, name: editTeamName };
-    localStorageService.update('teams', updatedTeam);
-    setTeams(prev => prev.map(t => (t.id === updatedTeam.id ? updatedTeam : t)));
-
+  const handleSaveEditTeam = () => {
+    if (!editingTeamId) return;
+    const updatedTeam: Team = { id: editingTeamId, name: editedTeamName, tournamentId: selectedTournamentId! };
+    localStorageService.update<Team>('teams', editingTeamId, updatedTeam);
+    setTeams(prev => prev.map(team => (team.id === editingTeamId ? updatedTeam : team)));
     setEditingTeamId(null);
-    setEditTeamName('');
+    setEditedTeamName('');
   };
 
-  const teamsForSelectedTournament = selectedTournamentId
-    ? teams.filter(t => t.tournamentId === selectedTournamentId)
-    : [];
+  const handleDeleteTeam = (id: string) => {
+    localStorageService.delete('teams', id);
+    setTeams(prev => prev.filter(team => team.id !== id));
+  };
+
+  const teamsForSelectedTournament = teams.filter(t => t.tournamentId === selectedTournamentId);
 
   return (
     <div>
-      <h2>Select Tournament</h2>
-      <select
-        onChange={e => setSelectedTournamentId(e.target.value)}
-        value={selectedTournamentId || ''}
-      >
-        <option value="" disabled>
-          Select a tournament
-        </option>
-        {tournaments.map(t => (
-          <option key={t.id} value={t.id}>
-            {t.name}
-          </option>
-        ))}
-      </select>
+      <h2>Tournament Team Manager</h2>
+
+      <div>
+        <h3>Create Tournament</h3>
+        <input
+          type="text"
+          value={newTournamentName}
+          onChange={e => setNewTournamentName(e.target.value)}
+          placeholder="Tournament name"
+        />
+        <button onClick={handleCreateTournament}>Add Tournament</button>
+      </div>
+
+      <div>
+        <h3>Select Tournament</h3>
+        <select onChange={e => setSelectedTournamentId(e.target.value)} value={selectedTournamentId ?? ''}>
+          <option value="" disabled>Select a tournament</option>
+          {tournaments.map(t => (
+            <option key={t.id} value={t.id}>{t.name}</option>
+          ))}
+        </select>
+      </div>
 
       {selectedTournamentId && (
-        <>
-          <button onClick={handleAddTeam}>Add Team to Tournament</button>
+        <div>
           <h3>Teams</h3>
+          <input
+            type="text"
+            value={newTeamName}
+            onChange={e => setNewTeamName(e.target.value)}
+            placeholder="Team name"
+          />
+          <button onClick={handleAddTeam}>Add Team</button>
+
           <ul>
             {teamsForSelectedTournament.map(team => (
               <li key={team.id}>
@@ -124,11 +111,10 @@ export default function TournamentTeamManager() {
                   <>
                     <input
                       type="text"
-                      value={editTeamName}
-                      onChange={e => setEditTeamName(e.target.value)}
+                      value={editedTeamName}
+                      onChange={e => setEditedTeamName(e.target.value)}
                     />
-                    <button onClick={handleSaveTeamName}>Save</button>
-                    <button onClick={() => setEditingTeamId(null)}>Cancel</button>
+                    <button onClick={handleSaveEditTeam}>Save</button>
                   </>
                 ) : (
                   <>
@@ -137,10 +123,13 @@ export default function TournamentTeamManager() {
                     <button onClick={() => handleDeleteTeam(team.id)}>Delete</button>
                   </>
                 )}
+
+                {/* Render players inside this team */}
+                <TeamPlayerManager teamId={team.id} />
               </li>
             ))}
           </ul>
-        </>
+        </div>
       )}
     </div>
   );
