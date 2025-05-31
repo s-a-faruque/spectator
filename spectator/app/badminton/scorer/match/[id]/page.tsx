@@ -3,8 +3,6 @@ import styles from "../../badminton.module.css";
 import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import Ably from 'ably';
-import { useRouter } from "next/navigation";
-import TeamPlayerSelector from "./teamPlayerSelector";
 
 import { Nunito } from "next/font/google";
 import Link from "next/link";
