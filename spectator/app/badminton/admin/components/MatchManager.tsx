@@ -118,9 +118,9 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
             onChange={(e) => setNewMatch({ ...newMatch, teamAId: e.target.value, teamAPlayerIds: [] })}
           >
             <option value="">Select Team A</option>
-            {teamIds.map((teamId) => (
-              <option key={teamId} value={teamId}>
-                {teamId}
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
               </option>
             ))}
           </select>
@@ -155,9 +155,9 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
             onChange={(e) => setNewMatch({ ...newMatch, teamBId: e.target.value, teamBPlayerIds: [] })}
           >
             <option value="">Select Team B</option>
-            {teamIds.map((teamId) => (
-              <option key={teamId} value={teamId}>
-                {teamId}
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
               </option>
             ))}
           </select>
@@ -213,7 +213,18 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
         <ul className="list-disc ml-6">
           {matches.map((match) => (
             <li key={match.id}>
-              {match.teamAId} vs {match.teamBId} at {match.court} on {new Date(match.schedule).toLocaleString()}
+              {match.teamAPlayerIds
+                .map((pid) => players.find((p) => p.id === pid)?.name)
+                .filter(Boolean)
+                .join(', ')}{" "}
+              vs{" "}
+              {match.teamBPlayerIds
+                .map((pid) => players.find((p) => p.id === pid)?.name)
+                .filter(Boolean)
+                .join(', ')}
+              {" | "}
+              {teams.find((t) => t.id === match.teamAId)?.name} vs {teams.find((t) => t.id === match.teamBId)?.name} - 
+               at {match.court} on {new Date(match.schedule).toLocaleString()}
             </li>
           ))}
         </ul>
