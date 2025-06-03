@@ -41,7 +41,7 @@ export default function TournamentManager() {
         <ul>
           {tournaments.map(t => (
             <li key={t.id}>
-              {t.name} - <a href={`/badminton/admin/tournament/${t.id}/teams`}>Manage Teams</a>
+              {t.name} : <a href={`/badminton/admin/tournament/${t.id}/teams`}>Manage Teams</a> - <a href={`/badminton/admin/tournament/${t.id}/matches`}>Manage Matches</a>
             </li>
           ))}
         </ul>
