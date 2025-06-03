@@ -1,10 +1,11 @@
 'use client';
-import TournamentTeamManager from './components/TournamentTeamManager';
-import styles from '../badminton.module.css';
+
+import TournamentManager from '../components/TournamentManager';
+import styles from '../../scorer/badminton.module.css';
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AdminPage() {
+export default function AdminTournamentPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -17,13 +18,13 @@ export default function AdminPage() {
                 height={16}
               />
           </Link>
-          Admin Home
+          Admin Tournament
         </h1>
         
       </header>
       <div className={styles.primaryContent}>
         <div className={styles.matchesList}>
-            <TournamentTeamManager />
+          <TournamentManager />
         </div>
       </div>
     </main>

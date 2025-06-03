@@ -16,11 +16,11 @@ type Team = {
   tournamentId: string;
 };
 
-export default function TournamentTeamManager() {
+export default function TournamentTeamManager({ tournamentId: propTournamentId }: { tournamentId?: string }) {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [newTournamentName, setNewTournamentName] = useState('');
-  const [selectedTournamentId, setSelectedTournamentId] = useState<string | null>(null);
+  const [selectedTournamentId, setSelectedTournamentId] = useState<string | null>(propTournamentId ?? null);
 
   const [newTeamName, setNewTeamName] = useState('');
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
@@ -30,6 +30,13 @@ export default function TournamentTeamManager() {
     setTournaments(localStorageService.getAll<Tournament>('tournaments'));
     setTeams(localStorageService.getAll<Team>('teams'));
   }, []);
+
+  // If propTournamentId changes, update selectedTournamentId
+  useEffect(() => {
+    if (propTournamentId) {
+      setSelectedTournamentId(propTournamentId);
+    }
+  }, [propTournamentId]);
 
   const handleCreateTournament = () => {
     if (!newTournamentName.trim()) return;
@@ -70,28 +77,17 @@ export default function TournamentTeamManager() {
 
   return (
     <div>
-      <h2>Tournament Team Manager</h2>
-
-      <div>
-        <h3>Create Tournament</h3>
-        <input
-          type="text"
-          value={newTournamentName}
-          onChange={e => setNewTournamentName(e.target.value)}
-          placeholder="Tournament name"
-        />
-        <button onClick={handleCreateTournament}>Add Tournament</button>
-      </div>
-
-      <div>
-        <h3>Select Tournament</h3>
-        <select onChange={e => setSelectedTournamentId(e.target.value)} value={selectedTournamentId ?? ''}>
-          <option value="" disabled>Select a tournament</option>
-          {tournaments.map(t => (
-            <option key={t.id} value={t.id}>{t.name}</option>
-          ))}
-        </select>
-      </div>
+      {!propTournamentId && (
+        <div>
+          <h3>Select Tournament</h3>
+          <select onChange={e => setSelectedTournamentId(e.target.value)} value={selectedTournamentId ?? ''}>
+            <option value="" disabled>Select a tournament</option>
+            {tournaments.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {selectedTournamentId && (
         <div>

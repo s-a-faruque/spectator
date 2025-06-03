@@ -19,10 +19,20 @@ export default function CardsPage() {
           className={styles.cta}
           onClick={() => {
             const uniqueId = Math.floor(100000 + Math.random() * 900000).toString();
-            window.location.href = `/badminton/scorer/match/${uniqueId}`;
+            window.location.assign(`/badminton/scorer/match/${uniqueId}`);
           }}
         >
           + NEW MATCH
+        </button>
+        <br />
+        <br />
+        <button
+          className={styles.cta}
+          onClick={() => {
+            window.location.assign(`/badminton/admin/tournament`);
+          }}
+        >
+          + NEW TOURNAMENT
         </button>
       </section>
       <footer className={styles.footer}>
