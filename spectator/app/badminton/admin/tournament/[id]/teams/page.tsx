@@ -15,7 +15,7 @@ export default function TournamentTeamPage({ params }: { params: Params }) {
     <main className={styles.main}>
       <header className={styles.header}>
         <h1>
-          <Link className={styles.home} href="/">
+          <Link className={styles.home} href="/badminton/admin/tournament">
               <Image
                 src="/homepage.png"
                 alt="Home Icon"

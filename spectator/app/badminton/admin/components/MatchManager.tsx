@@ -23,10 +23,15 @@ type Match = {
 type Props = {
   tournamentId: string;
 };
-
+type Team = {
+  id: string;
+  name: string;
+  tournamentId: string;
+};
 const MatchManager: React.FC<Props> = ({ tournamentId }) => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [teamIds, setTeamIds] = useState<string[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]); // Not used in this component but can be useful later
   const [players, setPlayers] = useState<Player[]>([]);
 
   const [newMatch, setNewMatch] = useState<Omit<Match, 'id'>>({
@@ -41,20 +46,27 @@ const MatchManager: React.FC<Props> = ({ tournamentId }) => {
 
   // Load teams & players from localStorage
   useEffect(() => {
+    console.log('Loading teams and players for tournament:', tournamentId);
     const tournamentsRaw = localStorage.getItem('tournaments');
     const playersRaw = localStorage.getItem('players');
+    const teamsRaw = localStorage.getItem('teams');
 
     if (tournamentsRaw) {
       const tournaments = JSON.parse(tournamentsRaw);
       if (tournaments) {
         const tournament = tournaments.find((t: any) => t.id === tournamentId);
-        if (tournament) {
-          setTeamIds(tournament.teamIds || []);
+        if (tournament && teamsRaw) {
+            const teams = JSON.parse(teamsRaw);
+            const filteredTeams = teams.filter((team: Team) => team.tournamentId === tournamentId);
+            setTeams(filteredTeams);
+            setTeamIds(filteredTeams.map((team: Team) => team.id));
+            } 
+           console.log('teamIds', teamIds);
         }
         console.log('tournaments', tournaments);
 
       }
-    }
+    
 
     if (playersRaw) {
       const allPlayers = JSON.parse(playersRaw);
