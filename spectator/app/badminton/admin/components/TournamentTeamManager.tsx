@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { localStorageService } from '@/util/localStorageService';
 import { v4 as uuidv4 } from 'uuid';
 import TeamPlayerManager from './TeamPlayerManager';
+import Link from 'next/link';
 
 type Tournament = {
   id: string;
@@ -92,6 +93,7 @@ export default function TournamentTeamManager({ tournamentId: propTournamentId }
       {selectedTournamentId && (
         <div>
           <h3>Teams</h3>
+          <Link href={`/badminton/admin/tournament/${selectedTournamentId}/groups`}>Add teams to groups</Link>
           <input
             type="text"
             value={newTeamName}
