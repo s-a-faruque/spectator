@@ -34,6 +34,15 @@ export default function CardsPage() {
         >
           + NEW TOURNAMENT
         </button>
+
+        <button
+          className={styles.cta}
+          onClick={() => {
+            window.location.assign(`/badminton/admin/tournament/create`);
+          }}
+        >
+          + Generate a Tournament
+        </button>
       </section>
       <footer className={styles.footer}>
         <strong>WTS / </strong> What&apos;s The Score
