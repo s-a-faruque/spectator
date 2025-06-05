@@ -94,6 +94,7 @@ export default function TournamentTeamManager({ tournamentId: propTournamentId }
         <div>
           <h3>Teams</h3>
           <Link href={`/badminton/admin/tournament/${selectedTournamentId}/groups`}>Add teams to groups</Link>
+          <hr />
           <input
             type="text"
             value={newTeamName}
