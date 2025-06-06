@@ -29,6 +29,8 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
   const [tournament, setTournament] = useState<Tournament>();
   const [editingName, setEditingName] = useState(false);
   const [editedName, setEditedName] = useState<string>("");
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
+  const [editedTeamName, setEditedTeamName] = useState<string>("");
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -79,6 +81,38 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
     setEditingName(false);
   };
 
+  const handleTeamNameClick = (teamId: string, currentName: string) => {
+    setEditingTeamId(teamId);
+    setEditedTeamName(currentName);
+  };
+
+  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedTeamName(e.target.value);
+  };
+
+  const handleTeamNameBlur = (teamId: string) => {
+    if (!tournament) return;
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex(t => t.id === tournament.id);
+        if (tIdx !== -1) {
+          const teamIdx = tournaments[tIdx].teams.findIndex(team => team.id === teamId);
+          if (teamIdx !== -1) {
+            tournaments[tIdx].teams[teamIdx].name = editedTeamName;
+            localStorage.setItem('tournaments', JSON.stringify(tournaments));
+            // Update local state
+            setTeams(prev => prev.map(team => team.id === teamId ? { ...team, name: editedTeamName } : team));
+            setTournament({ ...tournament, teams: tournament.teams.map(team => team.id === teamId ? { ...team, name: editedTeamName } : team) });
+          }
+        }
+      } catch {}
+    }
+    setEditingTeamId(null);
+    setEditedTeamName("");
+  };
+
   return (
     <div className="mt-6 p-6 w-full" style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {editingName ? (
@@ -99,7 +133,23 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
           <li key={team.id} className="flex justify-between gap-x-6 py-5 w-full">
             <div className="flex min-w-0 gap-x-4 w-full">
               <div className="min-w-0 flex-auto w-full">
-                <p className="text-sm/6 font-semibold text-gray-900">{team.name}</p>
+                {editingTeamId === team.id ? (
+                  <input
+                    className="text-sm/6 font-semibold text-gray-900 border rounded px-2 py-1 w-full"
+                    value={editedTeamName}
+                    onChange={handleTeamNameChange}
+                    onBlur={() => handleTeamNameBlur(team.id)}
+                    autoFocus
+                  />
+                ) : (
+                  <p
+                    className="text-sm/6 font-semibold text-gray-900 cursor-pointer"
+                    onClick={() => handleTeamNameClick(team.id, team.name)}
+                    title="Click to edit"
+                  >
+                    {team.name}
+                  </p>
+                )}
               </div>
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                 <ul className="mt-1 truncate text-xs/5 text-gray-500">
