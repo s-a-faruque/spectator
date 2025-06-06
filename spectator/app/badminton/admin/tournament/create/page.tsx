@@ -4,10 +4,12 @@ import { useState } from 'react'
 import styles from '../../../scorer/badminton.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
+import TeamList from '../../components/TeamList'
 
 
 export default function CreateTournamentPage() {
-  const [numTeams, setNumTeams] = useState(4)
+  const [numTeams, setNumTeams] = useState(4);
+  const [tournamentId, setTournamentId] = useState<string | null>(null);
 
   const handleCreate = () => {
     if (!numTeams || numTeams < 2) {
@@ -15,7 +17,8 @@ export default function CreateTournamentPage() {
       return
     }
 
-    const tournamentId = `tournament_${Math.random().toString(36).substring(2, 8)}`
+    // Always generate a new tournamentId on create
+    const newTournamentId = `tournament_${Math.random().toString(36).substring(2, 8)}`;
     const teams = Array.from({ length: numTeams }, (_, i) => {
       const teamId = `team_${i + 1}`
       return {
@@ -29,7 +32,7 @@ export default function CreateTournamentPage() {
     })
 
     const tournament = {
-      id: tournamentId,
+      id: newTournamentId,
       name: `Tournament ${new Date().toISOString().slice(0, 10)}`,
       location: 'Unknown',
       startDate: '',
@@ -42,6 +45,7 @@ export default function CreateTournamentPage() {
 
     const existing = JSON.parse(localStorage.getItem('tournaments') || '[]')
     localStorage.setItem('tournaments', JSON.stringify([...existing, tournament]))
+    setTournamentId(newTournamentId)
 
     alert(`Tournament with ${numTeams} teams saved to localStorage!`)
   }
@@ -63,23 +67,26 @@ export default function CreateTournamentPage() {
         
       </header>
       <div className={styles.primaryContent}>
-        <label className="block mb-4">
-        Number of Teams:
-        <input
-          type="number"
-          min={2}
-          className="w-full border p-2"
-          value={numTeams}
-          onChange={e => setNumTeams(Number(e.target.value))}
-        />
-      </label>
+        <div className="max-w-md mx-auto mt-10 p-6 space-y-4">
+            <label className="block">
+                <span className="text-gray-700">Number of Teams:</span>
+                <input
+                type="number"
+                min={2}
+                className="mt-1 w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-400"
+                value={numTeams}
+                onChange={e => setNumTeams(Number(e.target.value))}
+                />
+            </label>
 
-      <button
-        onClick={handleCreate}
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-      >
-        Generate and Save
-      </button>
+            <button
+                onClick={handleCreate}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200"
+            >
+                Generate and Save
+            </button>
+        </div>
+        <TeamList tournamentId={tournamentId ?? ''} />
       </div>
     </main>
   )
