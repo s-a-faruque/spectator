@@ -10,6 +10,7 @@ import TeamList from '../../components/TeamList'
 export default function CreateTournamentPage() {
   const [numTeams, setNumTeams] = useState(4);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
+  const [tournamentCreated, setTournamentCreated] = useState(false);
 
   const handleCreate = () => {
     if (!numTeams || numTeams < 2) {
@@ -46,6 +47,14 @@ export default function CreateTournamentPage() {
     const existing = JSON.parse(localStorage.getItem('tournaments') || '[]')
     localStorage.setItem('tournaments', JSON.stringify([...existing, tournament]))
     setTournamentId(newTournamentId)
+    setTournamentCreated(true)
+    alert(`Tournament with ${numTeams} teams saved to localStorage!`)
+  }
+
+  // Handler to re-enable button after deletion
+  const handleTournamentDeleted = () => {
+    setTournamentId(null)
+    setTournamentCreated(false)
   }
 
   return (
@@ -65,26 +74,34 @@ export default function CreateTournamentPage() {
         
       </header>
       <div className={styles.primaryContent}>
-        <div className="max-w-md mx-auto p-6 space-y-4">
+        <div className="max-w-md mx-auto mt-10 p-6 space-y-4">
             <label className="block">
                 <span className="text-gray-700">Number of Teams:</span>
                 <input
                 type="number"
                 min={2}
                 className="mt-1 w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-400"
-                value={numTeams}
-                onChange={e => setNumTeams(Number(e.target.value))}
+                value={numTeams === 0 ? '' : numTeams}
+                onChange={e => {
+                  const val = e.target.value.replace(/^0+/, ''); // Remove leading zeros
+                  setNumTeams(val === '' ? 0 : Math.max(2, Number(val)));
+                }}
+                disabled={tournamentCreated}
                 />
             </label>
 
             <button
-                onClick={handleCreate}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200"
+              onClick={handleCreate}
+              className={`px-4 py-2 rounded transition duration-200 ${tournamentCreated ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
+              disabled={tournamentCreated}
+              title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Generate and Save'}
             >
-                Generate and Save
+              {tournamentCreated ? 'Tournament Created' : 'Generate and Save'}
             </button>
         </div>
-        <TeamList tournamentId={tournamentId ?? ''} />
+        {tournamentId && (
+          <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
+        )}
       </div>
     </main>
   )

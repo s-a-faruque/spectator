@@ -24,7 +24,7 @@ interface Tournament {
   matches: any[];
 }
 
-export default function TeamList({ tournamentId }: { tournamentId: string }) {
+export default function TeamList({ tournamentId, onTournamentDeleted }: { tournamentId: string, onTournamentDeleted?: () => void }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [tournament, setTournament] = useState<Tournament>();
   const [editingName, setEditingName] = useState(false);
@@ -318,7 +318,7 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
         localStorage.setItem('tournaments', JSON.stringify(updated));
         setTournament(undefined);
         setTeams([]);
-        // Optionally, you can trigger a redirect or notify the parent component
+        if (onTournamentDeleted) onTournamentDeleted();
       } catch {}
     }
   };
@@ -439,8 +439,11 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
           type="number"
           min={2}
           step={2}
-          value={groupInput}
-          onChange={e => setGroupInput(Number(e.target.value))}
+          value={groupInput === 0 ? '' : groupInput}
+          onChange={e => {
+            const val = e.target.value.replace(/^0+/, ''); // Remove leading zeros
+            setGroupInput(val === '' ? 0 : Math.max(2, Number(val)));
+          }}
           className="border rounded px-2 py-1 w-20"
         />
         <button
