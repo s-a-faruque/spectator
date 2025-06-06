@@ -33,6 +33,8 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
   const [editedTeamName, setEditedTeamName] = useState<string>("");
   const [addingPlayerTeamId, setAddingPlayerTeamId] = useState<string | null>(null);
   const [newPlayerName, setNewPlayerName] = useState<string>("");
+  const [editingPlayer, setEditingPlayer] = useState<{ teamId: string; playerId: string } | null>(null);
+  const [editedPlayerName, setEditedPlayerName] = useState<string>("");
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -186,6 +188,62 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
     }
   };
 
+  const handleEditPlayerClick = (teamId: string, playerId: string, currentName: string) => {
+    setEditingPlayer({ teamId, playerId });
+    setEditedPlayerName(currentName);
+  };
+
+  const handleEditPlayerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedPlayerName(e.target.value);
+  };
+
+  const handleEditPlayerBlur = (teamId: string, playerId: string) => {
+    if (!tournament || !editedPlayerName.trim()) {
+      setEditingPlayer(null);
+      setEditedPlayerName("");
+      return;
+    }
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex(t => t.id === tournament.id);
+        if (tIdx !== -1) {
+          const teamIdx = tournaments[tIdx].teams.findIndex(team => team.id === teamId);
+          if (teamIdx !== -1) {
+            const playerIdx = tournaments[tIdx].teams[teamIdx].players.findIndex(p => p.id === playerId);
+            if (playerIdx !== -1) {
+              tournaments[tIdx].teams[teamIdx].players[playerIdx].name = editedPlayerName.trim();
+              localStorage.setItem('tournaments', JSON.stringify(tournaments));
+              // Update local state
+              setTeams(prev => prev.map(team =>
+                team.id === teamId ? {
+                  ...team,
+                  players: team.players.map(p =>
+                    p.id === playerId ? { ...p, name: editedPlayerName.trim() } : p
+                  )
+                } : team
+              ));
+              setTournament({
+                ...tournament,
+                teams: tournament.teams.map(team =>
+                  team.id === teamId ? {
+                    ...team,
+                    players: team.players.map(p =>
+                      p.id === playerId ? { ...p, name: editedPlayerName.trim() } : p
+                    )
+                  } : team
+                ),
+              });
+            }
+          }
+        }
+      } catch {}
+    }
+    setEditingPlayer(null);
+    setEditedPlayerName("");
+  };
+
   return (
     <div className="mt-6 p-6 w-full" style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {editingName ? (
@@ -260,7 +318,26 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
                 <ul className="mt-1 truncate text-xs/5 text-gray-500">
                     {team.players.map(player => (
                         <li key={player.id} className="flex items-center gap-2">
-                          {player.name}
+                          {editingPlayer && editingPlayer.teamId === team.id && editingPlayer.playerId === player.id ? (
+                            <input
+                              className="border rounded px-1 py-0.5 text-xs"
+                              value={editedPlayerName}
+                              onChange={handleEditPlayerNameChange}
+                              onBlur={() => handleEditPlayerBlur(team.id, player.id)}
+                              autoFocus
+                            />
+                          ) : (
+                            <>
+                              {player.name}
+                              <button
+                                className="ml-1 text-blue-500 hover:text-blue-700 text-xs px-1 py-0.5 border border-blue-200 rounded"
+                                onClick={() => handleEditPlayerClick(team.id, player.id, player.name)}
+                                title="Edit player"
+                              >
+                                Edit
+                              </button>
+                            </>
+                          )}
                           <button
                             className="ml-1 text-red-500 hover:text-red-700 text-xs px-1 py-0.5 border border-red-200 rounded"
                             onClick={() => handleDeletePlayer(team.id, player.id)}
