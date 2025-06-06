@@ -46,8 +46,6 @@ export default function CreateTournamentPage() {
     const existing = JSON.parse(localStorage.getItem('tournaments') || '[]')
     localStorage.setItem('tournaments', JSON.stringify([...existing, tournament]))
     setTournamentId(newTournamentId)
-
-    alert(`Tournament with ${numTeams} teams saved to localStorage!`)
   }
 
   return (
@@ -67,7 +65,7 @@ export default function CreateTournamentPage() {
         
       </header>
       <div className={styles.primaryContent}>
-        <div className="max-w-md mx-auto mt-10 p-6 space-y-4">
+        <div className="max-w-md mx-auto p-6 space-y-4">
             <label className="block">
                 <span className="text-gray-700">Number of Teams:</span>
                 <input
