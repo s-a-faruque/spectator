@@ -35,6 +35,7 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
   const [newPlayerName, setNewPlayerName] = useState<string>("");
   const [editingPlayer, setEditingPlayer] = useState<{ teamId: string; playerId: string } | null>(null);
   const [editedPlayerName, setEditedPlayerName] = useState<string>("");
+  const [groupInput, setGroupInput] = useState(2);
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -244,6 +245,67 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
     setEditedPlayerName("");
   };
 
+  // Assign teams to groups evenly
+  const assignTeamsToGroups = (numGroups: number) => {
+    if (!tournament || numGroups < 1 || teams.length === 0) return;
+    // Create group objects
+    const groups = Array.from({ length: numGroups }, (_, i) => ({
+      id: `group_${i + 1}`,
+      name: `Group ${String.fromCharCode(65 + i)}`,
+      teamIds: [] as string[],
+    }));
+    // Distribute teams round-robin
+    teams.forEach((team, idx) => {
+      groups[idx % numGroups].teamIds.push(team.id);
+    });
+    // Save to localStorage
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex(t => t.id === tournament.id);
+        if (tIdx !== -1) {
+          tournaments[tIdx].groups = groups;
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+          setTournament({ ...tournament, groups });
+        }
+      } catch {}
+    }
+  };
+
+  // Move team to a different group
+  const handleMoveTeam = (teamId: string, newGroupId: string) => {
+    if (!tournament || !tournament.groups) return;
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex(t => t.id === tournament.id);
+        if (tIdx !== -1) {
+          // Remove team from all groups
+          tournaments[tIdx].groups = tournaments[tIdx].groups.map((g: any) => ({
+            ...g,
+            teamIds: g.teamIds.filter((tid: string) => tid !== teamId)
+          }));
+          // Add team to new group
+          const gIdx = tournaments[tIdx].groups.findIndex((g: any) => g.id === newGroupId);
+          if (gIdx !== -1) {
+            tournaments[tIdx].groups[gIdx].teamIds.push(teamId);
+          }
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+          setTournament({ ...tournament, groups: tournaments[tIdx].groups });
+        }
+      } catch {}
+    }
+  };
+
+  // UI for assigning teams to groups
+  const handleAssignGroups = () => {
+    let n = Math.max(2, Math.floor(groupInput));
+    if (n % 2 !== 0) n += 1; // Ensure even
+    assignTeamsToGroups(n);
+  };
+
   return (
     <div className="mt-6 p-6 w-full" style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {editingName ? (
@@ -353,6 +415,55 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
           </li>
         ))}
       </ul>
+      {/* Group assignment UI */}
+      <div className="mb-4 flex items-center gap-2">
+        <label className="font-semibold">Number of Groups (even):</label>
+        <input
+          type="number"
+          min={2}
+          step={2}
+          value={groupInput}
+          onChange={e => setGroupInput(Number(e.target.value))}
+          className="border rounded px-2 py-1 w-20"
+        />
+        <button
+          className="bg-purple-600 text-white px-3 py-1 rounded"
+          onClick={handleAssignGroups}
+        >
+          Assign Teams to Groups
+        </button>
+      </div>
+      {tournament?.groups && tournament.groups.length > 0 && (
+        <div className="mb-4">
+          <h4 className="font-semibold">Groups</h4>
+          <div className="grid grid-cols-2 gap-4">
+            {tournament.groups.map(group => (
+              <div key={group.id} className="border rounded p-2">
+                <div className="font-bold mb-1">{group.name}</div>
+                <ul className="text-xs text-gray-700">
+                  {group.teamIds.map((tid: string) => {
+                    const t = teams.find(tm => tm.id === tid);
+                    return t ? (
+                      <li key={tid} className="flex items-center gap-2">
+                        {t.name}
+                        <select
+                          className="ml-2 border rounded px-1 py-0.5 text-xs"
+                          value={group.id}
+                          onChange={e => handleMoveTeam(tid, e.target.value)}
+                        >
+                          {tournament.groups.map(g => (
+                            <option key={g.id} value={g.id}>{g.name}</option>
+                          ))}
+                        </select>
+                      </li>
+                    ) : null;
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
