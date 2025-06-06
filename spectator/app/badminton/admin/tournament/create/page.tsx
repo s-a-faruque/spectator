@@ -100,7 +100,17 @@ export default function CreateTournamentPage() {
             </button>
         </div>
         {tournamentId && (
-          <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
+          <>
+            <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
+            <div className="mt-4 text-center">
+              <Link
+                href={`/badminton/admin/tournament/${tournamentId}/matches`}
+                className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              >
+                Manage Matches
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </main>
