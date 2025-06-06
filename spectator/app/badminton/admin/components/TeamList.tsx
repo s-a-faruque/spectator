@@ -306,6 +306,23 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
     assignTeamsToGroups(n);
   };
 
+  // Delete tournament
+  const handleDeleteTournament = () => {
+    if (!tournament) return;
+    if (!window.confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) return;
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const updated = tournaments.filter(t => t.id !== tournament.id);
+        localStorage.setItem('tournaments', JSON.stringify(updated));
+        setTournament(undefined);
+        setTeams([]);
+        // Optionally, you can trigger a redirect or notify the parent component
+      } catch {}
+    }
+  };
+
   return (
     <div className="mt-6 p-6 w-full" style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {editingName ? (
@@ -463,6 +480,14 @@ export default function TeamList({ tournamentId }: { tournamentId: string }) {
             ))}
           </div>
         </div>
+      )}
+      {tournament && (
+        <button
+          className="bg-red-600 text-white px-3 py-1 rounded mb-4"
+          onClick={handleDeleteTournament}
+        >
+          Delete Tournament
+        </button>
       )}
     </div>
   );
