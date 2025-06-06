@@ -1,10 +1,10 @@
 'use client';
 
-import styles from '../../../../scorer/badminton.module.css';
+import styles from '../../../../../scorer/badminton.module.css';
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
-import { generateGroupStageMatches } from '../../../utils/matchGeneration';
+import { generateGroupStageMatches } from '../../../../utils/matchGeneration';
 
 interface Params {
   id: string;
@@ -39,7 +39,7 @@ interface Player {
   teamId: string;
 }
 
-export default function MatchPage({ params }: { params: Params }) {
+export default function MatchExportPage({ params }: { params: Params }) {
   const { id } = params;
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -299,9 +299,13 @@ export default function MatchPage({ params }: { params: Params }) {
         </button>
         {/* Print Button for Match List */}
         <div className="mb-4 flex justify-end">
-          <Link href={`/badminton/admin/tournament/${id}/matches/export`} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-white-700 transition">
-            Export
-          </Link>
+          <button
+            className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-900 transition print:hidden"
+            onClick={() => window.print()}
+            type="button"
+          >
+            Print Match List
+          </button>
         </div>
       </header>
       <div className={styles.primaryContent}>

@@ -17,35 +17,34 @@ export default function TournamentManager() {
     setTournaments(localStorageService.getAll<Tournament>('tournaments'));
   }, []);
 
-  const handleCreateTournament = () => {
-    if (!newTournamentName.trim()) return;
-    const newTournament = { id: uuidv4(), name: newTournamentName };
-    localStorageService.create<Tournament>('tournaments', newTournament);
-    setTournaments(prev => [...prev, newTournament]);
-    setNewTournamentName('');
+  const handleDelete = (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) return;
+    localStorageService.delete('tournaments', id);
+    setTournaments(prev => prev.filter(t => t.id !== id));
   };
-  return (
-    <div>
 
-      <div>
-        <input
-          type="text"
-          value={newTournamentName}
-          onChange={e => setNewTournamentName(e.target.value)}
-          placeholder="Tournament name"
-        />
-        <button onClick={handleCreateTournament}>Add Tournament</button>
-      </div>
-      <div>
-        <h3>Existing Tournaments</h3>
-        <ul>
-          {tournaments.map(t => (
-            <li key={t.id}>
-              {t.name} : <a href={`/badminton/admin/tournament/${t.id}/teams`}>Manage Teams</a> - <a href={`/badminton/admin/tournament/${t.id}/matches`}>Manage Matches</a>
-            </li>
-          ))}
-        </ul>
-      </div>
+  return (
+    <div className="mt-6 p-6 w-full" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+      <h3>Existing Tournaments</h3>
+      <ul role="list" className="divide-y divide-gray-100 w-full">
+        {tournaments.map(t => (
+          <li key={t.id} className="flex justify-between gap-x-6 py-5 w-full items-center">
+            <p className="text-sm/6 font-semibold text-gray-900 cursor-pointer" >
+              <a href={`/badminton/admin/tournament/${t.id}`}>{t.name}</a>
+            </p>
+            <div className="flex gap-4 items-center">
+              <a className="text-sm/6 text-gray-500" href={`/badminton/admin/tournament/${t.id}/matches`}>Manage Matches</a>
+              <button
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                onClick={() => handleDelete(t.id)}
+                title="Delete tournament"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

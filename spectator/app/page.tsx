@@ -32,9 +32,10 @@ export default function CardsPage() {
             window.location.assign(`/badminton/admin/tournament`);
           }}
         >
-          + NEW TOURNAMENT
+          List of Tournaments
         </button>
-
+        <br />
+        <br />
         <button
           className={styles.cta}
           onClick={() => {
