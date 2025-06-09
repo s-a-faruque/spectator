@@ -52,12 +52,7 @@ export default function Example() {
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
                 <div className="shrink-0">
-                    <strong>WTS</strong>
-                  {/* <img
-                    alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                    className="size-8"
-                  /> */}
+                  <strong>WTS</strong>
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
@@ -67,7 +62,7 @@ export default function Example() {
                         href={item.href}
                         aria-current={item.current ? 'page' : undefined}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.current ? 'bg-gray-100 text-white' : 'text-white-300 hover:bg-gray-100 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium',
                         )}
                       >
@@ -180,7 +175,7 @@ export default function Example() {
 
         <header className="bg-white shadow-sm">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+            <h1 className="text-2xl tracking-tight text-gray-900">Tournament Dashboard</h1>
           </div>
         </header>
         <main>
