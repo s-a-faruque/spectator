@@ -48,7 +48,6 @@ export default function CreateTournamentPage() {
     localStorage.setItem('tournaments', JSON.stringify([...existing, tournament]))
     setTournamentId(newTournamentId)
     setTournamentCreated(true)
-    alert(`Tournament with ${numTeams} teams saved to localStorage!`)
   }
 
   // Handler to re-enable button after deletion

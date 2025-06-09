@@ -10,8 +10,11 @@ export default function CardsPage() {
       </header>
       <section className={styles.hero}>
         <div>
-          <span className={styles.firstHeadLine}>Share Live Scores Instantly with Your Audience. </span>
-          <span>No Login, Always Free!</span>
+          <span className={styles.firstHeadLine}>
+            Tournaments Made Simple
+            {/* Share Live Scores Instantly with Your Audience.  */}
+          </span> <br />
+          {/* <span>No Login, Always Free!</span> */}
         </div>
       </section>
       <section>
@@ -22,17 +25,7 @@ export default function CardsPage() {
             window.location.assign(`/badminton/scorer/match/${uniqueId}`);
           }}
         >
-          + NEW MATCH
-        </button>
-        <br />
-        <br />
-        <button
-          className={styles.cta}
-          onClick={() => {
-            window.location.assign(`/badminton/admin/tournament`);
-          }}
-        >
-          List of Tournaments
+          + NEW SINGLE MATCH
         </button>
         <br />
         <br />
@@ -42,8 +35,21 @@ export default function CardsPage() {
             window.location.assign(`/badminton/admin/tournament/create`);
           }}
         >
-          + Generate a Tournament
+          + CREATE A TOURNAMENT
         </button>
+        <br />
+        <br />
+        <button
+          className={styles.cta}
+          onClick={() => {
+            window.location.assign(`/badminton/admin/tournament`);
+          }}
+        >
+          EXISTING TOURNAMENTS
+        </button>
+        <br />
+        <br />
+        
       </section>
       <footer className={styles.footer}>
         <strong>WTS / </strong> What&apos;s The Score
