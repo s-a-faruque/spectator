@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={openSans.className}>
-      <body>
+    <html lang="en" className={`h-full bg-gray-100 ${openSans.className}`}>
+      <body className="h-full">
         {children}
         <ClientClarity />
       </body>
