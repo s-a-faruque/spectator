@@ -5,9 +5,8 @@ import Header from '../../ui-components/Header';
 import Navigation from '../../ui-components/Navigation'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team & Groups', href: '#', current: false },
-  { name: 'Matches', href: '#', current: false },
+  { name: 'Tournaments', href: '#', current: true },
+  { name: 'Home', href: '/', current: false }
 ]
 
 export default function AdminTournamentPage() {
