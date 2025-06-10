@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { localStorageService } from '@/util/localStorageService';
-import { v4 as uuidv4 } from 'uuid';
+import { XCircleIcon } from '@heroicons/react/24/outline'
 
 type Tournament = {
   id: string;
@@ -32,13 +32,7 @@ export default function TournamentManager() {
             </p>
             <div className="flex gap-4 items-center">
               <a className="text-sm/6 text-gray-500" href={`/badminton/admin/tournament/${t.id}/matches`}>Manage Matches</a>
-              <button
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition"
-                onClick={() => handleDelete(t.id)}
-                title="Delete tournament"
-              >
-                Delete
-              </button>
+              <XCircleIcon onClick={() => handleDelete(t.id)} aria-hidden="true" className="size-6 text-red-400 group-data-open:block" />
             </div>
           </li>
         ))}

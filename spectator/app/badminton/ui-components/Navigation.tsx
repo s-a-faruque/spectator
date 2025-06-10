@@ -44,7 +44,7 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-700 hover:bg-green-50 hover:text-green-800 focus:ring-2 focus:ring-green-200 focus:ring-offset-2 focus:outline-none">
+            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-700 hover:bg-green-50 hover:text-gray-800 focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 focus:outline-none">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <Bars3Icon aria-hidden="true" className="block size-6 group-data-open:hidden" />

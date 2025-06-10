@@ -1,9 +1,6 @@
 'use client';
 
 import TournamentManager from '../components/TournamentManager';
-import styles from '../../scorer/badminton.module.css';
-import Image from "next/image";
-import Link from "next/link";
 import Header from '../../ui-components/Header';
 import Navigation from '../../ui-components/Navigation'
 
@@ -17,7 +14,7 @@ export default function AdminTournamentPage() {
   return (
     <div className="min-h-full">
       <Navigation navigation={navigation} />
-      <Header title="Tournament Dashboard" />
+      <Header title="Tournaments" />
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <TournamentManager />
