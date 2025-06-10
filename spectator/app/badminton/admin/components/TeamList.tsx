@@ -324,7 +324,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
   };
 
   return (
-    <div className="mt-6 p-6 w-full" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+    <div className="w-full">
       {editingName ? (
         <input
           className="text-lg font-bold mb-2 border rounded px-2 py-1 w-full"
