@@ -19,8 +19,8 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="shrink-0">
-              <Link href="/" className="text-green-800 text-lg font-bold">
-                <strong>WTS</strong>
+              <Link href="/" className="text-green-800 text-lg">
+                <strong>WTS</strong> / What's The Score
               </Link>
             </div>
             <div className="hidden md:block">
@@ -32,8 +32,8 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
                     aria-current={item.current ? 'page' : undefined}
                     className={classNames(
                       item.current
-                        ? 'bg-green-100 text-green-800 font-semibold'
-                        : 'text-gray-700 hover:bg-green-50 hover:text-green-800',
+                        ? 'bg-gray-100 text-green-800 font-semibold'
+                        : 'text-gray-700 hover:bg-white-50 hover:text-green-800',
                       'rounded-md px-3 py-2 text-sm font-medium transition'
                     )}
                   >
@@ -64,7 +64,7 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
               aria-current={item.current ? 'page' : undefined}
               className={classNames(
                 item.current
-                  ? 'bg-green-100 text-green-800 font-semibold'
+                  ? 'bg-gray-100 text-green-800 font-semibold'
                   : 'text-gray-700 hover:bg-green-50 hover:text-green-800',
                 'block rounded-md px-3 py-2 text-base font-medium transition'
               )}
