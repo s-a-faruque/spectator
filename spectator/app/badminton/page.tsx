@@ -1,5 +1,5 @@
-import Header from './components/Header'
-import Navigation from './components/Navigation'
+import Header from './ui-components/Header'
+import Navigation from './ui-components/Navigation'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
