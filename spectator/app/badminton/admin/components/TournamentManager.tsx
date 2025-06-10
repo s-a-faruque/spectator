@@ -11,7 +11,6 @@ type Tournament = {
 
 export default function TournamentManager() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [newTournamentName, setNewTournamentName] = useState('');
   
   useEffect(() => {
     setTournaments(localStorageService.getAll<Tournament>('tournaments'));
@@ -24,8 +23,7 @@ export default function TournamentManager() {
   };
 
   return (
-    <div className="mt-6 p-6 w-full" style={{ maxHeight: '600px', overflowY: 'auto' }}>
-      <h3>Existing Tournaments</h3>
+    <div className="w-full">
       <ul role="list" className="divide-y divide-gray-100 w-full">
         {tournaments.map(t => (
           <li key={t.id} className="flex justify-between gap-x-6 py-5 w-full items-center">

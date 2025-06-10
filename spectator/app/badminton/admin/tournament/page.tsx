@@ -4,29 +4,25 @@ import TournamentManager from '../components/TournamentManager';
 import styles from '../../scorer/badminton.module.css';
 import Image from "next/image";
 import Link from "next/link";
+import Header from '../../ui-components/Header';
+import Navigation from '../../ui-components/Navigation'
+
+const navigation = [
+  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Team & Groups', href: '#', current: false },
+  { name: 'Matches', href: '#', current: false },
+]
 
 export default function AdminTournamentPage() {
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <h1>
-          <Link className={styles.home} href="/">
-              <Image
-                src="/homepage.png"
-                alt="Home Icon"
-                width={16}
-                height={16}
-              />
-          </Link>
-          Admin Tournament
-        </h1>
-        
-      </header>
-      <div className={styles.primaryContent}>
-        <div className={styles.matchesList}>
+    <div className="min-h-full">
+      <Navigation navigation={navigation} />
+      <Header title="Tournament Dashboard" />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <TournamentManager />
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
