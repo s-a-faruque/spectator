@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import styles from '../../../scorer/badminton.module.css'
-import Image from 'next/image'
 import Link from 'next/link'
+import Header from '../../../ui-components/Header';
+import Navigation from '../../../ui-components/Navigation'
 import TeamList from '../../components/TeamList'
-
 
 export default function CreateTournamentPage() {
   const [numTeams, setNumTeams] = useState(4);
@@ -56,24 +55,18 @@ export default function CreateTournamentPage() {
     setTournamentCreated(false)
   }
 
+  const navigation = [
+    { name: 'Tournaments', href: '#', current: true },
+    { name: 'Home', href: '/', current: false }
+  ]
+
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <h1>
-          <Link className={styles.home} href="/badminton/admin/tournament">
-              <Image
-                src="/homepage.png"
-                alt="Home Icon"
-                width={16}
-                height={16}
-              />
-          </Link>
-          Admin Home
-        </h1>
-        
-      </header>
-      <div className={styles.primaryContent}>
-        <div className="max-w-md mx-auto p-6 space-y-4">
+    <div className="min-h-full">
+      <Navigation navigation={navigation} />
+      <Header title="Tournaments" />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto space-y-4 mb-8">
             <label className="block">
                 <span className="text-gray-700">Number of Teams:</span>
                 <input
@@ -97,21 +90,13 @@ export default function CreateTournamentPage() {
             >
               {tournamentCreated ? 'Tournament Created' : 'Generate and Save'}
             </button>
+          </div>
+          {tournamentId && (
+           <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
+          )}
+        
         </div>
-        {tournamentId && (
-          <>
-            <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
-            <div className="mt-4 text-center">
-              <Link
-                href={`/badminton/admin/tournament/${tournamentId}/matches`}
-                className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              >
-                Manage Matches
-              </Link>
-            </div>
-          </>
-        )}
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

@@ -415,7 +415,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
       {/* Scroll to Group Assignment Button */}
       <div className="flex w-full gap-2 mb-4">
         <button
-          className="flex-1 bg-purple-500 text-white px-3 py-1 text-sm rounded"
+          className="flex-1 bg-gray-100 text-black px-3 py-1 text-sm rounded"
           onClick={handleScrollToGroupAssign}
           type="button"
         >
@@ -424,7 +424,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
         {tournament && (
           <Link
             href={`/badminton/admin/tournament/${tournament.id}/matches`}
-            className="flex-1 bg-blue-100 text-white px-3 py-1 rounded text-center text-sm"
+            className="flex-1 bg-gray-100 text-black px-3 py-1 rounded text-center text-sm"
           >
             Go to Matches
           </Link>
@@ -488,7 +488,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                 <ul className="mt-1 truncate text-xs/5 text-gray-500">
                     {team.players.map(player => (
-                        <li key={player.id} className="flex items-center gap-2">
+                        <li key={player.id} className="border-b-1 border-b-gray-100 flex items-center gap-2 mb-2 pb-2">
                           {editingPlayer && editingPlayer.teamId === team.id && editingPlayer.playerId === player.id ? (
                             <input
                               className="border rounded px-1 py-0.5 text-xs"
@@ -526,7 +526,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
       </ul>
       {/* Group assignment UI */}
       <div ref={groupAssignRef} className="mb-4 flex items-center gap-2 bg-gray-100 p-4 rounded">
-        <label className="font-semibold">Number of Groups:</label>
+        <label className="font-sm">Number of Groups:</label>
         <input
           type="number"
           min={2}
@@ -536,10 +536,10 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
             const val = e.target.value.replace(/^0+/, ''); // Remove leading zeros
             setGroupInput(val === '' ? 0 : Math.max(2, Number(val)));
           }}
-          className="border rounded px-2 py-1 w-20"
+          className="border border-gray-400 rounded px-2 py-1 w-20"
         />
         <button
-          className="bg-purple-600 text-white px-3 py-1 rounded"
+          className="bg-purple-600 text-white px-3 py-1 rounded font-sm"
           onClick={handleAssignGroups}
         >
           Assign
@@ -550,16 +550,16 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
           <h4 className="font-semibold">Groups</h4>
           <div className="grid grid-cols-2 gap-4">
             {tournament.groups.map(group => (
-              <div key={group.id} className="border rounded p-2">
-                <div className="font-bold mb-1">{group.name}</div>
+              <div key={group.id} className="border-1 border-gray-100 rounded p-2">
+                <div className="mb-1">{group.name}</div>
                 <ul className="text-xs text-gray-700">
                   {group.teamIds.map((tid: string) => {
                     const t = teams.find(tm => tm.id === tid);
                     return t ? (
-                      <li key={tid} className="flex items-center gap-2">
+                      <li key={tid} className="flex items-center gap-2 mb-2 text-sm">
                         {t.name}
                         <select
-                          className="ml-2 border rounded px-1 py-0.5 text-xs"
+                          className="ml-2 border-1 border-gray-100 rounded px-1 py-0.5 text-xs"
                           value={group.id}
                           onChange={e => handleMoveTeam(tid, e.target.value)}
                         >
