@@ -20,7 +20,7 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
           <div className="flex items-center">
             <div className="shrink-0">
               <Link href="/" className="text-green-800 text-lg">
-                <strong>WTS</strong> / What's The Score
+                <strong>WTS</strong> / What&apos;s The Score
               </Link>
             </div>
             <div className="hidden md:block">
