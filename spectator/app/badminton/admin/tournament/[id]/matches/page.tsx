@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { generateGroupStageMatches } from '../../../utils/matchGeneration';
+import Navigation from '@/app/badminton/ui-components/Navigation';
+import Header from '@/app/badminton/ui-components/Header';
 
 interface Params {
   id: string;
@@ -276,37 +278,19 @@ export default function MatchPage({ params }: { params: Params }) {
     } catch {}
   };
 
+  const navigation = [
+    { name: 'Tournament Team', href: `/badminton/admin/tournament/${id}/`, current: false },
+    { name: 'Home', href: '/', current: false },
+    { name: 'Matches', href: '#', current: true },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+  ];
+
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <h1>
-          <Link className={styles.home} href="/badminton/admin/tournament">
-              <Image
-                src="/homepage.png"
-                alt="Home Icon"
-                width={16}
-                height={16}
-              />
-          </Link>
-          Admin Manage Matches
-        </h1>
-        <button
-          className="ml-4 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-          onClick={handleGenerateGroupMatches}
-          type="button"
-        >
-          Generate Group Round Robin Matches
-        </button>
-        {/* Print Button for Match List */}
-        <div className="mb-4 flex justify-end">
-          <Link href={`/badminton/admin/tournament/${id}/matches/export`} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-white-700 transition">
-            Export
-          </Link>
-        </div>
-      </header>
-      <div className={styles.primaryContent}>
-        
-        <div className={styles.matchesList}>
+    <div className="min-h-full">
+      <Navigation navigation={navigation} />
+      <Header title="Tournament Dashboard" />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <form className="mb-6 p-4 border rounded bg-white" onSubmit={handleAddMatch}>
             <div className="flex flex-wrap gap-4 items-end">
               <div>
@@ -693,7 +677,7 @@ export default function MatchPage({ params }: { params: Params }) {
             </ul>
           )}
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
