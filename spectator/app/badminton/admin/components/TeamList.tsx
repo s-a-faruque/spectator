@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 
 interface Player {
   id: string;
@@ -38,6 +39,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
   const [groupInput, setGroupInput] = useState(2);
   const [addingTeam, setAddingTeam] = useState(false);
   const [newTeamName, setNewTeamName] = useState('');
+  const groupAssignRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -356,8 +358,13 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
     setNewTeamName('');
   };
 
+  const handleScrollToGroupAssign = () => {
+    groupAssignRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="w-full">
+      {/* Tournament Name Editing */}
       {editingName ? (
         <input
           className="text-lg font-bold mb-2 border rounded px-2 py-1 w-full"
@@ -371,6 +378,58 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
           {tournament?.name || 'Tournament'}
         </h3>
       )}
+      {/* Add Team Button and Form */}
+      <div className="mb-4">
+        {addingTeam ? (
+          <div className="flex gap-2 items-center">
+            <input
+              className="border rounded px-2 py-1 text-sm"
+              type="text"
+              value={newTeamName}
+              onChange={e => setNewTeamName(e.target.value)}
+              placeholder="Team name"
+              autoFocus
+            />
+            <button
+              className="bg-green-600 text-white px-2 py-1 rounded text-sm"
+              onClick={handleAddTeam}
+            >
+              Add
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-sm"
+              onClick={() => { setAddingTeam(false); setNewTeamName(''); }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+            onClick={() => setAddingTeam(true)}
+          >
+            + Create New Team
+          </button>
+        )}
+      </div>
+      {/* Scroll to Group Assignment Button */}
+      <div className="flex w-full gap-2 mb-4">
+        <button
+          className="flex-1 bg-purple-500 text-white px-3 py-1 text-sm rounded"
+          onClick={handleScrollToGroupAssign}
+          type="button"
+        >
+          Assign Groups
+        </button>
+        {tournament && (
+          <Link
+            href={`/badminton/admin/tournament/${tournament.id}/matches`}
+            className="flex-1 bg-blue-100 text-white px-3 py-1 rounded text-center text-sm"
+          >
+            Go to Matches
+          </Link>
+        )}
+      </div>
       <ul role="list" className="divide-y divide-gray-100 w-full">
         {teams.map(team => (
           <li key={team.id} className="flex justify-between gap-x-6 py-5 w-full">
@@ -466,8 +525,8 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
         ))}
       </ul>
       {/* Group assignment UI */}
-      <div className="mb-4 flex items-center gap-2">
-        <label className="font-semibold">Number of Groups (even):</label>
+      <div ref={groupAssignRef} className="mb-4 flex items-center gap-2 bg-gray-100 p-4 rounded">
+        <label className="font-semibold">Number of Groups:</label>
         <input
           type="number"
           min={2}
@@ -483,7 +542,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
           className="bg-purple-600 text-white px-3 py-1 rounded"
           onClick={handleAssignGroups}
         >
-          Assign Teams to Groups
+          Assign
         </button>
       </div>
       {tournament?.groups && tournament.groups.length > 0 && (
@@ -525,40 +584,7 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
           Delete Tournament
         </button>
       )}
-      {/* Add Team Button and Form */}
-      <div className="mb-4">
-        {addingTeam ? (
-          <div className="flex gap-2 items-center">
-            <input
-              className="border rounded px-2 py-1 text-sm"
-              type="text"
-              value={newTeamName}
-              onChange={e => setNewTeamName(e.target.value)}
-              placeholder="Team name"
-              autoFocus
-            />
-            <button
-              className="bg-green-600 text-white px-2 py-1 rounded text-sm"
-              onClick={handleAddTeam}
-            >
-              Add
-            </button>
-            <button
-              className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-sm"
-              onClick={() => { setAddingTeam(false); setNewTeamName(''); }}
-            >
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <button
-            className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-            onClick={() => setAddingTeam(true)}
-          >
-            + Create New Team
-          </button>
-        )}
-      </div>
+      
     </div>
   );
 }

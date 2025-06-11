@@ -12,7 +12,8 @@ export default function TournamentPage({ params }: { params: Params }) {
   const navigation = [
     { name: 'Tournament Team', href: '#', current: true },
     { name: 'Home', href: '/', current: false },
-    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: false }
+    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: false },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
   ];
   return (
     <div className="min-h-full">
