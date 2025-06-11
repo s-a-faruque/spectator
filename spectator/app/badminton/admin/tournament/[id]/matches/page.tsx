@@ -291,6 +291,23 @@ export default function MatchPage({ params }: { params: Params }) {
       <Header title="Tournament Dashboard" />
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex w-full gap-2 mb-4">
+            <button
+              className="flex-1 bg-purple-500 text-white px-3 py-1 text-sm rounded"
+              onClick={handleGenerateGroupMatches}
+              type="button"
+            >
+              Generate Matches
+            </button>
+            
+            {/* <Link
+              href={`/badminton/admin/tournament/${id}/matches/export`}
+              className="flex-1 bg-blue-100 text-white px-3 py-1 rounded text-center text-sm"
+            >
+              Export Schedule
+            </Link> */}
+          </div>
+          
           <form className="mb-6 p-4 border rounded bg-white" onSubmit={handleAddMatch}>
             <div className="flex flex-wrap gap-4 items-end">
               <div>
