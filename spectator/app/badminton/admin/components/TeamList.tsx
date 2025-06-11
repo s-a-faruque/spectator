@@ -36,6 +36,8 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
   const [editingPlayer, setEditingPlayer] = useState<{ teamId: string; playerId: string } | null>(null);
   const [editedPlayerName, setEditedPlayerName] = useState<string>("");
   const [groupInput, setGroupInput] = useState(2);
+  const [addingTeam, setAddingTeam] = useState(false);
+  const [newTeamName, setNewTeamName] = useState('');
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -323,6 +325,37 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
     }
   };
 
+  // New state for adding a team
+  // (removed duplicate declaration of addingTeam and newTeamName)
+
+  // Handler to add a new team
+  const handleAddTeam = () => {
+    if (!tournament || !newTeamName.trim()) return;
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments: Tournament[] = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex(t => t.id === tournament.id);
+        if (tIdx !== -1) {
+          const newTeam = {
+            id: `team_${Date.now()}`,
+            name: newTeamName.trim(),
+            players: [],
+          };
+          tournaments[tIdx].teams.push(newTeam);
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+          setTeams(prev => [...prev, newTeam]);
+          setTournament({
+            ...tournament,
+            teams: [...tournament.teams, newTeam],
+          });
+        }
+      } catch {}
+    }
+    setAddingTeam(false);
+    setNewTeamName('');
+  };
+
   return (
     <div className="w-full">
       {editingName ? (
@@ -492,6 +525,40 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
           Delete Tournament
         </button>
       )}
+      {/* Add Team Button and Form */}
+      <div className="mb-4">
+        {addingTeam ? (
+          <div className="flex gap-2 items-center">
+            <input
+              className="border rounded px-2 py-1 text-sm"
+              type="text"
+              value={newTeamName}
+              onChange={e => setNewTeamName(e.target.value)}
+              placeholder="Team name"
+              autoFocus
+            />
+            <button
+              className="bg-green-600 text-white px-2 py-1 rounded text-sm"
+              onClick={handleAddTeam}
+            >
+              Add
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-sm"
+              onClick={() => { setAddingTeam(false); setNewTeamName(''); }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+            onClick={() => setAddingTeam(true)}
+          >
+            + Create New Team
+          </button>
+        )}
+      </div>
     </div>
   );
 }
