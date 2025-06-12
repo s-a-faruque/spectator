@@ -24,7 +24,7 @@ export default function Navigation({ navigation }: { navigation: NavigationItem[
               </Link>
             </div>
             <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
+              <div className="ml-10 flex items-baseline space-x-4 print:hidden">
                 {navigation && navigation.map((item) => (
                   <Link
                     key={item.name}
