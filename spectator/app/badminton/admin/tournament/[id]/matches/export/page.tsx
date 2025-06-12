@@ -4,6 +4,7 @@ import styles from '../../../../../scorer/badminton.module.css';
 import { useEffect, useState } from 'react';
 import Header from '../../../../../ui-components/Header';
 import Navigation from '../../../../../ui-components/Navigation'
+import { PrinterIcon } from '@heroicons/react/24/outline';
 
 interface Params {
   id: string;
@@ -81,15 +82,30 @@ export default function MatchExportPage({ params }: { params: Params }) {
   ];
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full print:block">
           <Navigation navigation={navigation} />
           <Header title={tournamentName} />
           <main>
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-              <div className={styles.matchesList + ' print:bg-white print:text-black print:p-0'}>
+              <div className={styles.matchesList + ''}>
                 {matches.length === 0 ? (
                   <div className="text-gray-500">No matches found for this tournament.</div>
                 ) : (
+                  <> 
+                    <div className="w-full flex mb-4 print:hidden gap-2 justify-end">
+                      <button
+                        className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-900 transition"
+                        onClick={() => {
+                          const before = document.title;
+                          document.title = `${tournamentName || 'Tournament'}-Schedule`;
+                          window.print();
+                          setTimeout(() => { document.title = before; }, 1000);
+                        }}
+                        type="button"
+                      >
+                      <PrinterIcon aria-hidden="true" className="block size-6" />
+                    </button>
+                  </div>
                   <table className="w-full border border-gray-300 text-xs print:text-xs print:w-full print:border-black">
                     <thead>
                       <tr className="bg-gray-100 print:bg-white">
@@ -123,6 +139,7 @@ export default function MatchExportPage({ params }: { params: Params }) {
                       ))}
                     </tbody>
                   </table>
+                  </>
                 )}
               </div>
             </div>
