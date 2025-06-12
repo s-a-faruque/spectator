@@ -691,9 +691,10 @@ export default function MatchPage({ params }: { params: Params }) {
                       )}
                       {Array.isArray(m.setScores) && m.setScores.length > 0 && (
                         <div className="ml-2 text-xs text-gray-700">
+                           Score: 
                           {m.setScores.map((set: any) => (
                             <span key={set.setNo} className={set.winner ? (set.winner === 'A' ? 'text-green-700' : 'text-blue-700') : ''}>
-                              Score: [Set {set.setNo}: {set.teamAScore}-{set.teamBScore}{set.winner ? `, Winner: ${set.winner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}` : ''}]
+                             [Set {set.setNo}: {set.teamAScore}-{set.teamBScore}{set.winner ? `, Winner: ${set.winner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}` : ''}]
                             </span>
                           ))}
                         </div>
