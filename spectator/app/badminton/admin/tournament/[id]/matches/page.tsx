@@ -59,10 +59,11 @@ export default function MatchPage({ params }: { params: Params }) {
   const [groupOptions, setGroupOptions] = useState<string[]>([]);
   const [editingMatchId, setEditingMatchId] = useState<string | null>(null);
   const [editMatch, setEditMatch] = useState<Partial<Match> & { teamAPlayers?: string[]; teamBPlayers?: string[] }>({});
-  const [numSets, setNumSets] = useState(3); // Default number of sets
+  const [numSets, setNumSets] = useState(1); // Default number of sets
   const [winPoints, setWinPoints] = useState(2); // Default points for winning
   const [setScores, setSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([ { setNo: 1, teamAScore: 0, teamBScore: 0 }, { setNo: 2, teamAScore: 0, teamBScore: 0 }, { setNo: 3, teamAScore: 0, teamBScore: 0 } ]);
   const [editSetScores, setEditSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
 
   useEffect(() => {
     // Load tournament from localStorage
@@ -79,9 +80,9 @@ export default function MatchPage({ params }: { params: Params }) {
             (team.players || []).map((p: any) => ({ ...p, teamId: team.id }))
           );
           setPlayers(allPlayers);
-          // Get group options for group stage
           if (tournament.groups && Array.isArray(tournament.groups)) {
             setGroupOptions(tournament.groups.map((g: any) => g.id));
+            setGroups(tournament.groups);
           }
         }
       } catch {}
@@ -277,6 +278,8 @@ export default function MatchPage({ params }: { params: Params }) {
       setMatches(tournament.matches);
     } catch {}
   };
+
+  const getGroupName = (groupId: string) => groups.find(g => g.id === groupId)?.name || groupId;
 
   const navigation = [
     { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: false },
@@ -672,13 +675,14 @@ export default function MatchPage({ params }: { params: Params }) {
                       {m.status && (
                         <span className="ml-2 text-xs text-pink-700">[{m.status}]</span>
                       )}
+                      <br />
                       {m.groupId && (
-                        <span className="ml-2 text-xs text-purple-700">[Group: {m.groupId}]</span>
+                        <span className="ml-2 text-xs text-purple-700">[{getGroupName(m.groupId)}]</span>
                       )}
                       {m.round && (
                         <span className="ml-2 text-xs text-orange-700">[{m.round}]</span>
                       )}
-                      <span className="ml-2 text-xs text-blue-700">[{m.stage}]</span>
+                      <span className="ml-2 text-xs text-blue-700">[{m.stage} Stage]</span>
                       {typeof m.numSets === 'number' && (
                         <span className="ml-2 text-xs text-yellow-700">[{m.numSets} sets]</span>
                       )}
@@ -689,7 +693,7 @@ export default function MatchPage({ params }: { params: Params }) {
                         <div className="ml-2 text-xs text-gray-700">
                           {m.setScores.map((set: any) => (
                             <span key={set.setNo} className={set.winner ? (set.winner === 'A' ? 'text-green-700' : 'text-blue-700') : ''}>
-                              [Set {set.setNo}: {set.teamAScore}-{set.teamBScore}{set.winner ? `, Winner: ${set.winner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}` : ''}]
+                              Score: [Set {set.setNo}: {set.teamAScore}-{set.teamBScore}{set.winner ? `, Winner: ${set.winner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}` : ''}]
                             </span>
                           ))}
                         </div>
