@@ -83,67 +83,67 @@ export default function MatchExportPage({ params }: { params: Params }) {
 
   return (
     <div className="min-h-full print:block">
-          <Navigation navigation={navigation} />
-          <Header title={tournamentName} />
-          <main>
-            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-              <div className={styles.matchesList + ''}>
-                {matches.length === 0 ? (
-                  <div className="text-gray-500">No matches found for this tournament.</div>
-                ) : (
-                  <> 
-                    <div className="w-full flex mb-4 print:hidden gap-2 justify-end">
-                      <button
-                        className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-900 transition"
-                        onClick={() => {
-                          const before = document.title;
-                          document.title = `${tournamentName || 'Tournament'}-Schedule`;
-                          window.print();
-                          setTimeout(() => { document.title = before; }, 1000);
-                        }}
-                        type="button"
-                      >
-                      <PrinterIcon aria-hidden="true" className="block size-6" />
-                    </button>
-                  </div>
-                  <table className="w-full border border-gray-300 text-xs print:text-xs print:w-full print:border-black">
-                    <thead>
-                      <tr className="bg-gray-100 print:bg-white">
-                        <th className="border px-2 py-1">#</th>
-                        <th className="border px-2 py-1">Team A</th>
-                        <th className="border px-2 py-1">Team B</th>
-                        <th className="border px-2 py-1">Players</th>
-                        <th className="border px-2 py-1">Court</th>
-                        <th className="border px-2 py-1">Date/Time</th>
-                        <th className="border px-2 py-1">Stage</th>
+      <Navigation navigation={navigation} />
+      <Header title={tournamentName} />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className={styles.matchesList + ''}>
+            {matches.length === 0 ? (
+              <div className="text-gray-500">No matches found for this tournament.</div>
+            ) : (
+              <> 
+                <div className="w-full flex mb-4 print:hidden gap-2 justify-end">
+                  <button
+                    className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-900 transition"
+                    onClick={() => {
+                      const before = document.title;
+                      document.title = `${tournamentName || 'Tournament'}-Schedule`;
+                      window.print();
+                      setTimeout(() => { document.title = before; }, 1000);
+                    }}
+                    type="button"
+                  >
+                    <PrinterIcon aria-hidden="true" className="block size-6" />
+                  </button>
+                </div>
+                <table className="w-full border border-gray-300 text-xs print:text-xs print:w-full print:border-black">
+                  <thead>
+                    <tr className="bg-gray-100 print:bg-white">
+                      <th className="border px-2 py-1">#</th>
+                      <th className="border px-2 py-1">Team A</th>
+                      <th className="border px-2 py-1">Team B</th>
+                      <th className="border px-2 py-1">Players</th>
+                      <th className="border px-2 py-1">Court</th>
+                      <th className="border px-2 py-1">Date/Time</th>
+                      <th className="border px-2 py-1">Stage</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {matches.map((m: any, idx: number) => (
+                      <tr key={m.id} className="border-b print:border-black">
+                        <td className="border px-2 py-1 text-center">{idx + 1}</td>
+                        <td className="border px-2 py-1 font-semibold">{getTeamName(m.teamA)}</td>
+                        <td className="border px-2 py-1 font-semibold">{getTeamName(m.teamB)}</td>
+                        <td className="border px-2 py-1">
+                          {Array.isArray(m.teamAPlayers) && Array.isArray(m.teamBPlayers) ? (
+                            <span>
+                              <span className="font-medium">A:</span> {m.teamAPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}<br />
+                              <span className="font-medium">B:</span> {m.teamBPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
+                            </span>
+                          ) : '--'}
+                        </td>
+                        <td className="border px-2 py-1">{m.court || ''}</td>
+                        <td className="border px-2 py-1">{m.dateTime ? new Date(m.dateTime).toLocaleString() : ''}</td>
+                        <td className="border px-2 py-1">{m.stage}{m.groupId ? ` (${getGroupName(m.groupId)})` : m.round ? ` (${m.round})` : ''}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {matches.map((m: any, idx: number) => (
-                        <tr key={m.id} className="border-b print:border-black">
-                          <td className="border px-2 py-1 text-center">{idx + 1}</td>
-                          <td className="border px-2 py-1 font-semibold">{getTeamName(m.teamA)}</td>
-                          <td className="border px-2 py-1 font-semibold">{getTeamName(m.teamB)}</td>
-                          <td className="border px-2 py-1">
-                            {Array.isArray(m.teamAPlayers) && Array.isArray(m.teamBPlayers) ? (
-                              <span>
-                                <span className="font-medium">A:</span> {m.teamAPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}<br />
-                                <span className="font-medium">B:</span> {m.teamBPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
-                              </span>
-                            ) : '--'}
-                          </td>
-                          <td className="border px-2 py-1">{m.court || ''}</td>
-                          <td className="border px-2 py-1">{m.dateTime ? new Date(m.dateTime).toLocaleString() : ''}</td>
-                          <td className="border px-2 py-1">{m.stage}{m.groupId ? ` (${getGroupName(m.groupId)})` : m.round ? ` (${m.round})` : ''}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  </>
-                )}
-              </div>
-            </div>
-          </main>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </div>
         </div>
+      </main>
+    </div>
   );
 }

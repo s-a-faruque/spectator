@@ -4,6 +4,9 @@ import styles from '../../../../../scorer/badminton.module.css';
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Header from '../../../../../ui-components/Header';
+import Navigation from '../../../../../ui-components/Navigation'
+import { PrinterIcon } from '@heroicons/react/24/outline';
 
 interface Params {
   id: string;
@@ -37,6 +40,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [groupOptions, setGroupOptions] = useState<string[]>([]);
+  const [tournamentName, setTournamentName] = useState<string>('');
 
   useEffect(() => {
     const tournamentsRaw = localStorage.getItem('tournaments');
@@ -45,6 +49,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
         const tournaments = JSON.parse(tournamentsRaw);
         const tournament = tournaments.find((t: any) => t.id === id);
         if (tournament) {
+          setTournamentName(tournament.name || 'Tournament');
           setMatches(tournament.matches || []);
           setTeams(tournament.teams || []);
           if (tournament.groups && Array.isArray(tournament.groups)) {
@@ -115,62 +120,80 @@ export default function PointsTablePage({ params }: { params: Params }) {
   };
   const groupLeaderboards = computeGroupLeaderboards();
 
+  const navigation = [
+    { name: 'Tournament Team', href: `/badminton/admin/tournament/${id}/`, current: false },
+    { name: 'Home', href: '/', current: false },
+    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches/`, current: false },
+    { name: 'Schedule Export', href: '#', current: true },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+  ];
+
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <h1>
-          <Link className={styles.home} href="/badminton/admin/tournament">
-            <Image src="/homepage.png" alt="Home Icon" width={16} height={16} />
-          </Link>
-          Points Table
-        </h1>
-      </header>
-      <div className={styles.primaryContent}>
-        {groupLeaderboards && Object.keys(groupLeaderboards).length > 0 ? (
-          <div className="mb-8">
-            <h2 className="text-lg font-bold mb-2">Group Leaderboards</h2>
-            {Object.entries(groupLeaderboards).map(([groupId, teams]) => (
-              <div key={groupId} className="mb-4">
-                <h3 className="font-semibold mb-1">Group {groupId}</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-max border border-gray-300 text-xs">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="px-2 py-1 border">Team</th>
-                        <th className="px-2 py-1 border">Played</th>
-                        <th className="px-2 py-1 border">Won</th>
-                        <th className="px-2 py-1 border">Lost</th>
-                        <th className="px-2 py-1 border">Sets Won</th>
-                        <th className="px-2 py-1 border">Sets Lost</th>
-                        <th className="px-2 py-1 border">Points For</th>
-                        <th className="px-2 py-1 border">Points Against</th>
-                        <th className="px-2 py-1 border">Total Points</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(teams as any[]).map(team => (
-                        <tr key={team.teamId}>
-                          <td className="px-2 py-1 border font-semibold">{team.teamName}</td>
-                          <td className="px-2 py-1 border text-center">{team.played}</td>
-                          <td className="px-2 py-1 border text-center">{team.won}</td>
-                          <td className="px-2 py-1 border text-center">{team.lost}</td>
-                          <td className="px-2 py-1 border text-center">{team.setsWon}</td>
-                          <td className="px-2 py-1 border text-center">{team.setsLost}</td>
-                          <td className="px-2 py-1 border text-center">{team.pointsFor}</td>
-                          <td className="px-2 py-1 border text-center">{team.pointsAgainst}</td>
-                          <td className="px-2 py-1 border text-center font-bold">{team.totalPoints}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+    <div className="min-h-full print:block">
+      <Navigation navigation={navigation} />
+      <Header title={tournamentName} />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          {groupLeaderboards && Object.keys(groupLeaderboards).length > 0 ? (
+            <div className="mb-8">
+              <h2 className="text-lg font-bold mb-2">Group Leaderboards</h2>
+              <div className="w-full flex mb-4 print:hidden gap-2 justify-end">
+                  <button
+                    className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-900 transition"
+                    onClick={() => {
+                      const before = document.title;
+                      document.title = `${tournamentName || 'Tournament'} - Points Table`;
+                      window.print();
+                      setTimeout(() => { document.title = before; }, 1000);
+                    }}
+                    type="button"
+                  >
+                    <PrinterIcon aria-hidden="true" className="block size-6" />
+                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-gray-500">No group matches found for this tournament.</div>
-        )}
-      </div>
-    </main>
+              {Object.entries(groupLeaderboards).map(([groupId, teams]) => (
+                <div key={groupId} className="mb-4">
+                  <h3 className="font-semibold mb-1">Group {groupId}</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-max border border-gray-300 text-xs">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="px-2 py-1 border">Team</th>
+                          <th className="px-2 py-1 border">Played</th>
+                          <th className="px-2 py-1 border">Won</th>
+                          <th className="px-2 py-1 border">Lost</th>
+                          <th className="px-2 py-1 border">Sets Won</th>
+                          <th className="px-2 py-1 border">Sets Lost</th>
+                          <th className="px-2 py-1 border">Points For</th>
+                          <th className="px-2 py-1 border">Points Against</th>
+                          <th className="px-2 py-1 border">Total Points</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(teams as any[]).map(team => (
+                          <tr key={team.teamId}>
+                            <td className="px-2 py-1 border font-semibold">{team.teamName}</td>
+                            <td className="px-2 py-1 border text-center">{team.played}</td>
+                            <td className="px-2 py-1 border text-center">{team.won}</td>
+                            <td className="px-2 py-1 border text-center">{team.lost}</td>
+                            <td className="px-2 py-1 border text-center">{team.setsWon}</td>
+                            <td className="px-2 py-1 border text-center">{team.setsLost}</td>
+                            <td className="px-2 py-1 border text-center">{team.pointsFor}</td>
+                            <td className="px-2 py-1 border text-center">{team.pointsAgainst}</td>
+                            <td className="px-2 py-1 border text-center font-bold">{team.totalPoints}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-500">No group matches found for this tournament.</div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 }
