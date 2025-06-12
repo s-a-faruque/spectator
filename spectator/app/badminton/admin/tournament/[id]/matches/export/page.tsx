@@ -44,6 +44,7 @@ export default function MatchExportPage({ params }: { params: Params }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [tournamentName, setTournamentName] = useState<string>('');
+  const [groups, setGroups] = useState<any[]>([]);
 
   useEffect(() => {
     // Load tournament from localStorage
@@ -61,11 +62,13 @@ export default function MatchExportPage({ params }: { params: Params }) {
           );
           setPlayers(allPlayers);
           setTournamentName(tournament.name || 'Tournament');
+          setGroups(tournament.groups || []);
         }
       } catch {}
     }
   }, [id]);
 
+  const getGroupName = (groupId: string) => groups.find(g => g.id === groupId)?.name || groupId;
   const getTeamName = (teamId: string) => teams.find(t => t.id === teamId)?.name || teamId;
   const getPlayerName = (playerId: string) => players.find(p => p.id === playerId)?.name || playerId;
 
@@ -115,7 +118,7 @@ export default function MatchExportPage({ params }: { params: Params }) {
                           </td>
                           <td className="border px-2 py-1">{m.court || ''}</td>
                           <td className="border px-2 py-1">{m.dateTime ? new Date(m.dateTime).toLocaleString() : ''}</td>
-                          <td className="border px-2 py-1">{m.stage}{m.groupId ? ` (${m.groupId})` : m.round ? ` (${m.round})` : ''}</td>
+                          <td className="border px-2 py-1">{m.stage}{m.groupId ? ` (${getGroupName(m.groupId)})` : m.round ? ` (${m.round})` : ''}</td>
                         </tr>
                       ))}
                     </tbody>
