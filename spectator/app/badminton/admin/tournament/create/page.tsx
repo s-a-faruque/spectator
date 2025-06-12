@@ -12,11 +12,6 @@ export default function CreateTournamentPage() {
   const [tournamentCreated, setTournamentCreated] = useState(false);
 
   const handleCreate = () => {
-    if (!numTeams || numTeams < 2) {
-      alert('Number of teams must be at least 2')
-      return
-    }
-
     // Always generate a new tournamentId on create
     const newTournamentId = `tournament_${Math.random().toString(36).substring(2, 8)}`;
     const teams = Array.from({ length: numTeams }, (_, i) => {
@@ -71,12 +66,12 @@ export default function CreateTournamentPage() {
                 <span className="text-gray-700">Number of Teams:</span>
                 <input
                 type="number"
-                min={2}
+                min={1}
                 className="mt-1 w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-400"
                 value={numTeams === 0 ? '' : numTeams}
                 onChange={e => {
                   const val = e.target.value.replace(/^0+/, ''); // Remove leading zeros
-                  setNumTeams(val === '' ? 0 : Math.max(2, Number(val)));
+                  setNumTeams(val === '' ? 0 : Math.max(1, Number(val)));
                 }}
                 disabled={tournamentCreated}
                 />
@@ -84,7 +79,7 @@ export default function CreateTournamentPage() {
 
             <button
               onClick={handleCreate}
-              className={`px-4 py-2 rounded transition duration-200 ${tournamentCreated ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
+              className={`px-4 py-2 rounded transition duration-200 ${tournamentCreated ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
               disabled={tournamentCreated}
               title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Generate and Save'}
             >
