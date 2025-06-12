@@ -286,29 +286,41 @@ export default function MatchPage({ params }: { params: Params }) {
     { name: 'Export Schedule', href: `/badminton/admin/tournament/${id}/matches/export`, current: false }
   ];
 
+  const [showAddForm, setShowAddForm] = useState(false);
+
   return (
     <div className="min-h-full">
       <Navigation navigation={navigation} />
-      <Header title="Tournament Dashboard" />
+      <Header title="Tournament Matches" />
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex w-full gap-2 mb-4">
             <button
-              className="flex-1 bg-purple-500 text-white px-3 py-1 text-sm rounded"
+              className="flex-1 bg-purple-600 text-white px-3 py-1 text-sm rounded"
               onClick={handleGenerateGroupMatches}
               type="button"
             >
               Generate Matches
             </button>
             
-            {/* <Link
+            <Link
               href={`/badminton/admin/tournament/${id}/matches/export`}
-              className="flex-1 bg-blue-100 text-white px-3 py-1 rounded text-center text-sm"
+              className="flex-1 bg-gray-100 text-white px-3 py-1 rounded text-center text-sm"
             >
               Export Schedule
-            </Link> */}
+            </Link>
           </div>
-          
+          {/* Toggle Add Match Form */}
+          <div className="mb-4">
+            <button
+              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+              type="button"
+              onClick={() => setShowAddForm((prev: boolean) => !prev)}
+            >
+              {showAddForm ? 'Hide Add Match Form' : '+ Add Match'}
+            </button>
+          </div>
+          {showAddForm && (
           <form className="mb-6 p-4 border rounded bg-white" onSubmit={handleAddMatch}>
             <div className="flex flex-wrap gap-4 items-end">
               <div>
@@ -477,6 +489,7 @@ export default function MatchPage({ params }: { params: Params }) {
               </div>
             </div>
           </form>
+          )}
           {matches.length === 0 ? (
             <div className="text-gray-500">No matches found for this tournament.</div>
           ) : (
