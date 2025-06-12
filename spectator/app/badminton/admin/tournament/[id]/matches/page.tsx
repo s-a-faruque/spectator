@@ -279,10 +279,11 @@ export default function MatchPage({ params }: { params: Params }) {
   };
 
   const navigation = [
-    { name: 'Tournament Team', href: `/badminton/admin/tournament/${id}/`, current: false },
-    { name: 'Home', href: '/', current: false },
-    { name: 'Matches', href: '#', current: true },
-    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+    { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: false },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
+    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: true },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false },
+    { name: 'Export Schedule', href: `/badminton/admin/tournament/${id}/matches/export`, current: false }
   ];
 
   return (

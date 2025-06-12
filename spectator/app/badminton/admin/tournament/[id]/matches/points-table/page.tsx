@@ -121,11 +121,11 @@ export default function PointsTablePage({ params }: { params: Params }) {
   const groupLeaderboards = computeGroupLeaderboards();
 
   const navigation = [
-    { name: 'Tournament Team', href: `/badminton/admin/tournament/${id}/`, current: false },
-    { name: 'Home', href: '/', current: false },
-    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches/`, current: false },
-    { name: 'Schedule Export', href: '#', current: true },
-    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+    { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: false },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
+    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: false },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: true },
+    { name: 'Export Schedule', href: `/badminton/admin/tournament/${id}/matches/export`, current: false }
   ];
 
   return (

@@ -74,11 +74,11 @@ export default function MatchExportPage({ params }: { params: Params }) {
   const getPlayerName = (playerId: string) => players.find(p => p.id === playerId)?.name || playerId;
 
   const navigation = [
-    { name: 'Tournament Team', href: `/badminton/admin/tournament/${id}/`, current: false },
-    { name: 'Home', href: '/', current: false },
-    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches/`, current: false },
-    { name: 'Schedule Export', href: '#', current: true },
-    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+    { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: false },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
+    { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: false },
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false },
+    { name: 'Export Schedule', href: `/badminton/admin/tournament/${id}/matches/export`, current: true }
   ];
 
   return (

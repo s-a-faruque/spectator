@@ -5,9 +5,9 @@ import Header from '../../ui-components/Header';
 import Navigation from '../../ui-components/Navigation'
 
 const navigation = [
-  { name: 'Tournaments', href: '#', current: true },
-  { name: 'Home', href: '/', current: false }
-]
+    { name: 'Create A Tournament', href: '/badminton/admin/tournament/create', current: false },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: true },
+  ]
 
 export default function AdminTournamentPage() {
   return (

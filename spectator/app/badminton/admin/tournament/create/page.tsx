@@ -51,8 +51,8 @@ export default function CreateTournamentPage() {
   }
 
   const navigation = [
-    { name: 'Tournaments', href: '#', current: true },
-    { name: 'Home', href: '/', current: false }
+    { name: 'Create A Tournament', href: '#', current: true },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
   ]
 
   return (

@@ -10,11 +10,13 @@ interface Params {
 export default function TournamentPage({ params }: { params: Params }) {
   const { id } = params;
   const navigation = [
-    { name: 'Tournament Team', href: '#', current: true },
-    { name: 'Home', href: '/', current: false },
+    { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: true },
+    { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
     { name: 'Matches', href: `/badminton/admin/tournament/${id}/matches`, current: false },
-    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false }
+    { name: 'Point Tables', href: `/badminton/admin/tournament/${id}/matches/points-table`, current: false },
+    { name: 'Export Schedule', href: `/badminton/admin/tournament/${id}/matches/export`, current: false }
   ];
+  
   return (
     <div className="min-h-full">
       <Navigation navigation={navigation} />
