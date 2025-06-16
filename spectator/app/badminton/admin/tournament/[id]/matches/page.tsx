@@ -397,7 +397,7 @@ export default function MatchPage({ params }: { params: Params }) {
                   <select className="border rounded px-2 py-1" value={groupId} onChange={e => setGroupId(e.target.value)} required>
                     <option value="">Select Group</option>
                     {groupOptions.map(gid => (
-                      <option key={gid} value={gid}>{gid}</option>
+                      <option key={gid} value={gid}>{getGroupName(gid)}</option>
                     ))}
                   </select>
                 </div>
@@ -466,6 +466,7 @@ export default function MatchPage({ params }: { params: Params }) {
             </div>
             <div className="mt-4 flex flex-wrap gap-4">
               <div>
+                <label className="block"><hr /></label>
                 <label className="block text-sm font-medium mb-1">Set Scores</label>
                 {setScores.map((set, idx) => (
                   <div key={set.setNo} className="flex items-center gap-2 mb-1">
