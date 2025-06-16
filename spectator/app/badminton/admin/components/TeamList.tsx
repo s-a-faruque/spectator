@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { BackspaceIcon } from '@heroicons/react/24/outline';
 
 interface Player {
   id: string;
@@ -362,6 +363,25 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
     groupAssignRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Handler to delete a team
+  const handleDeleteTeam = (teamId: string) => {
+    if (!window.confirm('Are you sure you want to delete this team?')) return;
+    // Remove from local state
+    setTeams(prev => prev.filter(t => t.id !== teamId));
+    // Remove from localStorage
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex((t: any) => t.id === tournamentId);
+        if (tIdx !== -1) {
+          tournaments[tIdx].teams = tournaments[tIdx].teams.filter((t: any) => t.id !== teamId);
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+        }
+      } catch {}
+    }
+  };
+
   return (
     <div className="w-full">
       {/* Tournament Name Editing */}
@@ -450,7 +470,14 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
                     title="Click to edit"
                   >
                     {team.name}
-                  </p>
+                    <button
+                      className="ml-2"
+                      onClick={() => handleDeleteTeam(team.id)}
+                      type="button"
+                    >
+                      <BackspaceIcon className="h-4 w-4 inline-block" />
+                    </button>
+                  </p> 
                 )}
                 {/* Add Player UI */}
                 {addingPlayerTeamId === team.id ? (
