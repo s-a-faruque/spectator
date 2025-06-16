@@ -316,7 +316,7 @@ export default function MatchPage({ params }: { params: Params }) {
           {/* Toggle Add Match Form */}
           <div className="mb-4">
             <button
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+              className="bg-indigo-600 text-white text-sm px-3 py-1 rounded hover:bg-indigo-700 transition"
               type="button"
               onClick={() => setShowAddForm((prev: boolean) => !prev)}
             >
@@ -462,7 +462,7 @@ export default function MatchPage({ params }: { params: Params }) {
                   required
                 />
               </div>
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Add Match</button>
+              <button type="submit" className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700 transition">Add Match</button>
             </div>
             <div className="mt-4 flex flex-wrap gap-4">
               <div>
