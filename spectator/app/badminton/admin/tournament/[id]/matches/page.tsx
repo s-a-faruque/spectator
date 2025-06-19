@@ -43,6 +43,7 @@ interface Player {
 
 export default function MatchPage({ params }: { params: Params }) {
   const { id } = params;
+  const [tournament, setTournament] = useState<any>(null);
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -73,6 +74,7 @@ export default function MatchPage({ params }: { params: Params }) {
         const tournaments = JSON.parse(tournamentsRaw);
         const tournament = tournaments.find((t: any) => t.id === id);
         if (tournament) {
+          setTournament(tournament);
           setMatches(tournament.matches || []);
           setTeams(tournament.teams || []);
           // Flatten all players from all teams
@@ -658,6 +660,25 @@ export default function MatchPage({ params }: { params: Params }) {
                       <span className="font-semibold">{getTeamName(m.teamA)}</span>
                       <span className="mx-2 text-gray-500">vs</span>
                       <span className="font-semibold">{getTeamName(m.teamB)}</span>
+                      <span className="ml-4 text-xs text-blue-600 underline">
+                        <button
+                          className={styles.cta}
+                          onClick={() => {
+                            const uniqueId = m.id.toString();
+                            const params = new URLSearchParams({
+                              tournamentId: tournament.id,
+                              noOfSets: m.numSets,
+                              homePlayerName: m.teamAPlayers ? m.teamAPlayers.join(', ') : '',
+                              awayPlayerName: m.teamBPlayers ? m.teamBPlayers.join(', ') : '',
+                              homeTeamName: m.teamA,
+                              awayTeamName: m.teamB
+                            });
+                            window.location.assign(`/badminton/scorer/match/${uniqueId}?${params.toString()}`);
+                          }}
+                        >
+                          Start Live Scoring
+                        </button>
+                      </span>
                       {Array.isArray(m.teamAPlayers) && (
                         <p>
                           <span className="ml-2 text-xs text-gray-700">[
