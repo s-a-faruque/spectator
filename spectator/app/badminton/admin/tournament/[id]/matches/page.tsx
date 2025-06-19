@@ -658,6 +658,17 @@ export default function MatchPage({ params }: { params: Params }) {
                       <span className="font-semibold">{getTeamName(m.teamA)}</span>
                       <span className="mx-2 text-gray-500">vs</span>
                       <span className="font-semibold">{getTeamName(m.teamB)}</span>
+                      <span className="ml-4 text-xs text-blue-600 underline">
+                        <button
+                          className={styles.cta}
+                          onClick={() => {
+                            const uniqueId = m.id.toString();
+                            window.location.assign(`/badminton/scorer/match/${uniqueId}`);
+                          }}
+                        >
+                          Start Live Scoring
+                        </button>
+                      </span>
                       {Array.isArray(m.teamAPlayers) && (
                         <p>
                           <span className="ml-2 text-xs text-gray-700">[
