@@ -51,16 +51,22 @@ const EditableLabel: React.FC<EditableLabelProps> = ({ value, onChange }) => {
 };
 interface Params {
   id: string;
+  tournamentId?: string;
+  noOfSets?: number;
+  homePlayerName?: string;
+  awayPlayerName?: string;
+  homeTeamName?: string;
+  awayTeamName?: string;
 }
 export default function Match({ params }: { params: Params }) {
-  const { id } = params;
+  const { id, tournamentId, noOfSets, homePlayerName: paramHomePlayerName, awayPlayerName: paramAwayPlayerName, homeTeamName, awayTeamName } = params;
   const [matchFinished, setMatchFinished] = React.useState(false);
   const [homePlayerScore, setHomePlayerScore] = React.useState(0);
   const [awayPlayerScore, setAwayPlayerScore] = React.useState(0);
   const [scoreHistory, setScoreHistory] = React.useState<{ home: number; away: number }[]>([]);
   const [winner, setWinner] = React.useState('');
-  const [homePlayerName, setHomePlayerName] = useState('Home');
-  const [awayPlayerName, setAwayPlayerName] = useState('Away');
+  const [homePlayerName, setHomePlayerName] = useState(paramHomePlayerName || 'Home');
+  const [awayPlayerName, setAwayPlayerName] = useState(paramAwayPlayerName || 'Away');
   const [matchType, setMatchType] = useState('best-of-1');
   const [matchScore, setMatchScore] = useState(null);
 

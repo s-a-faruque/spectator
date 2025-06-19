@@ -43,6 +43,7 @@ interface Player {
 
 export default function MatchPage({ params }: { params: Params }) {
   const { id } = params;
+  const [tournament, setTournament] = useState<any>(null);
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -73,6 +74,7 @@ export default function MatchPage({ params }: { params: Params }) {
         const tournaments = JSON.parse(tournamentsRaw);
         const tournament = tournaments.find((t: any) => t.id === id);
         if (tournament) {
+          setTournament(tournament);
           setMatches(tournament.matches || []);
           setTeams(tournament.teams || []);
           // Flatten all players from all teams
@@ -663,7 +665,15 @@ export default function MatchPage({ params }: { params: Params }) {
                           className={styles.cta}
                           onClick={() => {
                             const uniqueId = m.id.toString();
-                            window.location.assign(`/badminton/scorer/match/${uniqueId}`);
+                            const params = new URLSearchParams({
+                              tournamentId: tournament.id,
+                              noOfSets: m.numSets,
+                              homePlayerName: m.teamAPlayers ? m.teamAPlayers.join(', ') : '',
+                              awayPlayerName: m.teamBPlayers ? m.teamBPlayers.join(', ') : '',
+                              homeTeamName: m.teamA,
+                              awayTeamName: m.teamB
+                            });
+                            window.location.assign(`/badminton/scorer/match/${uniqueId}?${params.toString()}`);
                           }}
                         >
                           Start Live Scoring
