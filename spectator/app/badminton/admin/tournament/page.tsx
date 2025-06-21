@@ -3,6 +3,7 @@
 import TournamentManager from '../components/TournamentManager';
 import Header from '../../ui-components/Header';
 import Navigation from '../../ui-components/Navigation'
+import Footer from '../../ui-components/Footer'
 
 const navigation = [
     { name: 'Create A Tournament', href: '/badminton/admin/tournament/create', current: false },
@@ -19,6 +20,7 @@ export default function AdminTournamentPage() {
           <TournamentManager />
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import Header from '../../../ui-components/Header';
 import Navigation from '../../../ui-components/Navigation'
+import Footer from '../../../ui-components/Footer'
 import TeamList from '../../components/TeamList'
 
 export default function CreateTournamentPage() {
@@ -56,10 +56,10 @@ export default function CreateTournamentPage() {
   ]
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-screen flex flex-col">
       <Navigation navigation={navigation} />
       <Header title="Tournaments" />
-      <main>
+      <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="max-w-md mx-auto space-y-4 mb-8">
             <label className="block">
@@ -89,9 +89,9 @@ export default function CreateTournamentPage() {
           {tournamentId && (
            <TeamList tournamentId={tournamentId} onTournamentDeleted={handleTournamentDeleted} />
           )}
-        
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

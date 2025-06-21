@@ -53,6 +53,15 @@ export default function CardsPage() {
       </section>
       <footer className={styles.footer}>
         <strong>WTS / </strong> What&apos;s The Score
+        
+        <button
+          className='pl-4 ml-4 bg-gray-100 hover:bg-gray-600 font-semibold py-2 px-4 rounded'
+          onClick={() => {
+            window.location.assign(`/feedback`);
+          }}
+        >
+          Feedback Please! <span role="img" aria-label="smile">😊</span>
+        </button>
       </footer>
     </main>
   );

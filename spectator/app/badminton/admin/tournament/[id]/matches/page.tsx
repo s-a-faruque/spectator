@@ -1,12 +1,11 @@
 'use client';
 
-import styles from '../../../../scorer/badminton.module.css';
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { generateGroupStageMatches } from '../../../utils/matchGeneration';
 import Navigation from '@/app/badminton/ui-components/Navigation';
 import Header from '@/app/badminton/ui-components/Header';
+import Footer from '@/app/badminton/ui-components/Footer';
 
 interface Params {
   id: string;
@@ -292,10 +291,10 @@ export default function MatchPage({ params }: { params: Params }) {
   const [showAddForm, setShowAddForm] = useState(false);
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full flex flex-col">
       <Navigation navigation={navigation} />
       <Header title="Tournament Matches" />
-      <main>
+      <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex w-full gap-2 mb-4">
             <button
@@ -715,6 +714,7 @@ export default function MatchPage({ params }: { params: Params }) {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
