@@ -100,11 +100,11 @@ const MatchListItem: React.FC<{
   return (
     <li key={m.id}>
       {editingMatchId === m.id ? (
-        <div className="p-2 border rounded bg-gray-50 mb-2">
+        <div className="p-2 border border-gray-200/60 rounded bg-white-50 mt-2 mb-2">
           <div className="flex flex-wrap gap-2 items-end">
             <div>
               <label className="block text-xs">Team A</label>
-              <select className="border rounded px-2 py-1" value={editMatch.teamA || ''} onChange={e => handleEditChange('teamA', e.target.value)} required>
+              <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.teamA || ''} onChange={e => handleEditChange('teamA', e.target.value)} required>
                 <option value="">Select Team</option>
                 {teams.map(t => (
                   <option key={t.id} value={t.id}>{t.name}</option>
@@ -114,7 +114,7 @@ const MatchListItem: React.FC<{
                 <div className="mt-1">
                   <label className="block text-xs">Players (select 2)</label>
                   <select
-                    className="border rounded px-2 py-1 w-full"
+                    className="border border-gray-200/60 rounded px-2 py-1 w-full"
                     multiple
                     value={editMatch.teamAPlayers || []}
                     onChange={e => {
@@ -133,7 +133,7 @@ const MatchListItem: React.FC<{
             </div>
             <div>
               <label className="block text-xs">Team B</label>
-              <select className="border rounded px-2 py-1" value={editMatch.teamB || ''} onChange={e => handleEditChange('teamB', e.target.value)} required>
+              <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.teamB || ''} onChange={e => handleEditChange('teamB', e.target.value)} required>
                 <option value="">Select Team</option>
                 {teams.map(t => (
                   <option key={t.id} value={t.id}>{t.name}</option>
@@ -143,7 +143,7 @@ const MatchListItem: React.FC<{
                 <div className="mt-1">
                   <label className="block text-xs">Players (select 2)</label>
                   <select
-                    className="border rounded px-2 py-1 w-full"
+                    className="border border-gray-200/60 rounded px-2 py-1 w-full"
                     multiple
                     value={editMatch.teamBPlayers || []}
                     onChange={e => {
@@ -162,7 +162,7 @@ const MatchListItem: React.FC<{
             </div>
             <div>
               <label className="block text-xs">Stage</label>
-              <select className="border rounded px-2 py-1" value={editMatch.stage || 'group'} onChange={e => handleEditChange('stage', e.target.value)}>
+              <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.stage || 'group'} onChange={e => handleEditChange('stage', e.target.value)}>
                 <option value="group">Group</option>
                 <option value="knockout">Knockout</option>
               </select>
@@ -170,7 +170,7 @@ const MatchListItem: React.FC<{
             {editMatch.stage === 'group' && groupOptions.length > 0 && (
               <div>
                 <label className="block text-xs">Group</label>
-                <select className="border rounded px-2 py-1" value={editMatch.groupId || ''} onChange={e => handleEditChange('groupId', e.target.value)} required>
+                <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.groupId || ''} onChange={e => handleEditChange('groupId', e.target.value)} required>
                   <option value="">Select Group</option>
                   {groupOptions.map(gid => (
                     <option key={gid} value={gid}>{gid}</option>
@@ -181,20 +181,20 @@ const MatchListItem: React.FC<{
             {editMatch.stage === 'knockout' && (
               <div>
                 <label className="block text-xs">Round</label>
-                <input className="border rounded px-2 py-1" value={editMatch.round || ''} onChange={e => handleEditChange('round', e.target.value)} placeholder="e.g. quarterfinal" required />
+                <input className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.round || ''} onChange={e => handleEditChange('round', e.target.value)} placeholder="e.g. quarterfinal" required />
               </div>
             )}
             <div>
               <label className="block text-xs">Court</label>
-              <input className="border rounded px-2 py-1" value={editMatch.court || ''} onChange={e => handleEditChange('court', e.target.value)} />
+              <input className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.court || ''} onChange={e => handleEditChange('court', e.target.value)} />
             </div>
             <div>
               <label className="block text-xs">Date & Time</label>
-              <input className="border rounded px-2 py-1" type="datetime-local" value={editMatch.dateTime || ''} onChange={e => handleEditChange('dateTime', e.target.value)} />
+              <input className="border border-gray-200/60 rounded px-2 py-1" type="datetime-local" value={editMatch.dateTime || ''} onChange={e => handleEditChange('dateTime', e.target.value)} />
             </div>
             <div>
               <label className="block text-xs">Status</label>
-              <select className="border rounded px-2 py-1" value={editMatch.status || 'scheduled'} onChange={e => handleEditChange('status', e.target.value)}>
+              <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.status || 'scheduled'} onChange={e => handleEditChange('status', e.target.value)}>
                 <option value="scheduled">Scheduled</option>
                 <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
@@ -203,7 +203,7 @@ const MatchListItem: React.FC<{
             <div>
               <label className="block text-xs">Number of Sets</label>
               <input
-                className="border rounded px-2 py-1 w-20"
+                className="border border-gray-200/60 rounded px-2 py-1 w-20"
                 type="number"
                 min={1}
                 max={5}
@@ -215,7 +215,7 @@ const MatchListItem: React.FC<{
             <div>
               <label className="block text-xs">Points for Win</label>
               <input
-                className="border rounded px-2 py-1 w-20"
+                className="border border-gray-200/60 rounded px-2 py-1 w-20"
                 type="number"
                 min={1}
                 value={editMatch.winPoints || 2}
@@ -230,7 +230,7 @@ const MatchListItem: React.FC<{
                   <span className="text-xs">Set {set.setNo}:</span>
                   <input
                     type="number"
-                    className="border rounded px-1 py-0.5 w-14"
+                    className="border border-gray-200/60 rounded px-1 py-0.5 w-14"
                     min={0}
                     value={set.teamAScore}
                     onChange={e => handleEditSetScoreChange(idx, 'A', Number(e.target.value))}
@@ -239,7 +239,7 @@ const MatchListItem: React.FC<{
                   <span className="text-xs">-</span>
                   <input
                     type="number"
-                    className="border rounded px-1 py-0.5 w-14"
+                    className="border border-gray-200/60 rounded px-1 py-0.5 w-14"
                     min={0}
                     value={set.teamBScore}
                     onChange={e => handleEditSetScoreChange(idx, 'B', Number(e.target.value))}
