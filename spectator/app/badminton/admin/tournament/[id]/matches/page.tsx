@@ -504,7 +504,7 @@ export default function MatchPage({ params }: { params: Params }) {
           {matches.length === 0 ? (
             <div className="text-gray-500">No matches found for this tournament.</div>
           ) : (
-            <ul className="divide-y divide-gray-200">
+            <ul role="list" className="-my-6 divide-y divide-gray-200">
               {matches.map((m: any) => (
                 <MatchListItem
                   key={m.id}
