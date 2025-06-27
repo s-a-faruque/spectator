@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { generateGroupStageMatches } from '../../../utils/matchGeneration';
 import Navigation from '@/app/badminton/ui-components/Navigation';
+import MatchListItem from '@/app/badminton/admin/components/MatchListItem';
 import Header from '@/app/badminton/ui-components/Header';
 import Footer from '@/app/badminton/ui-components/Footer';
+import React from 'react';
 
 interface Params {
   id: string;
@@ -32,6 +34,7 @@ interface Match {
 interface Team {
   id: string;
   name: string;
+  tournamentId: string;
 }
 
 interface Player {
@@ -73,7 +76,12 @@ export default function MatchPage({ params }: { params: Params }) {
         const tournament = tournaments.find((t: any) => t.id === id);
         if (tournament) {
           setMatches(tournament.matches || []);
-          setTeams(tournament.teams || []);
+
+          setTeams((tournament.teams || []).map((team: any) => ({
+            ...team,
+            tournamentId: tournament.id
+          })));
+          // setTeams(tournament.teams || []);
           // Flatten all players from all teams
           const allPlayers: Player[] = (tournament.teams || []).flatMap((team: any) =>
             (team.players || []).map((p: any) => ({ ...p, teamId: team.id }))
@@ -498,217 +506,28 @@ export default function MatchPage({ params }: { params: Params }) {
           ) : (
             <ul className="divide-y divide-gray-200">
               {matches.map((m: any) => (
-                <li key={m.id} className="py-2">
-                  {editingMatchId === m.id ? (
-                    <div className="p-2 border rounded bg-gray-50 mb-2">
-                      <div className="flex flex-wrap gap-2 items-end">
-                        <div>
-                          <label className="block text-xs">Team A</label>
-                          <select className="border rounded px-2 py-1" value={editMatch.teamA || ''} onChange={e => handleEditChange('teamA', e.target.value)} required>
-                            <option value="">Select Team</option>
-                            {teams.map(t => (
-                              <option key={t.id} value={t.id}>{t.name}</option>
-                            ))}
-                          </select>
-                          {editMatch.teamA && (
-                            <div className="mt-1">
-                              <label className="block text-xs">Players (select 2)</label>
-                              <select
-                                className="border rounded px-2 py-1 w-full"
-                                multiple
-                                value={editMatch.teamAPlayers || []}
-                                onChange={e => {
-                                  const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
-                                  handleEditPlayerChange('A', selected);
-                                }}
-                                size={2}
-                                required
-                              >
-                                {getPlayersForTeam(editMatch.teamA).map(p => (
-                                  <option key={p.id} value={p.id}>{p.name}</option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-xs">Team B</label>
-                          <select className="border rounded px-2 py-1" value={editMatch.teamB || ''} onChange={e => handleEditChange('teamB', e.target.value)} required>
-                            <option value="">Select Team</option>
-                            {teams.map(t => (
-                              <option key={t.id} value={t.id}>{t.name}</option>
-                            ))}
-                          </select>
-                          {editMatch.teamB && (
-                            <div className="mt-1">
-                              <label className="block text-xs">Players (select 2)</label>
-                              <select
-                                className="border rounded px-2 py-1 w-full"
-                                multiple
-                                value={editMatch.teamBPlayers || []}
-                                onChange={e => {
-                                  const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
-                                  handleEditPlayerChange('B', selected);
-                                }}
-                                size={2}
-                                required
-                              >
-                                {getPlayersForTeam(editMatch.teamB).map(p => (
-                                  <option key={p.id} value={p.id}>{p.name}</option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-xs">Stage</label>
-                          <select className="border rounded px-2 py-1" value={editMatch.stage || 'group'} onChange={e => handleEditChange('stage', e.target.value)}>
-                            <option value="group">Group</option>
-                            <option value="knockout">Knockout</option>
-                          </select>
-                        </div>
-                        {editMatch.stage === 'group' && groupOptions.length > 0 && (
-                          <div>
-                            <label className="block text-xs">Group</label>
-                            <select className="border rounded px-2 py-1" value={editMatch.groupId || ''} onChange={e => handleEditChange('groupId', e.target.value)} required>
-                              <option value="">Select Group</option>
-                              {groupOptions.map(gid => (
-                                <option key={gid} value={gid}>{gid}</option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                        {editMatch.stage === 'knockout' && (
-                          <div>
-                            <label className="block text-xs">Round</label>
-                            <input className="border rounded px-2 py-1" value={editMatch.round || ''} onChange={e => handleEditChange('round', e.target.value)} placeholder="e.g. quarterfinal" required />
-                          </div>
-                        )}
-                        <div>
-                          <label className="block text-xs">Court</label>
-                          <input className="border rounded px-2 py-1" value={editMatch.court || ''} onChange={e => handleEditChange('court', e.target.value)} />
-                        </div>
-                        <div>
-                          <label className="block text-xs">Date & Time</label>
-                          <input className="border rounded px-2 py-1" type="datetime-local" value={editMatch.dateTime || ''} onChange={e => handleEditChange('dateTime', e.target.value)} />
-                        </div>
-                        <div>
-                          <label className="block text-xs">Status</label>
-                          <select className="border rounded px-2 py-1" value={editMatch.status || 'scheduled'} onChange={e => handleEditChange('status', e.target.value)}>
-                            <option value="scheduled">Scheduled</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs">Number of Sets</label>
-                          <input
-                            className="border rounded px-2 py-1 w-20"
-                            type="number"
-                            min={1}
-                            max={5}
-                            value={editMatch.numSets || 3}
-                            onChange={e => handleEditChange('numSets', Number(e.target.value))}
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs">Points for Win</label>
-                          <input
-                            className="border rounded px-2 py-1 w-20"
-                            type="number"
-                            min={1}
-                            value={editMatch.winPoints || 2}
-                            onChange={e => handleEditChange('winPoints', Number(e.target.value))}
-                            required
-                          />
-                        </div>
-                        <div className="mt-2">
-                          <label className="block text-xs mb-1">Set Scores</label>
-                          {editSetScores.map((set, idx) => (
-                            <div key={set.setNo} className="flex items-center gap-2 mb-1">
-                              <span className="text-xs">Set {set.setNo}:</span>
-                              <input
-                                type="number"
-                                className="border rounded px-1 py-0.5 w-14"
-                                min={0}
-                                value={set.teamAScore}
-                                onChange={e => handleEditSetScoreChange(idx, 'A', Number(e.target.value))}
-                                placeholder="A score"
-                              />
-                              <span className="text-xs">-</span>
-                              <input
-                                type="number"
-                                className="border rounded px-1 py-0.5 w-14"
-                                min={0}
-                                value={set.teamBScore}
-                                onChange={e => handleEditSetScoreChange(idx, 'B', Number(e.target.value))}
-                                placeholder="B score"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <button className="bg-blue-600 text-white px-3 py-1 rounded mr-2" onClick={handleEditSave} type="button">Save</button>
-                        <button className="bg-gray-400 text-white px-3 py-1 rounded" onClick={handleEditCancel} type="button">Cancel</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <span className="font-semibold">{getTeamName(m.teamA)}</span>
-                      <span className="mx-2 text-gray-500">vs</span>
-                      <span className="font-semibold">{getTeamName(m.teamB)}</span>
-                      {Array.isArray(m.teamAPlayers) && (
-                        <p>
-                          <span className="ml-2 text-xs text-gray-700">[
-                          {m.teamAPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
-                          {' '}vs{' '}
-                          {m.teamBPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
-                        ]</span>
-                        </p>
-                      )}
-                      {m.court && (
-                        <span className="ml-2 text-xs text-green-700">[Court: {m.court}]</span>
-                      )}
-                      {m.dateTime && (
-                        <span className="ml-2 text-xs text-gray-700">[Time: {new Date(m.dateTime).toLocaleString()}]</span>
-                      )}
-                      {m.status && (
-                        <span className="ml-2 text-xs text-pink-700">[{m.status}]</span>
-                      )}
-                      <br />
-                      {m.groupId && (
-                        <span className="ml-2 text-xs text-purple-700">[{getGroupName(m.groupId)}]</span>
-                      )}
-                      {m.round && (
-                        <span className="ml-2 text-xs text-orange-700">[{m.round}]</span>
-                      )}
-                      <span className="ml-2 text-xs text-blue-700">[{m.stage} Stage]</span>
-                      {typeof m.numSets === 'number' && (
-                        <span className="ml-2 text-xs text-yellow-700">[{m.numSets} sets]</span>
-                      )}
-                      {typeof m.winPoints === 'number' && (
-                        <span className="ml-2 text-xs text-yellow-700">[Win: {m.winPoints} pts]</span>
-                      )}
-                      {Array.isArray(m.setScores) && m.setScores.length > 0 && (
-                        <div className="ml-2 text-xs text-gray-700">
-                           Score: 
-                          {m.setScores.map((set: any) => (
-                            <span key={set.setNo} className={set.winner ? (set.winner === 'A' ? 'text-green-700' : 'text-blue-700') : ''}>
-                             [Set {set.setNo}: {set.teamAScore}-{set.teamBScore}{set.winner ? `, Winner: ${set.winner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}` : ''}]
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {m.matchWinner && (
-                        <span className={m.matchWinner === 'A' ? 'ml-2 text-green-800 font-bold' : 'ml-2 text-blue-800 font-bold'}>
-                          Match Winner: {m.matchWinner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}
-                        </span>
-                      )}
-                      <button className="ml-4 text-xs text-blue-600 underline" onClick={() => handleEditClick(m)} type="button">Edit</button>
-                      <button className="ml-2 text-xs text-red-600 underline" onClick={() => handleDeleteMatch(m.id)} type="button">Delete</button>
-                    </div>
-                  )}
-                </li>
+                <MatchListItem
+                  key={m.id}
+                  m={m}
+                  editingMatchId={editingMatchId}
+                  editMatch={editMatch}
+                  editSetScores={editSetScores}
+                  teams={teams}
+                  players={players}
+                  groupOptions={groupOptions}
+                  groups={groups}
+                  getTeamName={getTeamName}
+                  getPlayerName={getPlayerName}
+                  getPlayersForTeam={getPlayersForTeam}
+                  handleEditClick={handleEditClick}
+                  handleDeleteMatch={handleDeleteMatch}
+                  handleEditChange={handleEditChange}
+                  handleEditPlayerChange={handleEditPlayerChange}
+                  handleEditSetScoreChange={handleEditSetScoreChange}
+                  handleEditSave={handleEditSave}
+                  handleEditCancel={handleEditCancel}
+                  getGroupName={getGroupName}
+                />
               ))}
             </ul>
           )}
