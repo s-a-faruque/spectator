@@ -342,29 +342,53 @@ const MatchListItem: React.FC<{
                       </div>
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
                         <form onSubmit={e => { e.preventDefault(); handleSaveScores(); }}>
-                          {setScores.map((set, idx) => (
-                            <div key={set.setNo} className="flex items-center gap-2 mb-2">
-                              <span className="text-xs">Set {set.setNo}:</span>
-                              <input
-                                type="number"
-                                className="border rounded px-1 py-0.5 w-14"
-                                min={0}
-                                value={set.teamAScore}
-                                onChange={e => handleSetScoreChange(idx, 'A', Number(e.target.value))}
-                                placeholder="A score"
-                              />
-                              <span className="text-xs">-</span>
-                              <input
-                                type="number"
-                                className="border rounded px-1 py-0.5 w-14"
-                                min={0}
-                                value={set.teamBScore}
-                                onChange={e => handleSetScoreChange(idx, 'B', Number(e.target.value))}
-                                placeholder="B score"
-                              />
-                            </div>
-                          ))}
-                          <button type="submit" className="mt-4 w-full bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">Save Scores</button>
+                          <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white">
+                            <table className="w-full text-left table-auto min-w-max">
+                              <thead>    
+                                <tr>
+                                  <th className='p-4 border-b border-blue-gray-100 bg-blue-gray-50'><p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Set</p></th>      
+                                  <th className='p-4 border-b border-blue-gray-100 bg-blue-gray-50'><p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Team A </p></th>
+                                  <th className='p-4 border-b border-blue-gray-100 bg-blue-gray-50'><p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Team B </p></th>    
+                                </tr>  
+                              </thead>  
+                              <tbody>
+                                {setScores.map((set, idx) => (
+                                  <tr key={set.setNo} className="">      
+                                    <td className='p-4 border-b border-gray-200/60'>
+                                      <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                        Set {set.setNo}:
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-gray-200/60">
+                                      <input
+                                        type="number"
+                                        className="border border-gray-300/60 rounded px-1 py-0.5 w-14"
+                                        min={0}
+                                        value={set.teamAScore}
+                                        onChange={e => handleSetScoreChange(idx, 'A', Number(e.target.value))}
+                                        placeholder="A score"
+                                      />
+                                    </td>
+                                    <td className='p-4 border-b border-gray-200/60'>
+                                      <input
+                                        type="number"
+                                        className="border border-gray-300/60 rounded px-1 py-0.5 w-14"
+                                        min={0}
+                                        value={set.teamBScore}
+                                        onChange={e => handleSetScoreChange(idx, 'B', Number(e.target.value))}
+                                        placeholder="B score"
+                                      />
+                                    </td>
+                                  </tr>
+                                ))}
+                                <tr>
+                                  <td colSpan={3} className="p-4 text-right">
+                                    <button type="submit" className="bg-indigo-600 text-white text-sm px-3 py-1 rounded hover:bg-indigo-700 transition">Save Scores</button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </form>
                       </div>
                     </div>
