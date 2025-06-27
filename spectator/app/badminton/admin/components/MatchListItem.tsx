@@ -44,6 +44,58 @@ const MatchListItem: React.FC<{
   handleEditChange, handleEditPlayerChange, handleEditSetScoreChange, handleEditSave, handleEditCancel, getGroupName
 }) => {
   const [open, setOpen] = useState(false);
+  const [setScores, setSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>(
+    m.setScores || Array.from({ length: m.numSets || 3 }, (_, i) => ({ setNo: i + 1, teamAScore: 0, teamBScore: 0 }))
+  );
+
+  const getSetWinner = (set: { teamAScore: number; teamBScore: number }): 'A' | 'B' | null => {
+    if (set.teamAScore > set.teamBScore) return 'A';
+    if (set.teamBScore > set.teamAScore) return 'B';
+    return null;
+  };
+  const getMatchWinner = (setScores: { teamAScore: number; teamBScore: number }[], numSets: number): 'A' | 'B' | null => {
+    let aWins = 0, bWins = 0;
+    setScores.forEach(set => {
+      const winner = getSetWinner(set);
+      if (winner === 'A') aWins++;
+      if (winner === 'B') bWins++;
+    });
+    const needed = Math.ceil((m.numSets || 3) / 2);
+    if (aWins >= needed) return 'A';
+    if (bWins >= needed) return 'B';
+    return null;
+  };
+
+  const handleSetScoreChange = (setIdx: number, team: 'A' | 'B', value: number) => {
+    setSetScores(prev =>
+      prev.map((s, i) =>
+        i === setIdx ? { ...s, ...(team === 'A' ? { teamAScore: value } : { teamBScore: value }) } : s
+      )
+    );
+  };
+
+  const handleSaveScores = () => {
+    const setScoresWithWinners = setScores.map(set => ({ ...set, winner: getSetWinner(set) as 'A' | 'B' | null }));
+    const matchWinner = getMatchWinner(setScores, m.numSets || 3) as 'A' | 'B' | null;
+    // Save to localStorage for the correct match id
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments = JSON.parse(tournamentsRaw);
+        // Find the tournament containing this match
+        const tIdx = tournaments.findIndex((t: any) => Array.isArray(t.matches) && t.matches.some((match: any) => match.id === m.id));
+        if (tIdx !== -1) {
+          tournaments[tIdx].matches = tournaments[tIdx].matches.map((match: any) =>
+            match.id === m.id ? { ...match, setScores: setScoresWithWinners, matchWinner } : match
+          );
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+        }
+      } catch {}
+    }
+    setOpen(false);
+    window.location.reload(); // Optionally, trigger a refresh or callback
+  };
+
   return (
     <li key={m.id} className="py-2">
       {editingMatchId === m.id ? (
@@ -264,7 +316,6 @@ const MatchListItem: React.FC<{
               transition
               className="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0"
             />
-
             <div className="fixed inset-0 overflow-hidden">
               <div className="absolute inset-0 overflow-hidden">
                 <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
@@ -290,8 +341,31 @@ const MatchListItem: React.FC<{
                         <DialogTitle className="text-base font-semibold text-gray-900">Set Score</DialogTitle>
                       </div>
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                        {/* Your content */}
-                        Wow, this is a drawer!
+                        <form onSubmit={e => { e.preventDefault(); handleSaveScores(); }}>
+                          {setScores.map((set, idx) => (
+                            <div key={set.setNo} className="flex items-center gap-2 mb-2">
+                              <span className="text-xs">Set {set.setNo}:</span>
+                              <input
+                                type="number"
+                                className="border rounded px-1 py-0.5 w-14"
+                                min={0}
+                                value={set.teamAScore}
+                                onChange={e => handleSetScoreChange(idx, 'A', Number(e.target.value))}
+                                placeholder="A score"
+                              />
+                              <span className="text-xs">-</span>
+                              <input
+                                type="number"
+                                className="border rounded px-1 py-0.5 w-14"
+                                min={0}
+                                value={set.teamBScore}
+                                onChange={e => handleSetScoreChange(idx, 'B', Number(e.target.value))}
+                                placeholder="B score"
+                              />
+                            </div>
+                          ))}
+                          <button type="submit" className="mt-4 w-full bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">Save Scores</button>
+                        </form>
                       </div>
                     </div>
                   </DialogPanel>
