@@ -223,31 +223,6 @@ const MatchListItem: React.FC<{
                 required
               />
             </div>
-            <div className="mt-2">
-              <label className="block text-xs mb-1">Set Scores</label>
-              {editSetScores.map((set, idx) => (
-                <div key={set.setNo} className="flex items-center gap-2 mb-1">
-                  <span className="text-xs">Set {set.setNo}:</span>
-                  <input
-                    type="number"
-                    className="border border-gray-200/60 rounded px-1 py-0.5 w-14"
-                    min={0}
-                    value={set.teamAScore}
-                    onChange={e => handleEditSetScoreChange(idx, 'A', Number(e.target.value))}
-                    placeholder="A score"
-                  />
-                  <span className="text-xs">-</span>
-                  <input
-                    type="number"
-                    className="border border-gray-200/60 rounded px-1 py-0.5 w-14"
-                    min={0}
-                    value={set.teamBScore}
-                    onChange={e => handleEditSetScoreChange(idx, 'B', Number(e.target.value))}
-                    placeholder="B score"
-                  />
-                </div>
-              ))}
-            </div>
             <button className="bg-blue-600 text-white px-3 py-1 rounded mr-2" onClick={handleEditSave} type="button">Save</button>
             <button className="bg-gray-400 text-white px-3 py-1 rounded" onClick={handleEditCancel} type="button">Cancel</button>
           </div>
