@@ -1,8 +1,5 @@
 "use client";
 
-import styles from '../../../../../scorer/badminton.module.css';
-import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import Header from '../../../../../ui-components/Header';
 import Navigation from '../../../../../ui-components/Navigation'
