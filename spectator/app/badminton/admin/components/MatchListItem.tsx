@@ -173,7 +173,7 @@ const MatchListItem: React.FC<{
                 <select className="border border-gray-200/60 rounded px-2 py-1" value={editMatch.groupId || ''} onChange={e => handleEditChange('groupId', e.target.value)} required>
                   <option value="">Select Group</option>
                   {groupOptions.map(gid => (
-                    <option key={gid} value={gid}>{gid}</option>
+                    <option key={gid} value={gid}>{getGroupName(m.groupId)}</option>
                   ))}
                 </select>
               </div>

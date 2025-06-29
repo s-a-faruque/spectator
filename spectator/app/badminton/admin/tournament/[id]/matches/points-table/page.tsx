@@ -41,6 +41,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [groupOptions, setGroupOptions] = useState<string[]>([]);
   const [tournamentName, setTournamentName] = useState<string>('');
+  const [groups, setGroups] = useState<any[]>([]);
 
   useEffect(() => {
     const tournamentsRaw = localStorage.getItem('tournaments');
@@ -54,6 +55,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
           setTeams(tournament.teams || []);
           if (tournament.groups && Array.isArray(tournament.groups)) {
             setGroupOptions(tournament.groups.map((g: any) => g.id));
+            setGroups(tournament.groups);
           }
         }
       } catch {}
@@ -120,6 +122,8 @@ export default function PointsTablePage({ params }: { params: Params }) {
   };
   const groupLeaderboards = computeGroupLeaderboards();
 
+  const getGroupName = (groupId: string) => groups.find(g => g.id === groupId)?.name || groupId;
+
   const navigation = [
     { name: 'Tournament Teams', href: `/badminton/admin/tournament/${id}/`, current: false },
     { name: 'All Tournaments', href: '/badminton/admin/tournament', current: false },
@@ -153,7 +157,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
                 </div>
               {Object.entries(groupLeaderboards).map(([groupId, teams]) => (
                 <div key={groupId} className="mb-4">
-                  <h3 className="font-semibold mb-1">Group {groupId}</h3>
+                  <h3 className="font-semibold mb-1">{getGroupName(groupId)}</h3>
                   <div className="overflow-x-auto">
                     <table className="min-w-max border border-gray-300 text-xs">
                       <thead>
