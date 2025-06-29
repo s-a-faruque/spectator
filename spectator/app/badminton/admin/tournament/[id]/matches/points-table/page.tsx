@@ -156,7 +156,7 @@ export default function PointsTablePage({ params }: { params: Params }) {
                 <div key={groupId} className="mb-4">
                   <h3 className="font-semibold mb-1">{getGroupName(groupId)}</h3>
                   <div className="overflow-x-auto">
-                    <table className="min-w-max border border-gray-300 text-xs">
+                    <table className="w-full min-w-max border border-gray-300 text-xs">
                       <thead>
                         <tr className="bg-gray-100">
                           <th className="px-2 py-1 border">Team</th>
