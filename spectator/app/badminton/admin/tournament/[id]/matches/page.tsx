@@ -471,34 +471,6 @@ export default function MatchPage({ params }: { params: Params }) {
               </div>
               <button type="submit" className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700 transition">Add Match</button>
             </div>
-            <div className="mt-4 flex flex-wrap gap-4">
-              <div>
-                <label className="block"><hr /></label>
-                <label className="block text-sm font-medium mb-1">Set Scores</label>
-                {setScores.map((set, idx) => (
-                  <div key={set.setNo} className="flex items-center gap-2 mb-1">
-                    <span className="text-xs">Set {set.setNo}:</span>
-                    <input
-                      type="number"
-                      className="border rounded px-1 py-0.5 w-14"
-                      min={0}
-                      value={set.teamAScore}
-                      onChange={e => handleSetScoreChange(idx, 'A', Number(e.target.value))}
-                      placeholder="A score"
-                    />
-                    <span className="text-xs">-</span>
-                    <input
-                      type="number"
-                      className="border rounded px-1 py-0.5 w-14"
-                      min={0}
-                      value={set.teamBScore}
-                      onChange={e => handleSetScoreChange(idx, 'B', Number(e.target.value))}
-                      placeholder="B score"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
           </form>
           )}
           {matches.length === 0 ? (
