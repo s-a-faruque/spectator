@@ -228,7 +228,8 @@ const MatchListItem: React.FC<{
           </div>
         </div>
       ) : (
-        <div className='flex justify-between gap-x-6 py-5'>
+        <>
+        <div className='hidden flex justify-between gap-x-6 py-5'>
           <div className="flex min-w-0 gap-x-4">
             {/* <img className="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" /> */}
             <div className="min-w-0 flex-auto">
@@ -385,6 +386,26 @@ const MatchListItem: React.FC<{
             </Dialog>
           </div>
         </div>
+        <div className="max-w-md mx-auto mt-10 bg-white rounded-lg overflow-hidden">
+          <div className="flex justify-between items-center px-6 py-4">
+            <div className="text-center">
+              <h3 className="text-lg font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamA)}</h3>
+              <p className="text-5xl font-light md:text-6xl dark:text-white">21</p>
+            </div>
+            <div className="text-center">
+              <span className="text-gray-500 font-medium text-sm">vs</span>
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamB)}</h3>
+              <p className="text-5xl font-light md:text-6xl dark:text-white">18</p>
+            </div>
+          </div>
+          <div className="px-6 pb-4 text-sm text-gray-500 text-center">
+            Court 2
+          </div>
+        </div>
+
+        </>
       )}
     </li>
   );
