@@ -4,11 +4,14 @@ import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, TransitionChild } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { XCircleIcon } from '@heroicons/react/24/outline'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+
 
 type Team = {
   id: string;
   name: string;
-  tournamentId: string;
+  tournamentId: string; 
 };
 
 type Player = {
@@ -401,8 +404,58 @@ const MatchListItem: React.FC<{
             </div>
           </div>
           <div className="px-6 pb-4 text-sm text-gray-500 text-center">
-            Court 2
+            <span className='inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset'>Court: {m.court}</span>
           </div>
+          <Disclosure as="div" className="p-6" defaultOpen={true}>
+            <DisclosureButton className="group flex w-full items-center justify-between">
+              <span className="text-sm/6 font-medium text-black group-data-hover:text-black/80">
+                Details
+              </span>
+              <ChevronDownIcon className="size-5 fill-gray/60 group-data-hover:fill-black/50 group-data-open:rotate-180" />
+            </DisclosureButton>
+            <DisclosurePanel className="mt-2 text-sm/5 text-gray/50">
+              <p className="mt-1 truncate text-xs/5 text-gray-500">
+                  {m.status && (
+                    <span className="text-xs text-pink-700">[{m.status}]</span>
+                  )}
+                  {m.groupId && (
+                    <span className="ml-2 text-sm/6 text-gray-900">[{getGroupName(m.groupId)}]</span>
+                  )}
+                  {m.round && (
+                    <span className="ml-2 text-xs text-sm/6 text-gray-900">[{m.round}]</span>
+                  )}
+                  <span className="ml-2 text-xs text-sm/6 text-gray-900">[{m.stage} Stage]</span>
+              </p>
+              <p className="mt-1 text-xs/5 text-gray-500">
+                {Array.isArray(m.setScores) && m.setScores.length > 0 && (
+                  <span className="text-xs text-gray-700">
+                    Score: 
+                    {m.setScores.map((set: any) => (
+                      <span key={set.setNo} className={set.winner ? (set.winner === 'A' ? 'text-green-700' : 'text-blue-700') : ''}>
+                        [{set.teamAScore}:{set.teamBScore}]
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </p>
+              
+              <p className="mt-1 text-xs/5 text-gray-500">
+                {m.matchWinner && (
+                  <span className={m.matchWinner === 'A' ? 'text-green-800 font-semibold' : 'text-blue-800 font-semibold'}>
+                    Match Winner: {m.matchWinner === 'A' ? getTeamName(m.teamA) : getTeamName(m.teamB)}
+                  </span>
+                )}
+              </p>
+              <button className="text-xs text-blue-600 underline" onClick={() => handleEditClick(m)} type="button">Edit</button>
+              <button className="ml-2 text-xs text-red-600 underline" onClick={() => handleDeleteMatch(m.id)} type="button">Delete</button>
+              <button
+                onClick={() => setOpen(true)}
+                className="ml-2 text-xs rounded-md bg-gray-950/5 px-1.5 py-1.5 text-sm text-gray-900 hover:bg-gray-950/10"
+              >
+                Set Score
+              </button>
+            </DisclosurePanel>
+          </Disclosure>
         </div>
 
         </>
