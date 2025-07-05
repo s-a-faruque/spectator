@@ -390,23 +390,41 @@ const MatchListItem: React.FC<{
           </div>
         </div>
         <div className="max-w-md mx-auto mt-10 bg-white rounded-lg overflow-hidden">
-          <div className="flex justify-between items-center px-6 py-4">
+          <div className="flex justify-between items-center px-6 py-4 border border-gray-200">
             <div className="text-center">
-              <h3 className="text-lg font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamA)}</h3>
-              <p className="text-5xl font-light md:text-6xl dark:text-white">21</p>
+              <h3 className="text-sm font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamA)}</h3>
+              <p className="mt-1 text-xs/5 text-gray-500 font-semibold">
+                {Array.isArray(m.teamAPlayers) && (
+                  <p>
+                    <span className="text-xs text-gray-700">
+                      {m.teamAPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
+                    </span>
+                  </p>
+                )}
+              </p>
+              <p className="text-3xl font-light md:text-6xl dark:text-white">{m.setScores && m.setScores[0] ? m.setScores[0].teamAScore : 0}</p>
             </div>
             <div className="text-center">
-              <span className="text-gray-500 font-medium text-sm">vs</span>
+              <span className="text-gray-400 text-2xl m-2">vs</span>
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamB)}</h3>
-              <p className="text-5xl font-light md:text-6xl dark:text-white">18</p>
+              <h3 className="text-sm font-light text-gray-500 dark:text-gray-400">{getTeamName(m.teamB)}</h3>
+              <p>
+                {Array.isArray(m.teamBPlayers) && (
+                  <p>
+                    <span className="text-xs text-gray-700 font-semibold">
+                      {m.teamBPlayers.map((pid: string) => getPlayerName(pid)).join(', ')}
+                    </span>
+                  </p>
+                )}
+              </p>
+              <p className="text-3xl font-light md:text-6xl dark:text-white">{m.setScores && m.setScores[0] ? m.setScores[0].teamBScore : 0}</p>
             </div>
           </div>
-          <div className="px-6 pb-4 text-sm text-gray-500 text-center">
+          <div className="m-2 text-sm text-gray-500 text-center">
             <span className='inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset'>Court: {m.court}</span>
           </div>
-          <Disclosure as="div" className="p-6" defaultOpen={true}>
+          <Disclosure as="div" className="p-2" defaultOpen={true}>
             <DisclosureButton className="group flex w-full items-center justify-between">
               <span className="text-sm/6 font-medium text-black group-data-hover:text-black/80">
                 Details
