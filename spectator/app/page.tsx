@@ -55,14 +55,15 @@ export default function CardsPage() {
         <strong>WTS / </strong> What&apos;s The Score
         
         <button
-          className='pl-4 ml-4 bg-gray-100 hover:bg-gray-600 font-semibold py-2 px-4 rounded'
+          className='pl-2 ml-2 bg-gray-100 hover:bg-gray-600 font-semibold py-2 px-4 rounded'
           onClick={() => {
             window.location.assign(`/feedback`);
           }}
         >
           Feedback Please! <span role="img" aria-label="smile">😊</span>
         </button>
-        <a className="about" href="https://coff.ee/safique" target="_blank">
+        
+        <a className="pl-2 mt-4 bg-gray-100 hover:bg-gray-900 font-semibold py-2 px-2 rounded" href="https://coff.ee/safique" target="_blank">
 					☕
 				</a>
       </footer>
