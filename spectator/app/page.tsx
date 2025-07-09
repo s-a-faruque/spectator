@@ -62,6 +62,9 @@ export default function CardsPage() {
         >
           Feedback Please! <span role="img" aria-label="smile">😊</span>
         </button>
+        <a className="about" href="https://coff.ee/safique" target="_blank">
+					☕
+				</a>
       </footer>
     </main>
   );
