@@ -8,6 +8,7 @@ import MatchListItem from '@/app/badminton/admin/components/MatchListItem';
 import Header from '@/app/badminton/ui-components/Header';
 import Footer from '@/app/badminton/ui-components/Footer';
 import React from 'react';
+import { useAuthToken } from "@/app/useAuthToken";
 
 interface Params {
   id: string;
@@ -66,6 +67,8 @@ export default function MatchPage({ params }: { params: Params }) {
   const [setScores, setSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([ { setNo: 1, teamAScore: 0, teamBScore: 0 }, { setNo: 2, teamAScore: 0, teamBScore: 0 }, { setNo: 3, teamAScore: 0, teamBScore: 0 } ]);
   const [editSetScores, setEditSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
+  const { accessToken, error } = useAuthToken();  // Use the custom hook
+  const [loading, setLoading] = useState(false); // Add loading state
 
   useEffect(() => {
     // Load tournament from localStorage
@@ -256,6 +259,129 @@ export default function MatchPage({ params }: { params: Params }) {
     }
   };
 
+  const syncToCloud = async (tournamentId: string) => {
+    if (!accessToken) {
+      console.error("Access token is missing.");
+      return;
+    }
+
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (!tournamentsRaw) {
+      console.error("No tournaments found in localStorage.");
+      return;
+    }
+
+    setLoading(true); // Set loading to true
+    try {
+      const tournaments = JSON.parse(tournamentsRaw);
+      const tournament = tournaments.find((t: any) => t.id === tournamentId);
+      if (!tournament) {
+        console.error("Tournament not found.");
+        return;
+      }
+
+      const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/updateOne', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Request-Headers': '*',
+          'Authorization': 'Bearer ' + accessToken
+        },
+        body: JSON.stringify({
+          collection: "tournaments",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: { id: tournamentId },
+          update: {
+            $set: {
+              name: tournament.name,
+              matches: tournament.matches,
+              teams: tournament.teams,
+              groups: tournament.groups,
+            }
+          },
+          upsert: true // Create a new document if it doesn't exist
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to sync tournament data:", await response.text());
+        return;
+      }
+      
+      console.log("Tournament data synced successfully.");
+    } catch (error) {
+      console.error("Error syncing tournament data:", error);
+    } finally {
+      setLoading(false); // Set loading to false
+    }
+  };
+
+  const importFromCloud = async (tournamentId: string) => {
+    if (!accessToken) {
+      console.error("Access token is missing.");
+      return;
+    }
+
+    //setLoading(true); // Set loading to true
+    try {
+      const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Request-Headers': '*',
+          'Authorization': 'Bearer ' + accessToken
+        },
+        body: JSON.stringify({
+          collection: "tournaments",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: { id: tournamentId },
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch tournament data:", await response.text());
+        return;
+      }
+
+      const tournament = await response.json();
+      if (!tournament.document) {
+        console.error("Tournament not found in the cloud.");
+        return;
+      }
+
+      // Replace localStorage data with cloud data
+      const tournamentsRaw = localStorage.getItem('tournaments');
+      const tournaments = tournamentsRaw ? JSON.parse(tournamentsRaw) : [];
+      const tIdx = tournaments.findIndex((t: any) => t.id === tournamentId);
+      if (tIdx !== -1) {
+        tournaments[tIdx] = tournament.document;
+      } else {
+        tournaments.push(tournament.document);
+      }
+      console.log("Tournament data imported from cloud:", tournament.document);
+      localStorage.setItem('tournaments', JSON.stringify(tournaments));
+
+      // Update state
+      setMatches(tournament.document.matches || []);
+      setTeams(tournament.document.teams || []);
+      setPlayers(
+        (tournament.document.teams || []).flatMap((team: any) =>
+          (team.players || []).map((p: any) => ({ ...p, teamId: team.id }))
+        )
+      );
+      setGroups(tournament.document.groups || []);
+      setGroupOptions((tournament.document.groups || []).map((g: any) => g.id));
+
+      console.log("Tournament data imported successfully.");
+    } catch (error) {
+      console.error("Error importing tournament data:", error);
+    } finally {
+      setLoading(false); // Set loading to false
+    }
+  };
+
   const handleGenerateGroupMatches = () => {
     const tournamentsRaw = localStorage.getItem('tournaments');
     if (!tournamentsRaw) return;
@@ -306,13 +432,26 @@ export default function MatchPage({ params }: { params: Params }) {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex w-full gap-2 mb-4">
             <button
+              className={`flex-1 px-3 py-1 text-sm rounded ${loading ? 'bg-gray-400' : 'bg-blue-600 text-white'}`}
+              onClick={async () => await syncToCloud(id)}
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? 'Syncing...' : 'Store a Backup to Cloud'}
+            </button>
+            <button
+              className={`flex-1 px-3 py-1 text-sm rounded ${loading ? 'bg-gray-400' : 'bg-green-600 text-white'}`}
+              onClick={async () => await importFromCloud(id)}
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? 'Importing...' : 'Import from Cloud'}
+            </button>
+            <button
               className="flex-1 bg-purple-600 text-white px-3 py-1 text-sm rounded"
               onClick={handleGenerateGroupMatches}
               type="button"
             >
               Generate Matches
             </button>
-            
             <Link
               href={`/badminton/admin/tournament/${id}/matches/export`}
               className="flex-1 bg-gray-100 text-white px-3 py-1 rounded text-center text-sm"
