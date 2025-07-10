@@ -317,6 +317,71 @@ export default function MatchPage({ params }: { params: Params }) {
     }
   };
 
+  const importFromCloud = async (tournamentId: string) => {
+    if (!accessToken) {
+      console.error("Access token is missing.");
+      return;
+    }
+
+    //setLoading(true); // Set loading to true
+    try {
+      const response = await fetch('https://us-east-1.aws.data.mongodb-api.com/app/data-gdwsjkb/endpoint/data/v1/action/findOne', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Request-Headers': '*',
+          'Authorization': 'Bearer ' + accessToken
+        },
+        body: JSON.stringify({
+          collection: "tournaments",
+          database: "scoreboard",
+          dataSource: "Cluster0",
+          filter: { id: tournamentId },
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch tournament data:", await response.text());
+        return;
+      }
+
+      const tournament = await response.json();
+      if (!tournament.document) {
+        console.error("Tournament not found in the cloud.");
+        return;
+      }
+
+      // Replace localStorage data with cloud data
+      const tournamentsRaw = localStorage.getItem('tournaments');
+      const tournaments = tournamentsRaw ? JSON.parse(tournamentsRaw) : [];
+      const tIdx = tournaments.findIndex((t: any) => t.id === tournamentId);
+      if (tIdx !== -1) {
+        tournaments[tIdx] = tournament.document;
+      } else {
+        tournaments.push(tournament.document);
+      }
+      console.log("Tournament data imported from cloud:", tournament.document);
+      localStorage.setItem('tournaments', JSON.stringify(tournaments));
+
+      // Update state
+      setMatches(tournament.document.matches || []);
+      setTeams(tournament.document.teams || []);
+      setPlayers(
+        (tournament.document.teams || []).flatMap((team: any) =>
+          (team.players || []).map((p: any) => ({ ...p, teamId: team.id }))
+        )
+      );
+      setGroups(tournament.document.groups || []);
+      setGroupOptions((tournament.document.groups || []).map((g: any) => g.id));
+
+      console.log("Tournament data imported successfully.");
+    } catch (error) {
+      console.error("Error importing tournament data:", error);
+    } finally {
+      setLoading(false); // Set loading to false
+    }
+  };
+
   const handleGenerateGroupMatches = () => {
     const tournamentsRaw = localStorage.getItem('tournaments');
     if (!tournamentsRaw) return;
@@ -366,13 +431,19 @@ export default function MatchPage({ params }: { params: Params }) {
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex w-full gap-2 mb-4">
-            {/* Make it a component */}
             <button
               className={`flex-1 px-3 py-1 text-sm rounded ${loading ? 'bg-gray-400' : 'bg-blue-600 text-white'}`}
               onClick={async () => await syncToCloud(id)}
               disabled={loading} // Disable button while loading
             >
-              {loading ? 'Syncing...' : 'Sync to Cloud'}
+              {loading ? 'Syncing...' : 'Store a Backup to Cloud'}
+            </button>
+            <button
+              className={`flex-1 px-3 py-1 text-sm rounded ${loading ? 'bg-gray-400' : 'bg-green-600 text-white'}`}
+              onClick={async () => await importFromCloud(id)}
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? 'Importing...' : 'Import from Cloud'}
             </button>
             <button
               className="flex-1 bg-purple-600 text-white px-3 py-1 text-sm rounded"
