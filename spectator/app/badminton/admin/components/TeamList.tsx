@@ -481,9 +481,9 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
                 )}
                 {/* Add Player UI */}
                 {addingPlayerTeamId === team.id ? (
-                  <div className="flex gap-2 mt-2">
+                  <div className="gap-2 mt-2">
                     <input
-                      className="border rounded px-2 py-1 text-xs"
+                      className="border rounded px-2 py-1 text-xs border border-purple-200 rounded"
                       type="text"
                       value={newPlayerName}
                       onChange={handlePlayerNameChange}
@@ -491,13 +491,13 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
                       autoFocus
                     />
                     <button
-                      className="bg-green-500 text-white px-2 py-1 rounded text-xs"
+                      className="text-green-500 hover:text-blue-700 text-xs px-1 py-0.5 border border-blue-200 rounded"
                       onClick={() => handleAddPlayer(team.id)}
                     >
                       Add
                     </button>
                     <button
-                      className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-xs"
+                      className="ml-2 text-gray-500 hover:text-gray-700 text-xs px-1 py-0.5 border border-gray-200 rounded"
                       onClick={() => setAddingPlayerTeamId(null)}
                     >
                       Cancel
