@@ -190,17 +190,18 @@ export default function CreateTournamentPage() {
               onClick={handleCreate}
               className={`px-4 py-2 rounded transition duration-200 ${tournamentCreated ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
               disabled={tournamentCreated}
-              title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Generate and Save'}
+              title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Create'}
             >
-              {tournamentCreated ? 'Tournament Created' : 'Generate and Save'}
+              {tournamentCreated ? 'Tournament Created' : 'Create'}
             </button>
+            <br />
             <button
               onClick={handleCreateWithRRMatches}
               className={`px-4 py-2 rounded transition duration-200 ${tournamentCreated ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
               disabled={tournamentCreated}
-              title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Generate with RR matches and Save'}
+              title={tournamentCreated ? 'Tournament already created. Delete to create a new one.' : 'Create Full Bracket'}
             >
-              {tournamentCreated ? 'Tournament with groups Created' : 'Generate with RR matches and Save'}
+              {tournamentCreated ? 'Tournament with Groups and Matches Created' : 'Create Full Bracket'}
             </button>
           </div>
           {tournamentId && (
