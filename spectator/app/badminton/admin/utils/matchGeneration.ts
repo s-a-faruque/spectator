@@ -11,7 +11,7 @@ export function generateGroupStageMatches(teams: any[], groupId: string) {
         stage: 'group',
         teamAPlayers: [],
         teamBPlayers: [],
-        numSets: 3,
+        numSets: 1,
         winPoints: 2,
         setScores: [
           { setNo: 1, teamAScore: 0, teamBScore: 0 },
