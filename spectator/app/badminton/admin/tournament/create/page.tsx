@@ -5,11 +5,31 @@ import Header from '../../../ui-components/Header';
 import Navigation from '../../../ui-components/Navigation'
 import Footer from '../../../ui-components/Footer'
 import TeamList from '../../components/TeamList'
+import { generateGroupStageMatches } from '../../utils/matchGeneration';
 
 export default function CreateTournamentPage() {
   const [numTeams, setNumTeams] = useState(4);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
   const [tournamentCreated, setTournamentCreated] = useState(false);
+
+  type Group = { id: string; name: string; teamIds: string[] };
+  const handleGenerateGroupMatches = (groups: Group[], teams: any) => {
+      let newMatches: any[] = [];
+      groups.forEach((group: Group) => {
+        console.log(`Generating group Team IDs ${group.id} with teams:`, group.teamIds);
+        const groupTeams = (group.teamIds || []).map((tid: string) => teams.find((t: any) => t.id === tid)).filter(Boolean);
+        console.log(`Generating matches for group ${group.id} with teams:`, groupTeams);
+        if (groupTeams.length > 1) {
+          const matches = generateGroupStageMatches(groupTeams, group.id);
+          newMatches = newMatches.concat(matches);
+        }
+      });
+      // Avoid duplicate matches (by teamA, teamB, groupId)
+      const existing = new Set((teams.matches || []).map((m: any) => `${m.teamA}|${m.teamB}|${m.groupId}`));
+      const filtered = newMatches.filter(m => !existing.has(`${m.teamA}|${m.teamB}|${m.groupId}`));
+      teams.matches = [...(teams.matches || []), ...filtered];
+      return teams.matches;
+  };
 
   const handleCreate = () => {
     // Always generate a new tournamentId on create
@@ -60,7 +80,50 @@ export default function CreateTournamentPage() {
     })
 
     // Create default groups (2 groups)
-    const numGroups = 4;
+    const teamToGroupNumbers: Record<string, number> = {
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 2,
+      "7": 2,
+      "8": 2,
+      "9": 3,
+      "10": 2,
+      "11": 3,
+      "12": 4,
+      "13": 4,
+      "14": 4,
+      "15": 3,
+      "16": 4,
+      "17": 5,
+      "18": 6,
+      "19": 5,
+      "20": 4,
+      "21": 7,
+      "22": 6,
+      "23": 5,
+      "24": 6,
+      "25": 5,
+      "26": 6,
+      "27": 9,
+      "28": 7,
+      "29": 5,
+      "30": 6,
+      "32": 8,
+      "36": 6,
+      "40": 8
+    }
+
+
+    // Determine number of groups based on numTeams using teamToGroupNumbers
+    let numGroups = 2; // default
+    if (String(numTeams) in teamToGroupNumbers) {
+      numGroups = teamToGroupNumbers[String(numTeams)];
+    } else if (numTeams > 40) {
+      numGroups = Math.ceil(numTeams / 8); // More than 40 teams, create more groups
+    }
+
+    
     const groups = Array.from({ length: numGroups }, (_, i) => ({
       id: `group_${i + 1}`,
       name: `Group ${String.fromCharCode(65 + i)}`,
@@ -69,6 +132,8 @@ export default function CreateTournamentPage() {
     teams.forEach((team, idx) => {
       groups[idx % numGroups].teamIds.push(team.id);
     });    
+
+    const matches = handleGenerateGroupMatches(groups, teams);
 
     const tournament = {
       id: newTournamentId,
@@ -79,7 +144,7 @@ export default function CreateTournamentPage() {
       teams,
       groups,
       stages: [],
-      matches: []
+      matches
     }
 
     const existing = JSON.parse(localStorage.getItem('tournaments') || '[]')
