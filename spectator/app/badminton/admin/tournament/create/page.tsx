@@ -26,17 +26,6 @@ export default function CreateTournamentPage() {
       }
     })
 
-    // Create default groups (2 groups)
-    const numGroups = 2;
-    const groups = Array.from({ length: numGroups }, (_, i) => ({
-      id: `group_${i + 1}`,
-      name: `Group ${String.fromCharCode(65 + i)}`,
-      teamIds: [] as string[],
-    }));
-    teams.forEach((team, idx) => {
-      groups[idx % numGroups].teamIds.push(team.id);
-    });
-
     const tournament = {
       id: newTournamentId,
       name: `Tournament ${new Date().toISOString().slice(0, 10)}`,
@@ -44,7 +33,7 @@ export default function CreateTournamentPage() {
       startDate: '',
       endDate: '',
       teams,
-      groups,
+      groups: [],
       stages: [],
       matches: []
     }
