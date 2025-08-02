@@ -21,6 +21,7 @@ interface Tournament {
   startDate: string;
   endDate: string;
   teams: Team[];
+  teamType: string;
   groups: any[];
   stages: any[];
   matches: any[];
@@ -505,14 +506,17 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
                   </div>
                 ) : (
                   <button
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs mt-2"
+                    className={`bg-blue-500 text-white px-2 py-1 rounded text-xs mt-2 ${tournament?.teamType == 'Single Players' ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
                     onClick={() => handleAddPlayerClick(team.id)}
+                    disabled={tournament?.teamType === 'Single Players'}
+                    title={tournament?.teamType === 'Single Players' ? 'Disabled for Single Player tournaments' : ''}
                   >
                     + Add Player
                   </button>
                 )}
               </div>
-              <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
+              {tournament?.teamType && tournament.teamType === "Team" && (
+                <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                 <ul className="mt-1 truncate text-xs/5 text-gray-500">
                     {team.players.map(player => (
                         <li key={player.id} className="border-b-1 border-b-gray-100 flex items-center gap-2 mb-2 pb-2">
@@ -547,6 +551,8 @@ export default function TeamList({ tournamentId, onTournamentDeleted }: { tourna
                     ))}
                 </ul>
               </div>
+              )}
+              
             </div>
           </li>
         ))}

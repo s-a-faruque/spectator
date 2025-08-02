@@ -5,9 +5,11 @@ import Header from '../../../ui-components/Header';
 import Navigation from '../../../ui-components/Navigation'
 import Footer from '../../../ui-components/Footer'
 import TeamList from '../../components/TeamList'
+import { Select } from '@headlessui/react';
 
 export default function CreateTournamentPage() {
   const [numTeams, setNumTeams] = useState(4);
+  const [teamType, setTeamType] = useState("Team");
   const [tournamentId, setTournamentId] = useState<string | null>(null);
   const [tournamentCreated, setTournamentCreated] = useState(false);
 
@@ -18,8 +20,13 @@ export default function CreateTournamentPage() {
       const teamId = `team_${i + 1}`
       return {
         id: teamId,
-        name: `Team ${i + 1}`,
-        players: [
+        //name: `Team ${i + 1}` + (teamType === "Single Players" ? ` (${teamType})` : ''),
+        name: teamType === "Single Players" ? `Player ${i + 1}` : `Team ${i + 1}`,
+        players: teamType === "Single Players" ? [
+          { id: `${teamId}_p1`, name: `Player ${i + 1}-1` }
+        ]
+        :
+        [
           { id: `${teamId}_p1`, name: `Player ${i + 1}-1` },
           { id: `${teamId}_p2`, name: `Player ${i + 1}-2` }
         ]
@@ -33,6 +40,7 @@ export default function CreateTournamentPage() {
       startDate: '',
       endDate: '',
       teams,
+      teamType: teamType,
       groups: [],
       stages: [],
       matches: []
@@ -76,6 +84,15 @@ export default function CreateTournamentPage() {
                 disabled={tournamentCreated}
                 />
             </label>
+            <Select
+              value={teamType}
+              disabled={tournamentCreated}
+              className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-400"
+              onChange={e => setTeamType(e.target.value)}
+            >
+              <option value="Team">Team</option>
+              <option value="Single Players">Single Players</option>
+            </Select>
 
             <button
               onClick={handleCreate}
