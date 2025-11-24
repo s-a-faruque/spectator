@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { generateGroupStageMatches } from '../../../utils/matchGeneration';
+import { generateKnockoutBracket } from '@/app/badminton/utils/bracketGeneration';
 import Navigation from '@/app/badminton/ui-components/Navigation';
 import MatchListItem from '@/app/badminton/admin/components/MatchListItem';
+import BracketView from '@/app/badminton/admin/components/BracketView';
 import Header from '@/app/badminton/ui-components/Header';
 import Footer from '@/app/badminton/ui-components/Footer';
 import React from 'react';
@@ -64,11 +66,13 @@ export default function MatchPage({ params }: { params: Params }) {
   const [editMatch, setEditMatch] = useState<Partial<Match> & { teamAPlayers?: string[]; teamBPlayers?: string[] }>({});
   const [numSets, setNumSets] = useState(1); // Default number of sets
   const [winPoints, setWinPoints] = useState(2); // Default points for winning
-  const [setScores, setSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([ { setNo: 1, teamAScore: 0, teamBScore: 0 }, { setNo: 2, teamAScore: 0, teamBScore: 0 }, { setNo: 3, teamAScore: 0, teamBScore: 0 } ]);
+  const [setScores, setSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([{ setNo: 1, teamAScore: 0, teamBScore: 0 }, { setNo: 2, teamAScore: 0, teamBScore: 0 }, { setNo: 3, teamAScore: 0, teamBScore: 0 }]);
   const [editSetScores, setEditSetScores] = useState<{ setNo: number; teamAScore: number; teamBScore: number }[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
   const { accessToken, error } = useAuthToken();  // Use the custom hook
   const [loading, setLoading] = useState(false); // Add loading state
+  const [tournamentFormat, setTournamentFormat] = useState<'League' | 'Knockout' | 'Hybrid'>('League');
+  const [viewMode, setViewMode] = useState<'list' | 'bracket'>('list');
 
   useEffect(() => {
     // Load tournament from localStorage
@@ -79,6 +83,7 @@ export default function MatchPage({ params }: { params: Params }) {
         const tournament = tournaments.find((t: any) => t.id === id);
         if (tournament) {
           setMatches(tournament.matches || []);
+          setTournamentFormat(tournament.format || 'League');
 
           setTeams((tournament.teams || []).map((team: any) => ({
             ...team,
@@ -95,7 +100,7 @@ export default function MatchPage({ params }: { params: Params }) {
             setGroups(tournament.groups);
           }
         }
-      } catch {}
+      } catch { }
     }
   }, [id]);
 
@@ -172,7 +177,7 @@ export default function MatchPage({ params }: { params: Params }) {
           tournaments[tIdx].matches = [...(tournaments[tIdx].matches || []), newMatch];
           localStorage.setItem('tournaments', JSON.stringify(tournaments));
         }
-      } catch {}
+      } catch { }
     }
     setMatches(prev => [...prev, newMatch]);
     setTeamA('');
@@ -228,7 +233,7 @@ export default function MatchPage({ params }: { params: Params }) {
           tournaments[tIdx].matches = tournaments[tIdx].matches.map((m: any) => m.id === editingMatchId ? { ...m, ...editMatch, setScores: setScoresWithWinners, matchWinner } : m);
           localStorage.setItem('tournaments', JSON.stringify(tournaments));
         }
-      } catch {}
+      } catch { }
     }
     setEditingMatchId(null);
     setEditMatch({});
@@ -251,7 +256,7 @@ export default function MatchPage({ params }: { params: Params }) {
           tournaments[tIdx].matches = tournaments[tIdx].matches.filter((m: any) => m.id !== matchId);
           localStorage.setItem('tournaments', JSON.stringify(tournaments));
         }
-      } catch {}
+      } catch { }
     }
     if (editingMatchId === matchId) {
       setEditingMatchId(null);
@@ -308,7 +313,7 @@ export default function MatchPage({ params }: { params: Params }) {
         console.error("Failed to sync tournament data:", await response.text());
         return;
       }
-      
+
       console.log("Tournament data synced successfully.");
     } catch (error) {
       console.error("Error syncing tournament data:", error);
@@ -389,7 +394,7 @@ export default function MatchPage({ params }: { params: Params }) {
       const tournaments = JSON.parse(tournamentsRaw);
       const tournament = tournaments.find((t: any) => t.id === id);
       if (!tournament || !tournament.groups || !Array.isArray(tournament.groups)) return;
-      
+
       let newMatches: any[] = [];
       tournament.groups.forEach((group: any) => {
         console.log(`Generating group Team IDs ${group.id} with teams:`, group.teamIds);
@@ -409,7 +414,28 @@ export default function MatchPage({ params }: { params: Params }) {
       tournaments[tIdx] = tournament;
       localStorage.setItem('tournaments', JSON.stringify(tournaments));
       setMatches(tournament.matches);
-    } catch {}
+    } catch { }
+  };
+
+  const handleGenerateKnockoutMatches = () => {
+    if (matches.length > 0 && !window.confirm('This will append new matches. Continue?')) return;
+
+    // For now, just take all teams. In future, we might take top teams from groups.
+    const newMatches = generateKnockoutBracket(teams);
+
+    // Save
+    const tournamentsRaw = localStorage.getItem('tournaments');
+    if (tournamentsRaw) {
+      try {
+        const tournaments = JSON.parse(tournamentsRaw);
+        const tIdx = tournaments.findIndex((t: any) => t.id === id);
+        if (tIdx !== -1) {
+          tournaments[tIdx].matches = [...(tournaments[tIdx].matches || []), ...newMatches];
+          localStorage.setItem('tournaments', JSON.stringify(tournaments));
+          setMatches(tournaments[tIdx].matches);
+        }
+      } catch { }
+    }
   };
 
   const getGroupName = (groupId: string) => groups.find(g => g.id === groupId)?.name || groupId;
@@ -430,7 +456,7 @@ export default function MatchPage({ params }: { params: Params }) {
       <Header title="Tournament Matches" />
       <main className="flex-1">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex w-full gap-2 mb-4">
+          <div className="flex w-full gap-2 mb-4 flex-wrap">
             <button
               className={`flex-1 px-3 py-1 text-sm rounded ${loading ? 'bg-gray-400' : 'bg-blue-600 text-white'}`}
               onClick={async () => await syncToCloud(id)}
@@ -445,202 +471,249 @@ export default function MatchPage({ params }: { params: Params }) {
             >
               {loading ? 'Importing...' : 'Import from Cloud'}
             </button>
-            <button
-              className="flex-1 bg-purple-600 text-white px-3 py-1 text-sm rounded"
-              onClick={handleGenerateGroupMatches}
-              type="button"
-            >
-              Generate Matches
-            </button>
+
+            {/* Generation Buttons based on Format */}
+            {tournamentFormat === 'League' && (
+              <button
+                className="flex-1 bg-purple-600 text-white px-3 py-1 text-sm rounded"
+                onClick={handleGenerateGroupMatches}
+                type="button"
+              >
+                Generate Group Matches
+              </button>
+            )}
+            {(tournamentFormat === 'Knockout' || tournamentFormat === 'Hybrid') && (
+              <button
+                className="flex-1 bg-orange-600 text-white px-3 py-1 text-sm rounded"
+                onClick={handleGenerateKnockoutMatches}
+                type="button"
+              >
+                Generate Bracket
+              </button>
+            )}
+
             <Link
               href={`/badminton/admin/tournament/${id}/matches/export`}
-              className="flex-1 bg-gray-100 text-white px-3 py-1 rounded text-center text-sm"
+              className="flex-1 bg-gray-100 text-black px-3 py-1 rounded text-center text-sm"
             >
               Export Schedule
             </Link>
           </div>
-          {/* Toggle Add Match Form */}
-          <div className="mb-4">
-            <button
-              className="bg-indigo-600 text-white text-sm px-3 py-1 rounded hover:bg-indigo-700 transition"
-              type="button"
-              onClick={() => setShowAddForm((prev: boolean) => !prev)}
-            >
-              {showAddForm ? 'Hide Add Match Form' : '+ Add Match'}
-            </button>
-          </div>
-          {showAddForm && (
-          <form className="mb-6 p-4 border rounded bg-white" onSubmit={handleAddMatch}>
-            <div className="flex flex-wrap gap-4 items-end">
-              <div>
-                <label className="block text-sm font-medium">Team A</label>
-                <select className="border rounded px-2 py-1" value={teamA} onChange={e => { setTeamA(e.target.value); setTeamAPlayers([]); }} required>
-                  <option value="">Select Team</option>
-                  {teams.map(t => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-                {teamA && (
-                  <div className="mt-1">
-                    <label className="block text-xs">Players (select 2)</label>
-                    <select
-                      className="border rounded px-2 py-1 w-full"
-                      multiple
-                      value={teamAPlayers}
-                      onChange={e => {
-                        const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
-                        setTeamAPlayers(selected);
-                      }}
-                      size={2}
-                      required
-                    >
-                      {getPlayersForTeam(teamA).map(p => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Team B</label>
-                <select className="border rounded px-2 py-1" value={teamB} onChange={e => { setTeamB(e.target.value); setTeamBPlayers([]); }} required>
-                  <option value="">Select Team</option>
-                  {teams.map(t => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-                {teamB && (
-                  <div className="mt-1">
-                    <label className="block text-xs">Players (select 2)</label>
-                    <select
-                      className="border rounded px-2 py-1 w-full"
-                      multiple
-                      value={teamBPlayers}
-                      onChange={e => {
-                        const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
-                        setTeamBPlayers(selected);
-                      }}
-                      size={2}
-                      required
-                    >
-                      {getPlayersForTeam(teamB).map(p => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Stage</label>
-                <select className="border rounded px-2 py-1" value={stage} onChange={e => setStage(e.target.value as 'group' | 'knockout')}>
-                  <option value="group">Group</option>
-                  <option value="knockout">Knockout</option>
-                </select>
-              </div>
-              {stage === 'group' && groupOptions.length > 0 && (
-                <div>
-                  <label className="block text-sm font-medium">Group</label>
-                  <select className="border rounded px-2 py-1" value={groupId} onChange={e => setGroupId(e.target.value)} required>
-                    <option value="">Select Group</option>
-                    {groupOptions.map(gid => (
-                      <option key={gid} value={gid}>{getGroupName(gid)}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              {stage === 'knockout' && (
-                <div>
-                  <label className="block text-sm font-medium">Round</label>
-                  <input className="border rounded px-2 py-1" value={round} onChange={e => setRound(e.target.value)} placeholder="e.g. quarterfinal" required />
-                </div>
-              )}
-              <div>
-                <label className="block text-sm font-medium">Court</label>
-                <input
-                  className="border rounded px-2 py-1"
-                  type="text"
-                  value={court}
-                  onChange={e => setCourt(e.target.value)}
-                  placeholder="Court name/number"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Date & Time</label>
-                <input
-                  className="border rounded px-2 py-1"
-                  type="datetime-local"
-                  value={dateTime}
-                  onChange={e => setDateTime(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Status</label>
-                <select
-                  className="border rounded px-2 py-1"
-                  value={status}
-                  onChange={e => setStatus(e.target.value)}
-                >
-                  <option value="scheduled">Scheduled</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Number of Sets</label>
-                <input
-                  className="border rounded px-2 py-1 w-20"
-                  type="number"
-                  min={1}
-                  max={5}
-                  value={numSets}
-                  onChange={e => setNumSets(Number(e.target.value))}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Points for Win</label>
-                <input
-                  className="border rounded px-2 py-1 w-20"
-                  type="number"
-                  min={1}
-                  value={winPoints}
-                  onChange={e => setWinPoints(Number(e.target.value))}
-                  required
-                />
-              </div>
-              <button type="submit" className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700 transition">Add Match</button>
+
+          {/* View Toggle */}
+          <div className="flex justify-end mb-4">
+            <div className="flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                className={`px-4 py-2 text-sm font-medium border rounded-l-lg ${viewMode === 'list'
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                  }`}
+                onClick={() => setViewMode('list')}
+              >
+                List View
+              </button>
+              <button
+                type="button"
+                className={`px-4 py-2 text-sm font-medium border rounded-r-lg ${viewMode === 'bracket'
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                  }`}
+                onClick={() => setViewMode('bracket')}
+              >
+                Bracket View
+              </button>
             </div>
-          </form>
-          )}
-          {matches.length === 0 ? (
-            <div className="text-gray-500">No matches found for this tournament.</div>
+          </div>
+
+          {viewMode === 'bracket' ? (
+            <BracketView matches={matches} teams={teams} />
           ) : (
-            <ul role="list" className="-my-6 divide-y divide-gray-200">
-              {matches.map((m: any) => (
-                <MatchListItem
-                  key={m.id}
-                  m={m}
-                  editingMatchId={editingMatchId}
-                  editMatch={editMatch}
-                  editSetScores={editSetScores}
-                  teams={teams}
-                  players={players}
-                  groupOptions={groupOptions}
-                  groups={groups}
-                  getTeamName={getTeamName}
-                  getPlayerName={getPlayerName}
-                  getPlayersForTeam={getPlayersForTeam}
-                  handleEditClick={handleEditClick}
-                  handleDeleteMatch={handleDeleteMatch}
-                  handleEditChange={handleEditChange}
-                  handleEditPlayerChange={handleEditPlayerChange}
-                  handleEditSetScoreChange={handleEditSetScoreChange}
-                  handleEditSave={handleEditSave}
-                  handleEditCancel={handleEditCancel}
-                  getGroupName={getGroupName}
-                />
-              ))}
-            </ul>
+            <>
+              {/* Toggle Add Match Form */}
+              <div className="mb-4">
+                <button
+                  className="bg-indigo-600 text-white text-sm px-3 py-1 rounded hover:bg-indigo-700 transition"
+                  type="button"
+                  onClick={() => setShowAddForm((prev: boolean) => !prev)}
+                >
+                  {showAddForm ? 'Hide Add Match Form' : '+ Add Match'}
+                </button>
+              </div>
+              {showAddForm && (
+                <form className="mb-6 p-4 border rounded bg-white" onSubmit={handleAddMatch}>
+                  <div className="flex flex-wrap gap-4 items-end">
+                    <div>
+                      <label className="block text-sm font-medium">Team A</label>
+                      <select className="border rounded px-2 py-1" value={teamA} onChange={e => { setTeamA(e.target.value); setTeamAPlayers([]); }} required>
+                        <option value="">Select Team</option>
+                        {teams.map(t => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      {teamA && (
+                        <div className="mt-1">
+                          <label className="block text-xs">Players (select 2)</label>
+                          <select
+                            className="border rounded px-2 py-1 w-full"
+                            multiple
+                            value={teamAPlayers}
+                            onChange={e => {
+                              const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
+                              setTeamAPlayers(selected);
+                            }}
+                            size={2}
+                            required
+                          >
+                            {getPlayersForTeam(teamA).map(p => (
+                              <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Team B</label>
+                      <select className="border rounded px-2 py-1" value={teamB} onChange={e => { setTeamB(e.target.value); setTeamBPlayers([]); }} required>
+                        <option value="">Select Team</option>
+                        {teams.map(t => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      {teamB && (
+                        <div className="mt-1">
+                          <label className="block text-xs">Players (select 2)</label>
+                          <select
+                            className="border rounded px-2 py-1 w-full"
+                            multiple
+                            value={teamBPlayers}
+                            onChange={e => {
+                              const selected = Array.from(e.target.selectedOptions, opt => opt.value).slice(0, 2);
+                              setTeamBPlayers(selected);
+                            }}
+                            size={2}
+                            required
+                          >
+                            {getPlayersForTeam(teamB).map(p => (
+                              <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Stage</label>
+                      <select className="border rounded px-2 py-1" value={stage} onChange={e => setStage(e.target.value as 'group' | 'knockout')}>
+                        <option value="group">Group</option>
+                        <option value="knockout">Knockout</option>
+                      </select>
+                    </div>
+                    {stage === 'group' && groupOptions.length > 0 && (
+                      <div>
+                        <label className="block text-sm font-medium">Group</label>
+                        <select className="border rounded px-2 py-1" value={groupId} onChange={e => setGroupId(e.target.value)} required>
+                          <option value="">Select Group</option>
+                          {groupOptions.map(gid => (
+                            <option key={gid} value={gid}>{getGroupName(gid)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                    {stage === 'knockout' && (
+                      <div>
+                        <label className="block text-sm font-medium">Round</label>
+                        <input className="border rounded px-2 py-1" value={round} onChange={e => setRound(e.target.value)} placeholder="e.g. quarterfinal" required />
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-sm font-medium">Court</label>
+                      <input
+                        className="border rounded px-2 py-1"
+                        type="text"
+                        value={court}
+                        onChange={e => setCourt(e.target.value)}
+                        placeholder="Court name/number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Date & Time</label>
+                      <input
+                        className="border rounded px-2 py-1"
+                        type="datetime-local"
+                        value={dateTime}
+                        onChange={e => setDateTime(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Status</label>
+                      <select
+                        className="border rounded px-2 py-1"
+                        value={status}
+                        onChange={e => setStatus(e.target.value)}
+                      >
+                        <option value="scheduled">Scheduled</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Number of Sets</label>
+                      <input
+                        className="border rounded px-2 py-1 w-20"
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={numSets}
+                        onChange={e => setNumSets(Number(e.target.value))}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Points for Win</label>
+                      <input
+                        className="border rounded px-2 py-1 w-20"
+                        type="number"
+                        min={1}
+                        value={winPoints}
+                        onChange={e => setWinPoints(Number(e.target.value))}
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700 transition">Add Match</button>
+                  </div>
+                </form>
+              )}
+              {matches.length === 0 ? (
+                <div className="text-gray-500">No matches found for this tournament.</div>
+              ) : (
+                <ul role="list" className="-my-6 divide-y divide-gray-200">
+                  {matches.map((m: any) => (
+                    <MatchListItem
+                      key={m.id}
+                      m={m}
+                      editingMatchId={editingMatchId}
+                      editMatch={editMatch}
+                      editSetScores={editSetScores}
+                      teams={teams}
+                      players={players}
+                      groupOptions={groupOptions}
+                      groups={groups}
+                      getTeamName={getTeamName}
+                      getPlayerName={getPlayerName}
+                      getPlayersForTeam={getPlayersForTeam}
+                      handleEditClick={handleEditClick}
+                      handleDeleteMatch={handleDeleteMatch}
+                      handleEditChange={handleEditChange}
+                      handleEditPlayerChange={handleEditPlayerChange}
+                      handleEditSetScoreChange={handleEditSetScoreChange}
+                      handleEditSave={handleEditSave}
+                      handleEditCancel={handleEditCancel}
+                      getGroupName={getGroupName}
+                    />
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </div>
       </main>
