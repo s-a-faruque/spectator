@@ -219,6 +219,7 @@ export default function App() {
                   onLeaveQueue={() => handleLeaveQueue(court.id)}
                   isPlayerInThisCourt={court.queue.includes(currentPlayerId || '')}
                   isPlayerInAnyQueue={currentPlayerCourtId !== null}
+                  joinButtonStyle="bg-orange-500 text-white hover:bg-orange-600"
                 />
               );
             })}

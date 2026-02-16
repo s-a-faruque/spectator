@@ -17,6 +17,7 @@ interface CourtCardProps {
   onLeaveQueue: () => void;
   isPlayerInThisCourt: boolean;
   isPlayerInAnyQueue: boolean;
+  joinButtonStyle?: string;
 }
 
 export function CourtCard({
@@ -27,6 +28,7 @@ export function CourtCard({
   onLeaveQueue,
   isPlayerInThisCourt,
   isPlayerInAnyQueue,
+  joinButtonStyle,
 }: CourtCardProps) {
   const nextToPlayCount = 4;
   const nextToPlay = queue.slice(0, nextToPlayCount);
@@ -112,7 +114,7 @@ export function CourtCard({
           {isPlayerInThisCourt ? (
             <Button
               variant="destructive"
-              className="w-full"
+              className="w-full bg-red-600 hover:bg-red-700"
               onClick={onLeaveQueue}
             >
               <LogOut className="size-4 mr-2" />
@@ -121,7 +123,7 @@ export function CourtCard({
           ) : (
             <Button
               variant="default"
-              className="w-full"
+              className={`w-full ${joinButtonStyle}`}
               onClick={onJoinQueue}
               disabled={isPlayerInAnyQueue}
             >
